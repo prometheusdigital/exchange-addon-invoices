@@ -8,6 +8,9 @@
  * @param string $post_type WordPress Post Type
 */
 function it_exchange_invoices_addon_admin_wp_enqueue_styles( $hook_suffix, $post_type ) { 
+	if ( empty( $hook_suffix ) || ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) )
+		return;
+
     if ( isset( $post_type ) && 'it_exchange_prod' === $post_type ) { 
 		if ( 'invoices-product-type' == it_exchange_get_product_type() )
 			wp_enqueue_style( 'it-exchange-invoices-addon-add-edit-product', ITUtility::get_url_from_file( dirname( __FILE__ ) ) . '/styles/add-edit-product.css' );
@@ -23,6 +26,9 @@ add_action( 'it_exchange_admin_wp_enqueue_styles', 'it_exchange_invoices_addon_a
  * @param string $post_type WordPress Post Type
 */
 function it_exchange_invoices_addon_admin_wp_enqueue_scripts( $hook_suffix, $post_type ) { 
+	if ( empty( $hook_suffix ) || ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) )
+		return;
+
     if ( isset( $post_type ) && 'it_exchange_prod' === $post_type ) { 
 		if ( 'invoices-product-type' == it_exchange_get_product_type() )
 			wp_enqueue_script( 'it-exchange-invoices-addon-add-edit-product', ITUtility::get_url_from_file( dirname( __FILE__ ) ) . '/js/add-edit-product.js' );
