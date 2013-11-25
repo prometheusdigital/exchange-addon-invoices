@@ -136,68 +136,68 @@ class IT_Exchange_Product_Feature_Invoices {
 		<div class="sections-wrapper">
 			<div class="invoice-section section-one">
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-id">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-client-id" class="invoice-field-label">
 						<?php _e( 'Client', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-client-id" />
+					<input type="text" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-date-issued">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-date-issued" class="invoice-field-label">
 						<?php _e( 'Date Issued', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-date-issued" />
+					<input type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-company">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-company" class="invoice-field-label">
 						<?php _e( 'Company', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-company" />
+					<input type="text" id="it-exchange-invoices-company" name="it-exchange-invoices-company" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-number">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-number" class="invoice-field-label">
 						<?php _e( 'Invoice #', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-number" />
+					<input type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-emails">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-emails" class="invoice-field-label">
 						<?php _e( 'Client Email Address', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-emails" />
+					<input type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-po">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-po" class="invoice-field-label">
 						<?php _e( 'P.O. Number', 'LION' ); ?>
 					</label>
-					<input type="text" name="it-exchange-invoices-po" />
+					<input type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-send-emails">
-					<input type="checkbox" value="1" name="it-exchange-invoices-send-emails" />&nbsp;
-					<label class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
+					<input id="it-exchange-invoices-send-emails" type="checkbox" value="1" name="it-exchange-invoices-send-emails" />&nbsp;
+					<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
 				</div>
 			</div>
 			<div class="invoice-section section-two">
 				<div class="invoice-field-container invoice-field-container-terms">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-terms" class="invoice-field-label">
 						<?php _e( 'Terms', 'LION' ); ?>
 					</label>
-					<select name="it-exchange-invoices-terms">
+					<select id="it-exchange-invoices-terms" name="it-exchange-invoices-terms">
 						<option value="0"><?php _e( 'Select a term', 'LION' ); ?>
 					</select>
 				</div>
 			</div>
 			<div class="invoice-section section-three">
 				<div class="invoice-field-container invoice-field-container-notes">
-					<label class="invoice-field-label">
+					<label for="it-exchange-invoices-notes" class="invoice-field-label">
 						<?php _e( 'Notes', 'LION' ); ?>
 					</label>
-					<textarea name="it-exchange-invoices-notes"></textarea>
+					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"></textarea>
 				</div>
 			</div>
 			<div class="invoice-section section-four">
 				<div class="invoice-field-container invoice-field-container-use-password">
-					<input type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" />&nbsp;
-					<label class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
+					<input id="it-exchange-invoices-use-password" type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" />&nbsp;
+					<label for="it-exchange-invoices-use-password" class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
 				</div>
 				<div class="invoice-field-container invoice-field-container-password it-exchange-invoices-use-password hide-if-js">
 					<input type="text" class="it-exchange-invoices-password" name="it-exchange-invoices-password" />
