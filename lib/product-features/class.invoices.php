@@ -200,7 +200,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
 				</div>
 				<div class="invoice-field-container invoice-field-container-password it-exchange-invoices-use-password hide-if-js">
-					<input type="text" name="it-exchange-invoices-password" />
+					<input type="text" class="it-exchange-invoices-password" name="it-exchange-invoices-password" />
 					<a href class="dice" title="Generate a random password."><img src="<?php echo esc_attr( ITUtility::get_url_from_file( dirname( dirname( __FILE__ ) ) ) ); ?>/images/dice-t.png" /></a>
 				</div>
 			</div>
