@@ -116,6 +116,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Set the value of the feature for this product
 		$invoice_data = it_exchange_get_product_feature( $product->ID, 'invoices' );
 		?>
+		<h3><?php _e( 'Invoice Details', 'LION' ); ?></h3>
 		<div class="section-one">
 			<div class="invoice-field-container invoice-field-container-client-id">
 				<label class="invoice-field-label">
