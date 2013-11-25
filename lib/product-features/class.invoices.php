@@ -139,40 +139,40 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-client-id" class="invoice-field-label">
 						<?php _e( 'Client', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" />
+					<input type="text" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" value="<?php esc_attr_e( $invoice_data['client'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-date-issued">
 					<label for="it-exchange-invoices-date-issued" class="invoice-field-label">
 						<?php _e( 'Date Issued', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" />
+					<input type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" value="<?php esc_attr_e( $invoice_data['date_issued'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-company">
 					<label for="it-exchange-invoices-company" class="invoice-field-label">
 						<?php _e( 'Company', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-company" name="it-exchange-invoices-company" />
+					<input type="text" id="it-exchange-invoices-company" name="it-exchange-invoices-company" value="<?php esc_attr_e( $invoice_data['company'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-number">
 					<label for="it-exchange-invoices-number" class="invoice-field-label">
 						<?php _e( 'Invoice #', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" />
+					<input type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" value="<?php esc_attr_e( $invoice_data['number'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-emails">
 					<label for="it-exchange-invoices-emails" class="invoice-field-label">
 						<?php _e( 'Client Email Address', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" />
+					<input type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" value="<?php esc_attr_e( $invoice_data['emails'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-po">
 					<label for="it-exchange-invoices-po" class="invoice-field-label">
 						<?php _e( 'P.O. Number', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" />
+					<input type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" value="<?php esc_attr_e( $invoice_data['po'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-send-emails">
-					<input id="it-exchange-invoices-send-emails" type="checkbox" value="1" name="it-exchange-invoices-send-emails" />&nbsp;
+					<input id="it-exchange-invoices-send-emails" type="checkbox" value="1" name="it-exchange-invoices-send-emails" <?php checked( ! empty( $invoice_data['send_emails'] ) ); ?>/>&nbsp;
 					<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
 				</div>
 			</div>
@@ -182,7 +182,7 @@ class IT_Exchange_Product_Feature_Invoices {
 						<?php _e( 'Terms', 'LION' ); ?>
 					</label>
 					<select id="it-exchange-invoices-terms" name="it-exchange-invoices-terms">
-						<option value="0"><?php _e( 'Select a term', 'LION' ); ?>
+						<?php $this->print_term_select_options( $invoice_data['terms'] ); ?>
 					</select>
 				</div>
 			</div>
@@ -191,21 +191,44 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-notes" class="invoice-field-label">
 						<?php _e( 'Notes', 'LION' ); ?>
 					</label>
-					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"></textarea>
+					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
 			<div class="invoice-section section-four">
 				<div class="invoice-field-container invoice-field-container-use-password">
-					<input id="it-exchange-invoices-use-password" type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" />&nbsp;
+					<input id="it-exchange-invoices-use-password" type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" <?php checked( ! empty( $invoice_data['use_password'] ) ); ?> />&nbsp;
 					<label for="it-exchange-invoices-use-password" class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
 				</div>
-				<div class="invoice-field-container invoice-field-container-password it-exchange-invoices-use-password hide-if-js">
-					<input type="text" class="it-exchange-invoices-password" name="it-exchange-invoices-password" />
+				<div class="invoice-field-container invoice-field-container-password it-exchange-invoices-password <?php echo empty( $invoice_data['use_password'] ) ? 'hide-if-js' : ''; ?>">
+					<input type="text" class="it-exchange-invoices-password" name="it-exchange-invoices-password" value="<?php esc_attr_e( $invoice_data['password'] ); ?>" />
 					<a href class="dice" title="Generate a random password."><img src="<?php echo esc_attr( ITUtility::get_url_from_file( dirname( dirname( __FILE__ ) ) ) ); ?>/images/dice-t.png" /></a>
 				</div>
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Genrates the options for the terms select box
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $selected the selected value
+	 * @return string html
+	*/
+	function print_term_select_options( $selected=0 ) {
+		$options = array(
+			0 => __( 'Select a term', 'LION' ),
+			1 => __( 'Test Term One', 'LION' ),
+			2 => __( 'Test Term Two', 'LION' ),
+		);
+		$terms = apply_filters( 'it_exchange_invoices_get_terms', $options );
+
+		foreach( $terms as $value => $option ) {
+			?>
+			<option value="<?php esc_attr_e( $value ); ?>" <?php selected( $selected, $value ); ?>><?php echo $option; ?></option>
+			<?php
+		}
 	}
 
 	/**
