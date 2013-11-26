@@ -37,3 +37,23 @@ function it_exchange_invoices_addon_admin_wp_enqueue_scripts( $hook_suffix, $pos
     }
 }
 add_action( 'it_exchange_admin_wp_enqueue_scripts', 'it_exchange_invoices_addon_admin_wp_enqueue_scripts', 10, 2 );
+
+/**
+ * Sets product visibility to false by default in add/edit product screen
+ *
+ * @since 1.0.0
+ *
+ * @param  boolean $visibility  default passed through by WP filter
+ * @param  integer $post_id     the post id
+ * @return boolean
+*/
+function it_exchange_invoices_addon_set_default_visibility_to_false( $visibility, $post_id ) {
+	$current_screen = get_current_screen();
+	$product_type   = it_exchange_get_product_type();
+
+	if ( ! empty( $current_screen->action ) && 'add' == $current_screen->action && 'invoices-product-type' == $product_type )
+		$visibility = 'hidden';
+
+	return $visibility;
+}
+add_filter( 'it_exchange_add_ediit_product_visibility', 'it_exchange_invoices_addon_set_default_visibility_to_false', 10, 2 );
