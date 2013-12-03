@@ -57,3 +57,76 @@ function it_exchange_invoices_addon_set_default_visibility_to_false( $visibility
 	return $visibility;
 }
 add_filter( 'it_exchange_add_ediit_product_visibility', 'it_exchange_invoices_addon_set_default_visibility_to_false', 10, 2 );
+
+/**
+ * Processes AJAX request to get client data
+ *
+ * @since 1.0.0
+ *
+ *
+*/
+function it_exchange_invoicing_ajax_get_client_data() {
+
+	$defaults = array(
+		'clientID'          => 0,
+		'clientDisplayName' => '',
+		'clientEmail'       => '',
+		'clientCompany'     => '',
+		'clientTerms'       => 1,
+	);
+
+	$userid = empty( $_POST['clientID'] ) ? 0 :  $_POST['clientID'];
+
+	// Get client
+	$userdata = get_userdata( $userid );
+
+	$data = new stdClass();
+	$data->clientID          = empty( $userdata->data->ID ) ? $defaults['clientID'] : $userdata->data->ID;
+	$data->clientDisplayName = empty( $userdata->data->display_name ) ? $defaults['clientDisplayName'] : $userdata->data->display_name;
+	$data->clientEmail       = empty( $userdata->data->user_email ) ? $defaults['clientEmail'] : $userdata->data->user_email;
+	
+	$meta = get_user_meta( $data->clientID, 'it-exchange-invoicing-meta', true );
+
+	$data->clientCompany = empty( $meta['company'] ) ? $defaults['clientCompany'] : $meta['company'];
+	$data->clientTerms   = empty( $meta['terms'] ) ? $defaults['clientTerms'] : $meta['terms'];
+
+	echo json_encode( $data );
+	die();
+}
+add_action( 'wp_ajax_it-exchange-invoices-get-client-data', 'it_exchange_invoicing_ajax_get_client_data' );
+
+/**
+ * Add Client to WordPress Users
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoices_ajax_create_client() {
+	$return = new stdClass();
+
+	// Custom errors
+	if ( empty( $_POST['first_name'] ) ) {
+		$user_id = new WP_Error( 'empty-first-name', __( 'Error: Please include a First Name', 'LION' ) );
+	} else if ( empty( $_POST['last_name'] ) ) {
+		$user_id = new WP_Error( 'empty-last-name', __( 'Error: Please include a Last Name', 'LION' ) );
+	} else if ( empty( $_POST['email'] ) ) {
+		$user_id = new WP_Error( 'empty-email', __( 'Error: Please include an Email Address', 'LION' ) );
+	} else {
+		$user_id = it_exchange_register_user();
+	}
+
+	if ( is_wp_error( $user_id ) ) {
+		$return->error = 1;
+		$return->message = $user_id->get_error_message();
+	} else {
+		$return->error = 0;
+		$return->id = $user_id;
+
+		$company = empty( $_POST['company'] ) ? '' : $_POST['company'];
+		update_user_meta( $user_id, 'it-exchange-invoicing-meta', array( 'company' => $company ) );
+	}
+	echo json_encode( $return );
+	die();
+}
+add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_ajax_create_client' );

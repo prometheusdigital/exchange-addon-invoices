@@ -110,6 +110,9 @@ class IT_Exchange_Product_Feature_Invoices {
 	 * @return void
 	*/
 	function print_metabox( $post ) {
+		$screen = get_current_screen();
+		$is_new_invoice = ! empty( $screen->action ) && 'add' == $screen->action;
+
 		// Grab the iThemes Exchange Product object from the WP $post object
 		$product = it_exchange_get_product( $post );
 
@@ -118,7 +121,7 @@ class IT_Exchange_Product_Feature_Invoices {
 
 		// Defaults
 		$defaults = array(
-			'client' => 0,
+			'client'       => 0,
 			'date_issued'  => date( 'Y-m-d' ),
 			'company'      => '',
 			'number'       => '',
@@ -134,12 +137,71 @@ class IT_Exchange_Product_Feature_Invoices {
 		?>
 		<label for="it-exchange-invoice-details-field"><?php _e( 'Invoice Details', 'LION' ); ?> <span class="tip" title="">i</span></label>
 		<div class="sections-wrapper">
-			<div class="invoice-section section-one">
+			<div class="invoice-section section-customer-select <?php echo empty( $invoice_data['client'] ) ? '' : 'hide-if-js'; ?>">
+				<div class="invoice-field-container invoice-field-container-client-type">
+					<label for="it-exchange-invoices-client-type" class="invoice-field-label">
+						<?php _e( 'New or Existing Client', 'LION' ); ?>
+					</label>
+					<label for="it-exchange-client-type-new"><input type="radio" id="it-exchange-client-type-new" checked="checked" class="it-exchange-client-type" name="it-exchange-client-type" value="new" />&nbsp;<?php _e( 'New Client', 'LION' ); ?></label>
+					<label for="it-exchange-client-type-existing"><input type="radio" id="it-exchange-client-type-existing" class="it-exchange-client-type" name="it-exchange-client-type" value="existing" />&nbsp;<?php _e( 'Existing Client', 'LION' ); ?></label>
+				</div>
+			</div>
+			<div class="invoice-section section-customer-new <?php echo empty( $invoice_data['client'] ) ? '' : 'hide-if-js'; ?>">
+				<div class="invoice-field-container invoice-field-container-client-type-new">
+					<label for="it-exchange-invoices-client-type-new" class="invoice-field-label">
+						<?php _e( 'New Client', 'LION' ); ?>
+					</label>
+					<div id="it-exchange-invoices-new-client-error" class="hide-if-js"><span class="error-message"></span></div>
+				</div>
+				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-type-new-first-name">
+					<input type="text" id="it-exchange-client-type-new-first-name" placeholder="<?php _e( 'First Name', 'LION' ); ?>" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-right invoice-field-container-client-type-new-last-name">
+					<input type="text" id="it-exchange-client-type-new-last-name" placeholder="<?php _e( 'Last Name', 'LION' ); ?>" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-type-new-company">
+					<input type="text" id="it-exchange-client-type-new-company" placeholder="<?php _e( 'Company Name', 'LION' ); ?>"/>
+				</div>
+				<div class="invoice-field-container invoice-field-container-right invoice-field-container-client-type-new-email">
+					<input type="text" id="it-exchange-client-type-new-email" placeholder="<?php _e( 'Email Address', 'LION' ); ?>" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-type-new-custom-password">
+					<label for="it-exchange-client-type-new-use-custom-username">
+						<input type="checkbox" id="it-exchange-client-type-new-use-custom-username" />&nbsp;<?php _e( 'Select custom username', 'LION' ); ?>
+					</label>
+					<input type="text" id="it-exchange-client-type-new-custom-username" class="hide-if-js" placeholder="username" /><br />
+				</div>
+				<div class="invoice-field-container invoice-field-container-right invoice-field-container-client-type-new-custom-password">
+					<label for="it-exchange-client-type-new-custom-password">
+						<input type="checkbox" id="it-exchange-client-type-new-custom-password" />&nbsp;<?php _e( 'Select custom password', 'LION' ); ?>
+					</label>
+					<input type="password" class="it-exchange-client-type-new-custom-passwords hide-if-js" id="it-exchange-client-type-new-custom-pass1" placeholder="password" /><br />
+					<input type="password" class="it-exchange-client-type-new-custom-passwords hide-if-js" id="it-exchange-client-type-new-custom-pass2" placeholder="password again" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-client-type-new-first-name clear">
+					<input type="button" id="it-exchange-invoicing-create-client" value="<?php _e( 'Create Client', 'LION' ); ?>" />
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="invoice-section section-customer-existing <?php echo ! empty( $is_new_invoice ) || ( empty( $is_new_invoice ) && ! empty( $invoice_data['client'] ) ) ? 'hide-if-js' : ''; ?>">
+				<div class="invoice-field-container invoice-field-container-right invoice-field-container-client-type-existing">
+					<label for="it-exchange-invoices-client-type-existing" class="invoice-field-label">
+						<?php _e( 'Existing Client', 'LION' ); ?>
+					</label>
+					<select id="it-exchange-invoices-existing-customer-select" name="it-exchange-invoices-existing-customer-select">
+						<?php $this->print_existing_client_select_options( $invoice_data['client'] ); ?>
+					</select><br />
+					<input type="button" id="it-exchange-invoicing-existing-client" value="<?php _e( 'Select Client', 'LION' ); ?>" />
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="invoice-section section-one <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-id">
 					<label for="it-exchange-invoices-client-id" class="invoice-field-label">
 						<?php _e( 'Client', 'LION' ); ?>
-					</label>
-					<input type="text" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" value="<?php esc_attr_e( $invoice_data['client'] ); ?>" />
+					</label> <a id="it-exchange-invoices-edit-client" href=""><?php _e( 'Edit' ); ?></a>
+					<span class="it-exchange-invoices-client-name"></span>
+					<input type="hidden" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" value="<?php esc_attr_e( $invoice_data['client'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-date-issued">
 					<label for="it-exchange-invoices-date-issued" class="invoice-field-label">
@@ -176,7 +238,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
 				</div>
 			</div>
-			<div class="invoice-section section-two">
+			<div class="invoice-section section-two <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-terms">
 					<label for="it-exchange-invoices-terms" class="invoice-field-label">
 						<?php _e( 'Terms', 'LION' ); ?>
@@ -186,7 +248,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					</select>
 				</div>
 			</div>
-			<div class="invoice-section section-three">
+			<div class="invoice-section section-three <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-notes">
 					<label for="it-exchange-invoices-notes" class="invoice-field-label">
 						<?php _e( 'Notes', 'LION' ); ?>
@@ -194,7 +256,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
-			<div class="invoice-section section-four">
+			<div class="invoice-section section-four <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-use-password">
 					<input id="it-exchange-invoices-use-password" type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" <?php checked( ! empty( $invoice_data['use_password'] ) ); ?> />&nbsp;
 					<label for="it-exchange-invoices-use-password" class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
@@ -225,6 +287,36 @@ class IT_Exchange_Product_Feature_Invoices {
 		$terms = apply_filters( 'it_exchange_invoices_get_terms', $options );
 
 		foreach( $terms as $value => $option ) {
+			?>
+			<option value="<?php esc_attr_e( $value ); ?>" <?php selected( $selected, $value ); ?>><?php echo $option; ?></option>
+			<?php
+		}
+	}
+
+	/**
+	 * Genrates the options for the Existing Client select box
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $selected the selected value
+	 * @return string html
+	*/
+	function print_existing_client_select_options( $selected=0 ) {
+
+		$args = array(
+			'fields' => array( 'ID', 'display_name' )
+		);  
+		$users = get_users( $args );
+
+		$options = array();
+		foreach( (array) $users as $user ) { 
+			if ( empty( $user->ID ) || empty( $user->display_name) )
+				continue;
+			$options[$user->ID] = $user->display_name;
+		} 
+		$clients = apply_filters( 'it_exchange_invoices_get_existing_client_select_options', $options );
+
+		foreach( $clients as $value => $option ) {
 			?>
 			<option value="<?php esc_attr_e( $value ); ?>" <?php selected( $selected, $value ); ?>><?php echo $option; ?></option>
 			<?php

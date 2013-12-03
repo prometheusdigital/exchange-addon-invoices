@@ -1,9 +1,15 @@
 #it-exchange-product-invoices{margin-bottom:30px;}
 #it-exchange-product-invoices .sections-wrapper{background:#FFF;border:1px solid #DFDFDF;}
 #it-exchange-product-invoices .invoice-section{padding:20px;}
+#it_exchange_normal-sortables input.it-exchange-client-type{width:16px;}
 #it-exchange-product-invoices .section-one,
+#it-exchange-product-invoices .section-customer-select,
 #it-exchange-product-invoices .section-two,
 #it-exchange-product-invoices .section-three{border-bottom:1px solid #DFDFDF;}
+
+#it-exchange-product-invoices .section-customer-new .invoice-field-container-left{float:left;width:49%;}
+#it-exchange-product-invoices .section-customer-new .invoice-field-container-right{float:right;width:49%;}
+
 #it-exchange-product-invoices .section-one .invoice-field-container{margin-bottom:20px;}
 #it-exchange-product-invoices .section-one .invoice-field-container-left{float:left;width:68%;}
 #it-exchange-product-invoices .section-one .invoice-field-container-right{float:right;width:30%;}
