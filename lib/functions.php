@@ -130,3 +130,54 @@ function it_exchange_invoices_ajax_create_client() {
 	die();
 }
 add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_ajax_create_client' );
+
+/**
+ * This function tells Exchange to look in a directory in our add-on for template parts
+ *
+ * @since 1.0.0
+ *
+ * @param array $template_paths existing template paths. Exchange core paths will be added after this filter.
+ * @param array $template_names the template part names we're looking for right now.
+ * @return array
+*/
+function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) { 
+
+	// Return if not an invoice product type
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return $template_paths;
+
+	// If content-invoice-product.php is in template_names, add our template path and return
+	if ( in_array( 'content-invoice-product.php', (array) $template_names ) ) {
+		$template_paths[] = dirname( __FILE__ ) . '/templates';
+		return $template_paths;
+	}
+
+	// If any of the template_paths include content-invoice-product, return add our templates directory
+	foreach( (array) $template_paths as $path ) {
+		if ( false !== strpos( 'content-invoice-product', $path ) ) {
+			$template_paths[] = dirname( __FILE__ ) . '/templates';
+			return $template_paths;
+		}
+	}
+
+	// We shouldn't make it here but return just in case we do.
+    return $template_paths;
+}
+add_filter( 'it_exchange_possible_template_paths', 'it_exchange_invoices_add_template_directory', 10, 2 );
+
+/**
+ * Hijacks requests for content-product.php and replaces with content-invoice-product.php in on a single invoice
+ *
+*/
+function it_exchange_invoices_hijack_product_template( $template_names, $load, $require_once, $template_part ) {
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() || ! $template_part )
+		return $template_names;
+
+	foreach( (array) $template_names as $key => $name ) {
+		if ( 'content-product.php' == $name )
+			$template_names[$key] = 'content-invoice-product.php';
+	}
+	return $template_names;
+}
+add_action( 'it_exchange_locate_template_template_names', 'it_exchange_invoices_hijack_product_template', 99, 4 );
+
