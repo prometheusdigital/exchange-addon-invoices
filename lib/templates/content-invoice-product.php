@@ -21,10 +21,9 @@
 	<?php
 	$template_parts = array( 'header', 'to-from', 'description-terms', 'notes', 'payment' );
 	foreach( it_exchange_get_template_part_elements( 'content_invoice_product', 'main', $template_parts ) as $part ) :
-		it_exchange_get_template_part( 'content-invoice-product/elements/' . $part );
+		it_exchange_get_template_part( 'content', 'invoice-product/elements/' . $part );
 	endforeach;
 	?>
-	<p>Invoice Template Layout will go here<br /><img src="http://www.ithemes.com/wp-content/themes/iThemes2012/images/corybat.gif" /></p>
 	<?php do_action( 'it_exchange_content_invoice_product_end_wrap' ); ?>
 </div>
 <?php do_action( 'it_exchange_content_invoice_product_after_wrap' ); ?>

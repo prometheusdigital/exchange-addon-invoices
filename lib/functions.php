@@ -153,8 +153,8 @@ function it_exchange_invoices_add_template_directory( $template_paths, $template
 	}
 
 	// If any of the template_paths include content-invoice-product, return add our templates directory
-	foreach( (array) $template_paths as $path ) {
-		if ( false !== strpos( 'content-invoice-product', $path ) ) {
+	foreach( (array) $template_names as $name ) {
+		if ( false !== strpos( $name, 'content-invoice-product' ) ) {
 			$template_paths[] = dirname( __FILE__ ) . '/templates';
 			return $template_paths;
 		}
@@ -180,4 +180,3 @@ function it_exchange_invoices_hijack_product_template( $template_names, $load, $
 	return $template_names;
 }
 add_action( 'it_exchange_locate_template_template_names', 'it_exchange_invoices_hijack_product_template', 99, 4 );
-
