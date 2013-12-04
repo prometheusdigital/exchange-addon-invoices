@@ -15,9 +15,11 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_notes_wrap' ); ?>
-<div class="it-exchange-invoice-notes">
+<div class="it-exchange-invoice-section it-exchange-invoice-notes">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_notes_wrap' ); ?>
-		[notes theme api call]
+		<div class="it-exchange-invoice-note">
+			[notes theme api call]
+		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_notes_wrap' ); ?>
 </div>
 <?php do_action( 'it_exchange_content_invoice_product_after_notes_wrap' ); ?>

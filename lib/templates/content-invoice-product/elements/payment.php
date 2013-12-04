@@ -15,10 +15,14 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_payment_wrap' ); ?>
-<div class="it-exchange-invoice-payment">
+<div class="it-exchange-invoice-section it-exchange-invoice-payment">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_payment_wrap' ); ?>
-		[payment amount theme api call]
-		[payment status theme api call]
+		<div class="it-exchange-invoice-payment-amount">
+			[payment amount theme api call]
+		</div>
+		<div class="it-exchange-invoice-payment-status">
+			[payment status theme api call]
+		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_payment_wrap' ); ?>
 </div>
 <?php do_action( 'it_exchange_content_invoice_product_after_payment_wrap' ); ?>

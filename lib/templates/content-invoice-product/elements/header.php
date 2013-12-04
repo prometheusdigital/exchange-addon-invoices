@@ -15,13 +15,13 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_header_wrap' ); ?>
-<div class="it-exchange-invoice-header">
+<div class="it-exchange-invoice-section it-exchange-invoice-header">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_header_wrap' ); ?>
-	<div class="left">
+	<div class="it-exchange-left">
 		[issued theme api call]
 		[created theme api call]
 	</div>
-	<div class="right">
+	<div class="it-exchange-right">
 		[invoice number theme api call]
 	</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_header_wrap' ); ?>
