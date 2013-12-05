@@ -15,7 +15,7 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_notes_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-notes">
+<div class="it-exchange-invoice-section it-exchange-invoice-notes it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_notes_wrap' ); ?>
 		<div class="it-exchange-invoice-note">
 			<?php it_exchange( 'invoice', 'notes' ); ?>

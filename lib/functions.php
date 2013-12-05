@@ -231,3 +231,18 @@ function it_exchange_invoice_addon_change_admin_price_label( $label, $post ) {
 	return $label;
 }
 add_filter( 'it_exchange_base-price_addon_metabox_description', 'it_exchange_invoice_addon_change_admin_price_label', 10, 2 );
+
+/**
+ * Loads the frontend CSS on all exchange pages
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_load_public_scripts() {
+	// Frontend Product CSS
+	if ( is_singular( 'it_exchange_prod' ) && it_exchange_get_product_type() == 'invoices-product-type' ) {
+		wp_enqueue_style( 'it-exchange-addon-product-public-css', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices.css' ) );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts' );

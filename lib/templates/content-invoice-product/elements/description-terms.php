@@ -15,7 +15,7 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_description-terms_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-description-terms">
+<div class="it-exchange-invoice-section it-exchange-invoice-description-terms it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_description-terms_wrap' ); ?>
 	<div class="it-exchange-invoice-description">
 		<?php it_exchange( 'invoice', 'description' ); ?>

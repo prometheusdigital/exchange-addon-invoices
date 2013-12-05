@@ -15,7 +15,7 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_to-from_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-to-from">
+<div class="it-exchange-invoice-section it-exchange-invoice-to-from it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_to-from_wrap' ); ?>
 	<div class="it-exchange-left">
 		<?php it_exchange( 'invoice', 'to' ); ?>

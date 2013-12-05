@@ -15,7 +15,7 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_payment_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-payment">
+<div class="it-exchange-invoice-section it-exchange-invoice-payment it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_payment_wrap' ); ?>
 		<div class="it-exchange-invoice-payment-amount">
 			<?php it_exchange( 'invoice', 'payment-amount' ); ?>

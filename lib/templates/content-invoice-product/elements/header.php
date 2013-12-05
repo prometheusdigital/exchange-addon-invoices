@@ -15,7 +15,7 @@
 */
 ?>
 <?php do_action( 'it_exchange_content_invoice_product_before_header_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-header">
+<div class="it-exchange-invoice-section it-exchange-invoice-header it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_header_wrap' ); ?>
 	<div class="it-exchange-left">
 		<?php it_exchange( 'invoice', 'issued-date' ); ?>
