@@ -180,3 +180,54 @@ function it_exchange_invoices_hijack_product_template( $template_names, $load, $
 	return $template_names;
 }
 add_action( 'it_exchange_locate_template_template_names', 'it_exchange_invoices_hijack_product_template', 99, 4 );
+
+/**
+ * Change Product Title to Invoice Title on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $label incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+*/
+function it_exchange_invoice_addon_change_admin_title_label( $label, $post ) {
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$label = __( 'Invoice Title', 'LION' );
+
+	return $label;
+}
+add_filter( 'it_exchange_add_edit_product_title_label', 'it_exchange_invoice_addon_change_admin_title_label', 10, 2 );
+
+/**
+ * Change Product Title Tooltip on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $tooltip incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+*/
+function it_exchange_invoice_addon_change_admin_title_tooltip( $tooltip, $post ) {
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$tooltip = __( 'Name your invoice something descriptive for future reference.', 'LION' );
+
+	return $tooltip;
+}
+add_filter( 'it_exchange_add_edit_product_title_tooltip', 'it_exchange_invoice_addon_change_admin_title_tooltip', 10, 2 );
+
+/**
+ * Change Product Price to Total Do on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $label incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+*/
+function it_exchange_invoice_addon_change_admin_price_label( $label, $post ) {
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$label = __( 'Total Due', 'LION' );
+
+	return $label;
+}
+add_filter( 'it_exchange_base-price_addon_metabox_description', 'it_exchange_invoice_addon_change_admin_price_label', 10, 2 );
