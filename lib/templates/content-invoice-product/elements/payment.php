@@ -18,10 +18,10 @@
 <div class="it-exchange-invoice-section it-exchange-invoice-payment">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_payment_wrap' ); ?>
 		<div class="it-exchange-invoice-payment-amount">
-			[payment amount theme api call]
+			<?php it_exchange( 'invoice', 'payment-amount' ); ?>
 		</div>
 		<div class="it-exchange-invoice-payment-status">
-			[payment status theme api call]
+			<?php it_exchange( 'invoice', 'payment-status' ); ?>
 		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_payment_wrap' ); ?>
 </div>

@@ -18,11 +18,23 @@
 <div class="it-exchange-invoice-section it-exchange-invoice-header">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_header_wrap' ); ?>
 	<div class="it-exchange-left">
-		[issued theme api call]
-		[created theme api call]
+		<?php it_exchange( 'invoice', 'issued-date' ); ?>
+		<?php 
+		if ( it_exchange( 'invoice', 'has-paid-date' ) )
+			it_exchange( 'invoice', 'paid-date' );
+		?>
 	</div>
 	<div class="it-exchange-right">
-		[invoice number theme api call]
+		<?php
+		if ( it_exchange( 'invoice', 'has-invoice-number' ) ) : 
+			it_exchange( 'invoice', 'invoice-number' );
+		endif;
+		?>
+		<?php
+		if ( it_exchange( 'invoice', 'has-po-number' ) ) : 
+			it_exchange( 'invoice', 'po-number' );
+		endif;
+		?>
 	</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_header_wrap' ); ?>
 </div>

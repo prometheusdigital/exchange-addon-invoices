@@ -18,7 +18,7 @@
 <div class="it-exchange-invoice-section it-exchange-invoice-notes">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_notes_wrap' ); ?>
 		<div class="it-exchange-invoice-note">
-			[notes theme api call]
+			<?php it_exchange( 'invoice', 'notes' ); ?>
 		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_notes_wrap' ); ?>
 </div>

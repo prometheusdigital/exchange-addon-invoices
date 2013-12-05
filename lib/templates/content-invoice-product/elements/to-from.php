@@ -18,10 +18,10 @@
 <div class="it-exchange-invoice-section it-exchange-invoice-to-from">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_to-from_wrap' ); ?>
 	<div class="it-exchange-left">
-		[to client theme api call]
+		<?php it_exchange( 'invoice', 'to' ); ?>
 	</div>
 	<div class="it-exchange-right">
-		[from store owner theme api call]
+		<?php it_exchange( 'invoice', 'from' ); ?>
 	</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_to-from_wrap' ); ?>
 </div>

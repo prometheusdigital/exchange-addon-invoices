@@ -18,10 +18,10 @@
 <div class="it-exchange-invoice-section it-exchange-invoice-description-terms">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_description-terms_wrap' ); ?>
 	<div class="it-exchange-invoice-description">
-		[description theme api call]
+		<?php it_exchange( 'invoice', 'description' ); ?>
 	</div>
 	<div class="it-exchange-invoice-terms">
-		[terms theme api call]
+		<?php it_exchange( 'invoice', 'terms' ); ?>
 	</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_description-terms_wrap' ); ?>
 </div>
