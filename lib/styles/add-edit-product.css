@@ -1,4 +1,4 @@
-#it-exchange-product-invoices{margin-bottom:30px;}
+#it-exchange-product-invoices{margin-bottom:30px;clear:both;}
 #it-exchange-product-invoices input{font-size:16px;}
 #it-exchange-product-invoices .sections-wrapper{background:#FFF;border:1px solid #DFDFDF;}
 #it-exchange-product-invoices .invoice-section{padding:20px;}
@@ -29,3 +29,6 @@
 #it-exchange-product-invoices .invoice-field-container-client-id{position:relative;}
 #it-exchange-product-invoices .it-exchange-invoices-client-name:disabled{color:#000;}
 #it-exchange-product-invoices #it-exchange-invoices-edit-client{position:absolute;top:40px;right:15px;background:#FFF;box-shadow:#FFF -12px 0 5px 0px,#FFF 4px 0 5px 0px;text-decoration:none;}
+
+/** Hidden at first and then revealed by JS after its moved to prevent flickering */
+#it-exchange-product-description{display:none;}
