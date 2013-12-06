@@ -67,12 +67,16 @@ add_filter( 'it_exchange_add_ediit_product_visibility', 'it_exchange_invoices_ad
 */
 function it_exchange_invoicing_ajax_get_client_data() {
 
+	// Set default Term
+	$terms = array_keys( it_exchange_invoice_addon_get_available_terms() );
+	$default_term = reset( $terms );
+
 	$defaults = array(
 		'clientID'          => 0,
 		'clientDisplayName' => '',
 		'clientEmail'       => '',
 		'clientCompany'     => '',
-		'clientTerms'       => 1,
+		'clientTerms'       => $default_term,
 	);
 
 	$userid = empty( $_POST['clientID'] ) ? 0 :  $_POST['clientID'];
@@ -246,3 +250,42 @@ function it_exchange_invoice_addon_load_public_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts' );
+
+/**
+ * Returns an array of terms available
+ *
+ * @since 1.0.0
+ *
+ * @return array
+*/
+function it_exchange_invoice_addon_get_available_terms() {
+	
+	$terms = array(
+		'net-7'  => array(
+					'title'       => __( 'Net 7', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due seven days after invoice', 'Description for Net 7 terms', 'LION' ),
+				   ),
+		'net-10' => array(
+					'title'       => __( 'Net 10', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due ten days after invoice', 'Description for Net 10 terms', 'LION' ),
+				   ),
+		'net-30' => array(
+					'title'       => __( 'Net 30', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due thirty days after invoice', 'Description for Net 30 terms', 'LION' ),
+				   ),
+		'net-60' => array(
+					'title'       => __( 'Net 60', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due sixty days after invoice', 'Description for Net 60 terms', 'LION' ),
+				   ),
+		'net-90' => array(
+					'title'       => __( 'Net 90', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due ninety days after invoice', 'Description for Net 10 terms', 'LION' ),
+				   ),
+		'receipt' => array(
+					'title'       => __( 'Due on Receipt', 'Title of invoice terms', 'LION' ),
+					'description' => __( 'Payment is due upon receipt of the invoice', 'Description for Due On Receipt terms', 'LION' ),
+				   ),
+	);
+
+	return (array) apply_filters( 'it_exchange_invoice_addon_get_available_terms', $terms );
+}

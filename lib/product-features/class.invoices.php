@@ -134,6 +134,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			'password'     => '',
 		);
 		$invoice_data = ITUtility::merge_defaults( $invoice_data, $defaults );
+		$client_info = it_exchange_get_customer( $invoice_data['client'] );
 		?>
 		<label for="it-exchange-invoice-details-field"><?php _e( 'Invoice Details', 'LION' ); ?> <span class="tip" title="">i</span></label>
 		<div class="sections-wrapper">
@@ -200,8 +201,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-client-id" class="invoice-field-label">
 						<?php _e( 'Client', 'LION' ); ?>
 					</label>
-					<!-- <span class="it-exchange-invoices-client-name"></span> -->
-					<input type="text" class="it-exchange-invoices-client-name" value="" disabled />
+					<input type="text" class="it-exchange-invoices-client-name" value="<?php esc_attr_e( empty( $client_info->data->display_name ) ? '' : $client_info->data->display_name ); ?>" disabled />
 					<a id="it-exchange-invoices-edit-client" href=""><?php _e( 'Edit' ); ?></a>
 					<input type="hidden" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" value="<?php esc_attr_e( $invoice_data['client'] ); ?>" />
 				</div>
@@ -281,16 +281,16 @@ class IT_Exchange_Product_Feature_Invoices {
 	 * @return string html
 	*/
 	function print_term_select_options( $selected=0 ) {
-		$options = array(
-			0 => __( 'Select a term', 'LION' ),
-			1 => __( 'Test Term One', 'LION' ),
-			2 => __( 'Test Term Two', 'LION' ),
-		);
-		$terms = apply_filters( 'it_exchange_invoices_get_terms', $options );
+		$terms = it_exchange_invoice_addon_get_available_terms();
 
-		foreach( $terms as $value => $option ) {
+		?><option value="0" <?php selected( 0, $selected ); ?>><?php _ex( 'Select a term', 'terms for an invoice payment', 'LION' ); ?></option><?php
+		foreach( $terms as $key => $props ) {
+			$key = empty( $key ) ? false : $key;
+			$title = empty( $props['title'] ) ? false : $props['title'];
+			if ( empty( $key ) || empty( $title ) )
+				continue;
 			?>
-			<option value="<?php esc_attr_e( $value ); ?>" <?php selected( $selected, $value ); ?>><?php echo $option; ?></option>
+			<option value="<?php esc_attr_e( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo $title; ?></option>
 			<?php
 		}
 	}
@@ -386,6 +386,12 @@ class IT_Exchange_Product_Feature_Invoices {
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
+
+		// Update Client meta data
+		$client_meta =  get_user_meta( $data['client'], 'it-exchange-invoicing-meta', true );
+		$client_meta['company'] = $data['company'];
+		$client_meta['terms']   = $data['terms'];
+		update_user_meta( $data['client'], 'it-exchange-invoicing-meta', $client_meta );
 	}
 
 	/**
