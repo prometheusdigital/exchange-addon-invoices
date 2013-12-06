@@ -367,7 +367,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
 		$value   = empty( $this->meta['terms'] ) ? '' : $this->meta['terms'];
 
-		$value   = 'This is some temp txt to show what the terms section will look like. It will be a sentance.';
+		$terms = it_exchange_invoice_addon_get_available_terms();
+		$value = empty( $terms[$value]['description'] ) ? '' : $terms[$value]['description'];
 
 		switch( $options['format'] ) {
 			case 'label' :
@@ -582,7 +583,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
         // Return boolean if has flag was set
         if ( $options['has']  )
-			return ! empty( $this->meta['asdfas'] );
+			return true;
 
         // Parse options
         $defaults      = array(
@@ -591,11 +592,34 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
         );   
         $options   = ITUtility::merge_defaults( $options, $defaults );
 
-		$value   = empty( $this->meta['terms'] ) ? '' : $this->meta['terms'];
-		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-status-block it-exchange-invoice-payment-status-block-' . esc_attr( $value ) : 'it-exchange-invoice-payment-status-block it-exchange-invoice-payment-status-block-' . esc_attr( $value ) . ' ' . $options['class'];
-		$label   = 'Paid';
+		// Get transaction ID
+		$transaction_id = empty( $meta['transaction_id'] ) ? false : $meta['transaction_id'];
 
-		$value   = 'paid';
+		// Set status if no transaction
+		if ( empty( $transaction_id ) ) {
+			$date_issued = it_exchange( 'invoice', 'get-issued-date', array( 'format' => 'value' ) );
+			$date_unix   = strtotime( $date_issued );
+
+			$terms = it_exchange_invoice_addon_get_available_terms();
+			$term_time = empty( $terms[$this->meta['terms']]['seconds'] ) ? 0 : $terms[$this->meta['terms']]['seconds'];
+
+			$status = ( ( $date_unix + $term_time ) > time() ) ? 'unpaid' : 'late';
+			$status = ( 'receipt' == $this->meta['terms'] ) ? 'due-now' : $status;
+		} else {
+			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
+		}
+
+		$labels = array(
+			'unpaid'  => __( 'Unpaid', 'LION' ),
+			'paid'    => __( 'Paid', 'LION' ),
+			'pending' => __( 'Pending', 'LION' ),
+			'late'    => __( 'Late', 'LION' ),
+			'due-now' => __( 'Due Now', 'LION' ),
+		);
+
+		$value   = $status;
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-status-block it-exchange-invoice-payment-status-block-' . esc_attr( $value ) : 'it-exchange-invoice-payment-status-block it-exchange-invoice-payment-status-block-' . esc_attr( $value ) . ' ' . $options['class'];
+		$label   = empty( $labels[$value] ) ? __( 'Pending', 'LION' ) : $labels[$value];
 
 		switch( $options['format'] ) {
 			case 'label' :

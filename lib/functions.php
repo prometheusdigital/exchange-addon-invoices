@@ -264,26 +264,32 @@ function it_exchange_invoice_addon_get_available_terms() {
 		'net-7'  => array(
 					'title'       => __( 'Net 7', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due seven days after invoice', 'Description for Net 7 terms', 'LION' ),
+					'seconds'     => 604800,
 				   ),
 		'net-10' => array(
 					'title'       => __( 'Net 10', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due ten days after invoice', 'Description for Net 10 terms', 'LION' ),
+					'seconds'     => 864000,
 				   ),
 		'net-30' => array(
 					'title'       => __( 'Net 30', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due thirty days after invoice', 'Description for Net 30 terms', 'LION' ),
+					'seconds'     => 2592000,
 				   ),
 		'net-60' => array(
 					'title'       => __( 'Net 60', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due sixty days after invoice', 'Description for Net 60 terms', 'LION' ),
+					'seconds'     => 5184000,
 				   ),
 		'net-90' => array(
 					'title'       => __( 'Net 90', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due ninety days after invoice', 'Description for Net 10 terms', 'LION' ),
+					'seconds'     => 7776000,
 				   ),
 		'receipt' => array(
 					'title'       => __( 'Due on Receipt', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due upon receipt of the invoice', 'Description for Due On Receipt terms', 'LION' ),
+					'seconds'     => 0,
 				   ),
 	);
 
