@@ -7,7 +7,7 @@
  * Author: iThemes
  * Author URI: http://ithemes.com
  * iThemes Package: exchange-addon-invoices
- 
+
  * Installation:
  * 1. Download and unzip the latest release zip file.
  * 2. If you use the WordPress plugin uploader to install this plugin skip to step 4.
@@ -29,7 +29,7 @@ function it_exchange_register_invoices_addon() {
 		'description'       => __( 'Allows you to invoice clients for services.', 'LION' ),
 		'author'            => 'iThemes',
 		'author_url'        => 'http://ithemes.com/exchange/invoices/',
-		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/invoices50px.png' ),
+		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/invoices50.png' ),
 		'wizard-icon'       => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/wizard-invoices.png' ),
 		'file'              => dirname( __FILE__ ) . '/init.php',
 		'category'          => 'product-type',
@@ -37,7 +37,7 @@ function it_exchange_register_invoices_addon() {
 		'labels'      => array(
 			'singular_name' => __( 'Invoice', 'LION' ),
 		),
-		'settings-callback' => 'it_exchange_invoices_addon_settings_callback',	
+		'settings-callback' => 'it_exchange_invoices_addon_settings_callback',
 	);
 	it_exchange_register_addon( 'invoices-product-type', $options );
 }
@@ -63,7 +63,7 @@ add_action( 'plugins_loaded', 'it_exchange_invoices_set_textdomain' );
  * @param object $updater ithemes updater object
  * @return void
 */
-function ithemes_exchange_addon_invoices_updater_register( $updater ) { 
+function ithemes_exchange_addon_invoices_updater_register( $updater ) {
 	    $updater->register( 'exchange-addon-invoices', __FILE__ );
 }
 add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_invoices_updater_register' );
