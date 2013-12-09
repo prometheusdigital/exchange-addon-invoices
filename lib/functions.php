@@ -340,20 +340,35 @@ function it_exchange_invoice_addon_get_available_terms() {
 function it_exchange_invoice_addon_login_client() {
 
 	// Is hash correct for post
-	if ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() )
+	if ( ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) && ! it_exchange_is_page( 'transaction' ) )
+		return;
+	
+	if ( it_exchange_is_page( 'transaction' ) ) {
+		$referal = wp_get_referer();
+		if ( empty( $referal ) )
+			return;
+
+		$query_parts = parse_url( wp_get_referer(), PHP_URL_QUERY );
+		$query_parts = wp_parse_args( $query_parts );
+
+		$product_id  = empty( $query_parts['sw-product'] ) ? false: $query_parts['sw-product'];
+		$product     = empty( $product_id ) ? false : it_exchange_get_product( $product_id );
+	} else {
+		$product       = it_exchange_get_product( false );
+		$product_id    = empty( $product->ID ) ? 0 : $product->ID;
+	}
+
+	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
+	$exchange_user = it_exchange_get_customer( $meta['client'] );
+	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
+
+	if ( empty( $wp_user->ID ) )
 		return;
 
 	// Log client in
-	$product       = it_exchange_get_product( false );
-	$product_id    = empty( $product->ID ) ? 0 : $product->ID;
-	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
-	$exchange_user = it_exchange_get_customer( $meta['client'] );
-	$wp_user       = $exchange_user->wp_user;
-
 	$GLOBALS['current_user'] = $wp_user;
-	ITUtility::print_r(is_user_logged_in());
 }
-add_action( 'wp', 'it_exchange_invoice_addon_login_client' );
+add_action( 'template_redirect', 'it_exchange_invoice_addon_login_client' );
 
 
 function it_exchange_invoice_log_client_in_for_superwidget() {
@@ -364,7 +379,6 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	if ( empty( $hash ) || is_user_logged_in() )
 		return;
 
-	ITUtility::print_r($_REQUEST);
 	$product =  empty( $_REQUEST['sw-product'] ) ? 0 : $_REQUEST['sw-product'];
 	$meta    = it_exchange_get_product_feature( $product, 'invoices' );
 	if ( empty( $meta['client'] ) || empty( $meta['hash'] ) || $meta['hash'] != $hash )
@@ -372,7 +386,6 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 
 	$client = it_exchange_get_customer( $meta['client'] );
 	$GLOBALS['current_user'] = $client->wp_user;
-	ITUtility::print_r(is_user_logged_in());
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
 
@@ -416,3 +429,46 @@ function it_exchange_invoice_addon_is_hash_valid_for_invoice() {
 
 	return true;
 }
+
+/**
+ * Intercept confirmation URL and send back to invoice page
+ *
+ * @since 1.0.0
+ *
+ * @param string $url            the confirmation page URL
+ * @param int    $transaction_id the id of the transaction
+ * @return string $url
+*/
+function it_exchange_invoice_addon_intercept_confirmation_page_url( $url, $transaction_id ) {
+	if ( $products = it_exchange_get_transaction_products( $transaction_id ) ) {
+		foreach( $products as $product ) {
+			if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) ) {
+				$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
+				$url = add_query_arg( array( 'client' => $meta['hash'], 'paid' => it_exchange_get_transaction_status( $transaction_id ) ), get_permalink( $product['product_id'] ) );
+			}
+		}
+	}
+	return $url;
+}
+add_filter( 'it_exchange_get_transaction_confirmation_url', 'it_exchange_invoice_addon_intercept_confirmation_page_url', 10, 2 );
+
+/**
+ * Updates the invoice as paid
+ *
+ * @since 1.0.0
+ *
+ * @param integer $transaction_id the transaction ID
+ * @return void
+*/
+function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_id ) {
+	if ( $products = it_exchange_get_transaction_products( $transaction_id ) ) {
+		foreach( $products as $product ) {
+			if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) ) {
+				$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
+				$meta['transaction_id'] = $transaction_id;
+				update_post_meta( $product['product_id'], '_it-exchange-invoice-data', $meta );
+			}
+		}
+	}
+}
+add_action( 'it_exchange_add_transaction_success', 'it_exchange_invoice_addon_attach_transaction_to_product' );
