@@ -304,15 +304,15 @@ function it_exchange_invoice_addon_get_available_terms() {
  * @return void
 */
 function it_exchange_invoice_addon_login_client() {
-	$hash    = empty( $_GET['client'] ) ? false : $_GET['client'];
-	$product = it_exchange_get_product( false );
-	if ( empty( $hash ) || empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || ! 'invoices-product-type' == it_exchange_get_product_type() )
+
+	// Is hash correct for post
+	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() )
 		return;
 
-	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
-	if ( empty( $meta['hash'] ) || $meta['hash'] !== $hash )
-		return;
-
+	// Log client in
+	$product       = it_exchange_get_product( false );
+	$product_id    = empty( $product->ID ) ? 0 : $product->ID;
+	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
 	$exchange_user = it_exchange_get_customer( $meta['client'] );
 	$wp_user       = $exchange_user->wp_user;
 
@@ -360,3 +360,25 @@ function it_exchange_invoice_addon_multi_item_cart_allowed( $allowed ) {
 	return false;
 }
 add_filter( 'it_exchange_multi_item_cart_allowed', 'it_exchange_invoice_addon_multi_item_cart_allowed', 15 );
+
+/**
+ * Is correct hash set for current invoice
+ *
+ * @since 1.0.0
+ *
+ * @return boolean
+*/
+function it_exchange_invoice_addon_is_hash_valid_for_invoice() {
+
+	$hash    = empty( $_GET['client'] ) ? false : $_GET['client'];
+	$product = it_exchange_get_product( false );
+
+	if ( empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return true;
+
+	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
+	if ( empty( $hash) || empty( $meta['hash'] ) || $meta['hash'] !== $hash )
+		return false;
+
+	return true;
+}

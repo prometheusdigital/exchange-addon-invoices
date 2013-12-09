@@ -25,5 +25,9 @@
 		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_payment_wrap' ); ?>
 </div>
-<?php it_exchange( 'product', 'superwidget' ); ?>
+<?php
+if ( it_exchange_invoice_addon_is_hash_valid_for_invoice() ) :
+	it_exchange( 'product', 'superwidget' );
+endif;
+?>
 <?php do_action( 'it_exchange_content_invoice_product_after_payment_wrap' ); ?>
