@@ -220,6 +220,40 @@ function it_exchange_invoice_addon_change_admin_title_tooltip( $tooltip, $post )
 add_filter( 'it_exchange_add_edit_product_title_tooltip', 'it_exchange_invoice_addon_change_admin_title_tooltip', 10, 2 );
 
 /**
+ * Change Product Description to Invoice Description on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $label incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+*/
+function it_exchange_invoice_addon_change_admin_description_label( $label, $post ) {
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$label = __( 'Invoice Description', 'LION' );
+
+	return $label;
+}
+add_filter( 'it_exchange_add_edit_product_description_label', 'it_exchange_invoice_addon_change_admin_description_label', 10, 2 );
+
+/**
+ * Change Product Description Tooltip on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $tooltip incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+*/
+function it_exchange_invoice_addon_change_admin_description_tooltip( $tooltip, $post ) {
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$tooltip = __( 'This is a quick, descriptive summary of your invoice. It is usually 3-5 sentences long. To add additional info, use the Notes area below.', 'LION' );
+
+	return $tooltip;
+}
+add_filter( 'it_exchange_add_edit_product_description_tooltip', 'it_exchange_invoice_addon_change_admin_description_tooltip', 10, 2 );
+
+/**
  * Change Product Price to Total Do on add/edit screen
  *
  * @since 1.0.0
