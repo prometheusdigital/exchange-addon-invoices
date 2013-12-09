@@ -341,3 +341,22 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	ITUtility::print_r(is_user_logged_in());
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
+
+/**
+ * Disables multi item carts if viewing an invoice product-type
+ *
+ * @since 1.0.0
+ * @param bool $allowed Current status of multi-cart being allowed
+ * @return bool True or False if multi-cart is allowed
+*/
+function it_exchange_invoice_addon_multi_item_cart_allowed( $allowed ) {
+    if ( ! $allowed )
+        return $allowed;
+
+	$product = it_exchange_get_product( false );
+	if ( empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return $allowed;
+
+	return false;
+}
+add_filter( 'it_exchange_multi_item_cart_allowed', 'it_exchange_invoice_addon_multi_item_cart_allowed', 15 );
