@@ -306,7 +306,7 @@ function it_exchange_invoice_addon_get_available_terms() {
 function it_exchange_invoice_addon_login_client() {
 
 	// Is hash correct for post
-	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() )
+	if ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() )
 		return;
 
 	// Log client in
@@ -374,7 +374,7 @@ function it_exchange_invoice_addon_is_hash_valid_for_invoice() {
 	$product = it_exchange_get_product( false );
 
 	if ( empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
-		return true;
+		return false;
 
 	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
 	if ( empty( $hash) || empty( $meta['hash'] ) || $meta['hash'] !== $hash )
