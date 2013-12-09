@@ -106,20 +106,19 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$from    = it_exchange_get_customer( $this->product->post_author );
 		$name    = empty( $from->data->display_name ) ? false : $from->data->display_name;
 
-		/*****
-		 * TEMP ADDRESS DATA
-		*****/
-		$this->meta['address'] = '123 Main St.<br />Oklahoma City, OK 12345';
-		$this->meta['company'] = 'My Store';
+		// Exchange General Settings
+		$general = it_exchange_get_option( 'settings_general' );
+		$company = empty( $general['company-name'] ) ? '' : $general['company-name'];
+		$address = empty( $general['company-address'] ) ? '' : $general['company-address'];
 
 		// Build the Value
 		$value   = array();
 		if ( in_array( 'name', $options['fields'] ) && ! empty ( $name ) )
 			$value[] = $name;
-		if ( in_array( 'company', $options['fields'] ) && ! empty( $this->meta['company'] ) )
-			$value[] = $this->meta['company'];
-		if ( in_array( 'address', $options['fields'] ) && ! empty( $this->meta['address'] ) )
-			$value[] = $this->meta['address'];
+		if ( in_array( 'company', $options['fields'] ) && ! empty( $company ) )
+			$value[] = $company;
+		if ( in_array( 'address', $options['fields'] ) && ! empty( $address ) )
+			$value[] = nl2br( $address );
 		$value = implode( $value, '<br />' );
 
 		switch( $options['format'] ) {
