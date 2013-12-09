@@ -163,7 +163,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			'fields' => array(
 				'name',
 				'company',
-				'address',
+				'email',
 			),
         );   
         $options   = ITUtility::merge_defaults( $options, $defaults );
@@ -171,11 +171,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-to-block' : 'it-exchange-invoice-to-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
 		$name    = empty( $this->client->data->display_name ) ? false : $this->client->data->display_name;
-
-		/*****
-		 * TEMP ADDRESS DATA
-		*****/
-		$this->meta['address'] = '123 Main St.<br />Wake Forest, NC 23456';
+		$email   = empty( $this->client->data->user_email ) ? false : $this->client->data->user_email;
 
 		// Build the Value
 		$value   = array();
@@ -183,8 +179,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $name;
 		if ( in_array( 'company', $options['fields'] ) && ! empty( $this->meta['company'] ) )
 			$value[] = $this->meta['company'];
-		if ( in_array( 'address', $options['fields'] ) && ! empty( $this->meta['address'] ) )
-			$value[] = $this->meta['address'];
+		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
+			$value[] = $email;
 		$value = implode( $value, '<br />' );
 
 		switch( $options['format'] ) {
