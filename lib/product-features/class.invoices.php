@@ -382,7 +382,10 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Invoice Status
 		$status = empty( $_POST['it-exchange-invoices-status'] ) ? 0 : $_POST['it-exchange-invoices-status'];
 
-		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status' );
+		// Generate HASH to sign client in
+		$hash = it_exchange_create_unique_hash();
+
+		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
@@ -392,6 +395,11 @@ class IT_Exchange_Product_Feature_Invoices {
 		$client_meta['company'] = $data['company'];
 		$client_meta['terms']   = $data['terms'];
 		update_user_meta( $data['client'], 'it-exchange-invoicing-meta', $client_meta );
+
+
+		// Send email to client if checked.
+		if ( ! empty( $send_emails ) )
+			wp_mail( 'glenn@ithemes.com', 'Test', add_query_arg( 'client', $hash, get_permalink( $product_id ) ) );
 	}
 
 	/**

@@ -88,7 +88,7 @@ function it_exchange_invoicing_ajax_get_client_data() {
 	$data->clientID          = empty( $userdata->data->ID ) ? $defaults['clientID'] : $userdata->data->ID;
 	$data->clientDisplayName = empty( $userdata->data->display_name ) ? $defaults['clientDisplayName'] : $userdata->data->display_name;
 	$data->clientEmail       = empty( $userdata->data->user_email ) ? $defaults['clientEmail'] : $userdata->data->user_email;
-	
+
 	$meta = get_user_meta( $data->clientID, 'it-exchange-invoicing-meta', true );
 
 	$data->clientCompany = empty( $meta['company'] ) ? $defaults['clientCompany'] : $meta['company'];
@@ -144,7 +144,7 @@ add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_
  * @param array $template_names the template part names we're looking for right now.
  * @return array
 */
-function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) { 
+function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) {
 
 	// Return if not an invoice product type
 	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
@@ -259,7 +259,7 @@ add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts
  * @return array
 */
 function it_exchange_invoice_addon_get_available_terms() {
-	
+
 	$terms = array(
 		'net-7'  => array(
 					'title'       => __( 'Net 7', 'Title of invoice terms', 'LION' ),
@@ -295,3 +295,49 @@ function it_exchange_invoice_addon_get_available_terms() {
 
 	return (array) apply_filters( 'it_exchange_invoice_addon_get_available_terms', $terms );
 }
+
+/**
+ * Logs the User in on an invoice page
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_login_client() {
+	$hash    = empty( $_GET['client'] ) ? false : $_GET['client'];
+	$product = it_exchange_get_product( false );
+	if ( empty( $hash ) || empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || ! 'invoices-product-type' == it_exchange_get_product_type() )
+		return;
+
+	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
+	if ( empty( $meta['hash'] ) || $meta['hash'] !== $hash )
+		return;
+
+	$exchange_user = it_exchange_get_customer( $meta['client'] );
+	$wp_user       = $exchange_user->wp_user;
+
+	$GLOBALS['current_user'] = $wp_user;
+	ITUtility::print_r(is_user_logged_in());
+}
+add_action( 'wp', 'it_exchange_invoice_addon_login_client' );
+
+
+function it_exchange_invoice_log_client_in_for_superwidget() {
+	$query_parts = parse_url( wp_get_referer(), PHP_URL_QUERY );
+	$query_parts = wp_parse_args( $query_parts );
+	$hash = empty( $query_parts['client'] ) ? false : $query_parts['client'];
+
+	if ( empty( $hash ) || is_user_logged_in() )
+		return;
+
+	ITUtility::print_r($_REQUEST);
+	$product =  empty( $_REQUEST['sw-product'] ) ? 0 : $_REQUEST['sw-product'];
+	$meta    = it_exchange_get_product_feature( $product, 'invoices' );
+	if ( empty( $meta['client'] ) || empty( $meta['hash'] ) || $meta['hash'] != $hash )
+		return;
+
+	$client = it_exchange_get_customer( $meta['client'] );
+	$GLOBALS['current_user'] = $client->wp_user;
+	ITUtility::print_r(is_user_logged_in());
+}
+add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');

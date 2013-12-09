@@ -25,4 +25,5 @@
 		</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_payment_wrap' ); ?>
 </div>
+<?php it_exchange( 'product', 'superwidget' ); ?>
 <?php do_action( 'it_exchange_content_invoice_product_after_payment_wrap' ); ?>
