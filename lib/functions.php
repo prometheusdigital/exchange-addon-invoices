@@ -467,6 +467,13 @@ function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_i
 				$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
 				$meta['transaction_id'] = $transaction_id;
 				update_post_meta( $product['product_id'], '_it-exchange-invoice-data', $meta );
+
+				// Set product as no longer available
+				$existing_availability = it_exchange_get_product_feature( $product['product_id'], 'availability' );
+				it_exchange_update_product_feature( $product['product_id'], 'availability', 'yes', array( 'type' => 'end', 'setting' => 'enabled' ) ); 
+
+				$existing_availability['end'] = time() - 86400;
+				it_exchange_update_product_feature( $product['product_id'], 'availability', $existing_availability );
 			}
 		}
 	}
