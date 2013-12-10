@@ -487,3 +487,34 @@ function it_exchange_invoice_addon_get_invoice_transaction_id( $invoice_id ) {
 	$transaction_id = 'publish' == get_post_status( $transaction_id ) ? $transaction_id : false;
 	return $transaction_id;
 }
+
+/**
+ * Automaically add invoice to cart when landing on the page
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_auto_add_remove_invoice_cart_items() {
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() ) {
+		if ( $products = it_exchange_get_cart_products() ) {
+			foreach( $products as $product ) {
+				if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) )
+					it_exchange_delete_cart_product( $product['product_cart_id'] );
+			}
+		}
+		return;
+	}
+
+	$product = it_exchange_get_product( false );
+	if ( empty( $product->ID ) )
+		return;
+
+	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() || it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) )
+		return;
+
+	// Empty Cart
+	it_exchange_empty_shopping_cart();
+	it_exchange_add_product_to_shopping_cart( $product->ID );
+}
+add_action( 'template_redirect', 'it_exchange_invoice_addon_auto_add_remove_invoice_cart_items' );
