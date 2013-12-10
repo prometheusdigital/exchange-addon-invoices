@@ -132,6 +132,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			'notes'        => '',
 			'use_password' => 0,
 			'password'     => '',
+			'hash'         => false,
 		);
 		$invoice_data = ITUtility::merge_defaults( $invoice_data, $defaults );
 		$client_info = it_exchange_get_customer( $invoice_data['client'] );
@@ -236,8 +237,14 @@ class IT_Exchange_Product_Feature_Invoices {
 					<input type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" value="<?php esc_attr_e( $invoice_data['po'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-send-emails">
-					<input id="it-exchange-invoices-send-emails" type="checkbox" value="1" name="it-exchange-invoices-send-emails" <?php checked( ! empty( $invoice_data['send_emails'] ) ); ?>/>&nbsp;
-					<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
+					<?php if ( empty( $invoice_data['hash'] ) ) : ?>
+						<input id="it-exchange-invoices-send-emails" type="checkbox" value="1" name="it-exchange-invoices-send-emails" <?php checked( ! empty( $invoice_data['send_emails'] ) ); ?>/>&nbsp;
+						<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
+					<?php else: ?>
+						<label><?php _e( 'Client Link', 'LION' ); ?></label>
+						<?php echo '<input type="text" value="' . esc_attr( add_query_arg( 'client', $invoice_data['hash'], get_permalink( $post ) ) ) . '" disabled="disabled" />'; ?>
+						<br /><a href=""><?php _e( 'Copy Link', 'LION' ); ?></a> | <a href=""><?php _e( 'Resend Invoice with Link', 'LION' ); ?></a>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="invoice-section section-two <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
