@@ -358,6 +358,10 @@ function it_exchange_invoice_addon_login_client() {
 		$product_id    = empty( $product->ID ) ? 0 : $product->ID;
 	}
 
+	// Abandon if product was not an invoice
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $product_id ) )
+		return;
+
 	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
 	$exchange_user = it_exchange_get_customer( $meta['client'] );
 	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
