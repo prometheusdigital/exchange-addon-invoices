@@ -26,7 +26,8 @@
 	<?php do_action( 'it_exchange_content_invoice_product_end_payment_wrap' ); ?>
 </div>
 <?php
-if ( it_exchange_invoice_addon_is_hash_valid_for_invoice() ) :
+// Only show payment options if invoice is paid or hash is correct
+if ( it_exchange_invoice_addon_is_hash_valid_for_invoice() && ! in_array( it_exchange( 'invoice', 'get-payment-status', array( 'format' => 'value' ) ), array( 'pending', 'paid' ) ) ) :
 	it_exchange( 'product', 'superwidget' );
 endif;
 ?>
