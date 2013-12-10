@@ -8,4 +8,5 @@
 .it-exchange-invoice-payment-status-block-paid{border-color:#BAD696;color:#BAD696;}
 .it-exchange-invoice-payment-status-block-pending{border-color:#F4E150;color:#F4E150;}
 
-.it-exchange-super-widget .cart-items-wrapper { display:none; }
+.it-exchange-super-widget .cart-items-wrapper,
+.it-exchange-super-widget .cart-actions-wrapper { display:none; }
