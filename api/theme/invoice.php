@@ -588,7 +588,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
         $options   = ITUtility::merge_defaults( $options, $defaults );
 
 		// Get transaction ID
-		$transaction_id = empty( $this->meta['transaction_id'] ) ? false : $this->meta['transaction_id'];
+		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
 
 		// Set status if no transaction
 		if ( empty( $transaction_id ) ) {

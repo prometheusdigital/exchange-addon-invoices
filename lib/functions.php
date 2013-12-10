@@ -470,7 +470,7 @@ function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_i
 
 				// Set product as no longer available
 				$existing_availability = it_exchange_get_product_feature( $product['product_id'], 'availability' );
-				it_exchange_update_product_feature( $product['product_id'], 'availability', 'yes', array( 'type' => 'end', 'setting' => 'enabled' ) ); 
+				it_exchange_update_product_feature( $product['product_id'], 'availability', 'yes', array( 'type' => 'end', 'setting' => 'enabled' ) );
 
 				$existing_availability['end'] = time() - 86400;
 				it_exchange_update_product_feature( $product['product_id'], 'availability', $existing_availability );
@@ -479,3 +479,18 @@ function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_i
 	}
 }
 add_action( 'it_exchange_add_transaction_success', 'it_exchange_invoice_addon_attach_transaction_to_product' );
+
+/**
+ * Returns the transaction ID associated with an invoice if it exists and if its published
+ *
+ * @since 1.0.0
+ *
+ * @param integer $invoice_id the post id of the invoice
+ * @return boolean
+*/
+function it_exchange_invoice_addon_get_invoice_transaction_id( $invoice_id ) {
+	$invoice_meta   = it_exchange_get_product_feature( $invoice_id, 'invoices' );
+	$transaction_id = empty( $invoice_meta['transaction_id'] ) ? false : $invoice_meta['transaction_id'];
+	$transaction_id = 'publish' == get_post_status( $transaction_id ) ? $transaction_id : false;
+	return $transaction_id;
+}
