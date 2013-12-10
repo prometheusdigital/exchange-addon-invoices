@@ -32,12 +32,12 @@ function it_exchange_register_invoices_addon() {
 		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/invoices50.png' ),
 		'wizard-icon'       => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/wizard-invoices.png' ),
 		'file'              => dirname( __FILE__ ) . '/init.php',
+		'settings-callback' => 'it_exchange_invoice_addon_settings_callback',
 		'category'          => 'product-type',
 		'basename'          => plugin_basename( __FILE__ ),
 		'labels'      => array(
 			'singular_name' => __( 'Invoice', 'LION' ),
 		),
-		'settings-callback' => 'it_exchange_invoices_addon_settings_callback',
 	);
 	it_exchange_register_addon( 'invoices-product-type', $options );
 }
