@@ -389,8 +389,9 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Invoice Status
 		$status = empty( $_POST['it-exchange-invoices-status'] ) ? 0 : $_POST['it-exchange-invoices-status'];
 
-		// Generate HASH to sign client in
-		$hash = it_exchange_create_unique_hash();
+		// Generate HASH to sign client in if not already generated
+		$existing_settings = it_exchange_get_product_feature( $product_id, 'invoices', true );
+		$hash = empty( $existing_settings['hash'] ) ? it_exchange_create_unique_hash() : $existing_settings['hash'];
 
 		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
