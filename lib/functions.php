@@ -654,3 +654,32 @@ function it_exchange_invoice_ajax_resend_client_email() {
 	die('1');
 }
 add_action( 'wp_ajax_it-exchange-invoice-resend-email', 'it_exchange_invoice_ajax_resend_client_email' );
+
+/**
+ * Remove template parts if they aren't being used
+ *
+ * @since 1.0.0
+ *
+ * @param array $parts default template parts
+ * @return array
+*/
+function it_exchange_invoice_addon_remove_unsued_template_parts( $parts ) {
+	if ( is_admin() || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return $parts;
+
+	$product = it_exchange_get_product( false );
+	if ( empty( $product->ID ) )
+		return $parts;
+
+	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
+
+	// Unset the Notes template part if it's empty
+	if ( empty( $meta['notes'] ) ) {
+		$i = array_search( 'notes', $parts );
+		if ( false !== $i)
+			unset( $parts[$i] );
+	}
+
+	return $parts;
+}
+add_filter( 'it_exchange_get_content_invoice_product_main_elements', 'it_exchange_invoice_addon_remove_unsued_template_parts' );
