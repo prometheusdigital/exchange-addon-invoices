@@ -18,7 +18,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	 * @var array $meta
 	 * @since 1.0.0
 	*/
-	private $meta = array(); 
+	private $meta = array();
 
 	/**
 	 * Maps api tags to methods
@@ -79,17 +79,17 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	 * @return string
 	*/
 	function from( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has'] )
-            return true;
+		// Return boolean if has flag was set
+		if ( $options['has'] )
+			return true;
 
-        // Parse options
-        $defaults      = array(
-            'format' => 'html',
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
 			'class'  => false,
 			'label'  => __( 'From', 'LION' ),
 			'fields' => array(
@@ -97,8 +97,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				'company',
 				'address',
 			),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-from-block' : 'it-exchange-invoice-from-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -139,24 +139,24 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function to( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has'] )
-            return true;
+		// Return boolean if has flag was set
+		if ( $options['has'] )
+			return true;
 
-        // Parse options
-        $defaults      = array(
-            'format' => 'html',
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
 			'class'  => false,
 			'label'  => __( 'To', 'LION' ),
 			'fields' => array(
@@ -164,8 +164,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				'company',
 				'email',
 			),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-to-block' : 'it-exchange-invoice-to-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -200,28 +200,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function issued_date( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has'] )
-            return true;
+		// Return boolean if has flag was set
+		if ( $options['has'] )
+			return true;
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Issued', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-date-issued-block' : 'it-exchange-invoice-date-issued-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -245,28 +245,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function paid_date( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['date_paid'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Paid', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-date-paid-block' : 'it-exchange-invoice-date-paid-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -290,28 +290,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function description( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has'] )
-            return it_exchange_product_has_feature( $this->product->ID, 'description' );
+		// Return boolean if has flag was set
+		if ( $options['has'] )
+			return it_exchange_product_has_feature( $this->product->ID, 'description' );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Description', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-description-block' : 'it-exchange-invoice-description-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -335,28 +335,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function terms( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['terms'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Terms', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-terms-block' : 'it-exchange-invoice-terms-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -383,28 +383,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function invoice_number( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['number'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Invoice Number', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-number-block' : 'it-exchange-invoice-number-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -428,28 +428,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function po_number( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['po'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'P.O. Number', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-po-block' : 'it-exchange-invoice-po-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -473,28 +473,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function notes( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['notes'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Notes', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-notes-block' : 'it-exchange-invoice-notes-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -518,28 +518,28 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function payment_amount( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
 
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set
+		if ( $options['has']  )
 			return ! empty( $this->meta['payment'] );
 
-        // Parse options
-        $defaults      = array(
-            'format'      => 'html',
+		// Parse options
+		$defaults      = array(
+			'format'      => 'html',
 			'class'  => false,
 			'label' => __( 'Payment', 'LION' ),
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-amount-block' : 'it-exchange-invoice-payment-amount-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -565,27 +565,27 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the 
+	 * Returns the
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return string
 	*/
 	function payment_status( $options=array() ) {
-        // Return boolean if has flag was set.
-        if ( $options['supports'] )
-            return true;
-
-        // Return boolean if has flag was set
-        if ( $options['has']  )
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
 			return true;
 
-        // Parse options
-        $defaults      = array(
-            'format' => 'html',
+		// Return boolean if has flag was set
+		if ( $options['has']  )
+			return true;
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
 			'class'  => false,
-        );   
-        $options   = ITUtility::merge_defaults( $options, $defaults );
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
 
 		// Get transaction ID
 		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
