@@ -680,6 +680,30 @@ function it_exchange_invoice_addon_remove_unsued_template_parts( $parts ) {
 			unset( $parts[$i] );
 	}
 
+	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) {
+		$parts = array( 'resend-link' );
+	}
+
 	return $parts;
 }
 add_filter( 'it_exchange_get_content_invoice_product_main_elements', 'it_exchange_invoice_addon_remove_unsued_template_parts' );
+
+/**
+ * Resend Email if requested
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_resend_email_on_request() {
+	if ( empty( $_GET['it-exchange-invoice-resend'] ) || is_admin() || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return;
+
+	$product = it_exchange_get_product( false );
+	if ( empty( $product->ID ) )
+		return;
+
+	it_exchange_invoice_addon_send_invoice( $product->ID );
+	it_exchange_add_message( 'notice', __( 'Email sent', 'LION' ) );
+}
+add_action( 'template_redirect', 'it_exchange_invoice_addon_resend_email_on_request', 12 );
