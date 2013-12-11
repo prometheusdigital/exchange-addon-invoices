@@ -242,8 +242,9 @@ class IT_Exchange_Product_Feature_Invoices {
 						<label for="it-exchange-invoices-send-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is published?', 'LION' ); ?></label>
 					<?php else: ?>
 						<label><?php _e( 'Client Link', 'LION' ); ?></label>
-						<?php echo '<input type="text" value="' . esc_attr( add_query_arg( 'client', $invoice_data['hash'], get_permalink( $post ) ) ) . '" disabled="disabled" />'; ?>
-						<br /><a href=""><?php _e( 'Copy Link', 'LION' ); ?></a> | <a href=""><?php _e( 'Resend Invoice with Link', 'LION' ); ?></a>
+						<?php echo '<input id="disabled-client-link" type="text" disabled="disabled" value="' . esc_attr( add_query_arg( 'client', $invoice_data['hash'], get_permalink( $post ) ) ) . '" />'; ?>
+						<br /><a id="it-exchange-invoice-resend-link" href="#" class="button" data-invoice-id="<?php esc_attr_e( $post->ID ); ?>"><?php _e( 'Resend email to client', 'LION' ); ?></a> 
+						<span id="it-exchange-client-link-message" class="hide-if-js"><?php _e( 'Email Sent', 'LION' ); ?></span>
 					<?php endif; ?>
 				</div>
 			</div>

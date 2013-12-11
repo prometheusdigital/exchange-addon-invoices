@@ -342,7 +342,7 @@ function it_exchange_invoice_addon_login_client() {
 	// Is hash correct for post
 	if ( ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) && ! it_exchange_is_page( 'transaction' ) )
 		return;
-	
+
 	if ( it_exchange_is_page( 'transaction' ) ) {
 		$referal = wp_get_referer();
 		if ( empty( $referal ) )
@@ -640,7 +640,17 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 
 }
 
-function testerss() {
-	it_exchange_invoice_addon_send_invoice( 287 );
+/**
+ * Resend email via AJAX
+ *
+ * @since 1.0.0
+ *
+ * @return boolean
+*/
+function it_exchange_invoice_ajax_resend_client_email() {
+	$post_id = empty( $_POST['invoiceID'] ) ? 0 : $_POST['invoiceID'];
+
+	it_exchange_invoice_addon_send_invoice( $post_id );
+	die('1');
 }
-add_action( 'template_redirect', 'testerss' );
+add_action( 'wp_ajax_it-exchange-invoice-resend-email', 'it_exchange_invoice_ajax_resend_client_email' );
