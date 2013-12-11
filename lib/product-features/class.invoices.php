@@ -265,16 +265,6 @@ class IT_Exchange_Product_Feature_Invoices {
 					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
-			<div class="invoice-section section-four <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
-				<div class="invoice-field-container invoice-field-container-use-password">
-					<input id="it-exchange-invoices-use-password" type="checkbox" value="1" class="it-exchange-checkbox-enable" name="it-exchange-invoices-use-password" <?php checked( ! empty( $invoice_data['use_password'] ) ); ?> />&nbsp;
-					<label for="it-exchange-invoices-use-password" class="invoice-field-label"><?php _e( 'Password protect this invoice?', 'LION' ); ?></label>
-				</div>
-				<div class="invoice-field-container invoice-field-container-password it-exchange-invoices-password <?php echo empty( $invoice_data['use_password'] ) ? 'hide-if-js' : ''; ?>">
-					<input type="text" class="it-exchange-invoices-password" name="it-exchange-invoices-password" value="<?php esc_attr_e( $invoice_data['password'] ); ?>" />
-					<a href class="dice" title="Generate a random password."><img src="<?php echo esc_attr( ITUtility::get_url_from_file( dirname( dirname( __FILE__ ) ) ) ); ?>/images/dice-t.png" /></a>
-				</div>
-			</div>
 		</div>
 		<?php
 	}
