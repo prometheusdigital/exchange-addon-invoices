@@ -393,7 +393,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		$existing_settings = it_exchange_get_product_feature( $product_id, 'invoices', true );
 		$hash = empty( $existing_settings['hash'] ) ? it_exchange_create_unique_hash() : $existing_settings['hash'];
 
-		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
+		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
@@ -407,7 +407,7 @@ class IT_Exchange_Product_Feature_Invoices {
 
 		// Send email to client if checked.
 		if ( ! empty( $send_emails ) )
-			wp_mail( 'glenn@ithemes.com', 'Test', add_query_arg( 'client', $hash, get_permalink( $product_id ) ) );
+			it_exchange_invoice_addon_send_invoice( $product_id );
 	}
 
 	/**

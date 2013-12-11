@@ -15,6 +15,22 @@ function it_exchange_invoice_addon_settings_callback() {
 		<?php do_action( 'it_exchange_addon_settings_page_top' ); ?>
 
 		<?php
+		delete_option( 'it-storage-exchange_invoice-addon' );
+		$after  = '<br /><strong>Possible data keys</strong><ul>';
+		$after .= '<li><em>client-name</em> - ' . __( 'The WordPress display_name for the user associated with the invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>client-company</em> - ' . __( 'The Company field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>client-email</em> - ' . __( 'The WordPress user_email for the user associated with the invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>from-company</em> - ' . __( 'The company name in Exchange settings', 'LION' ) . '</li>';
+		$after .= '<li><em>from-email</em> - ' . __( 'The company email in Exchange settings', 'LION' ) . '</li>';
+		$after .= '<li><em>from-address</em> - ' . __( 'The company address in Exchange settings', 'LION' ) . '</li>';
+		$after .= '<li><em>date-issued</em> - ' . __( 'The Date Issued field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>total-due</em> - ' . __( 'The Total Due field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>terms</em> - ' . __( 'The Terms field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>description</em> - ' . __( 'The Description field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>notes</em> - ' . __( 'The Notes field for the current invoice', 'LION' ) . '</li>';
+		$after .= '<li><em>payment-link</em> - ' . __( 'The Unique link with client hash the current invoice', 'LION' ) . '</li>';
+		$after .= '</ul>';
+
 		$options = array(
 			'prefix'      => 'invoice-addon',
 			'form-fields' => array(
@@ -29,38 +45,24 @@ function it_exchange_invoice_addon_settings_callback() {
 					'slug'    => 'client-subject-line',
 					'tooltip' => __( 'Subject line of the email that contains the Invoice Details?', 'LION' ),
 					'default' => 'Invoice from [it-exchange-invoice-email data="from-company"]',
+					'options' => array( 'class' => 'large-text', ),
 				),
 				array( 
 					'type'    => 'text_area',
 					'label'   => __( 'Invoice Email Message', 'LION' ),
 					'slug'    => 'client-message',
 					'tooltip' => __( 'The content of the message', 'LION' ),
+					'options' => array( 'class' => 'large-text', 'rows' => 10 ),
 					'default' => '
-To:
-[it-exchange-invoice-email data="client-name"]
-[it-exchange-invoice-email data="client-company"]
-[it-exchange-invoice-email data="client-email"]
+Hey [it-exchange-invoice-email data="client-name"],
+[it-exchange-invoice-email data="from-company"] has sent you an invoice for [it-exchange-invoice-email data="total-due"].
+Please review and pay here: [it-exchange-invoice-email data="payment-link"]
 
-From:
-[it-exchange-invoice-email data="from-name"]
-[it-exchange-invoice-email data="from-company"]
+Thank you,
+[it-exchange-invoice-email data="from-company"],
 [it-exchange-invoice-email data="from-email"]
-[it-exchange-invoice-email data="from-address"]
-
-Date Issued: [it-exchange-invoice-email data="date-issued"]
-Total Due: [it-exchange-invoice-email data="total-due"]
-Terms: [it-exchange-invoice-email data="terms"]
-
-Description:
-[it-exchange-invoice-email data="description"]
-
-Additional Notes:
-[it-exchange-invoice-email data="notes"]
-
-Thank you for your prompt payment:
-[it-exchange-invoice-email data="payment-link"]
 					',
-					'after'   => 'test',
+					'after'   => $after,
 				),
 			),
 		);

@@ -522,3 +522,125 @@ function it_exchange_invoice_addon_auto_add_remove_invoice_cart_items() {
 	it_exchange_add_product_to_shopping_cart( $product->ID );
 }
 add_action( 'template_redirect', 'it_exchange_invoice_addon_auto_add_remove_invoice_cart_items' );
+
+/**
+ * Sends the invoice to the client
+ *
+ * @since 1.0.0
+ *
+ * @param integer $post_id the id of the invoice
+ *
+ * @return boolean
+*/
+function it_exchange_invoice_addon_send_invoice( $post_id ) {
+
+	add_shortcode( 'it-exchange-invoice-email', 'it_exchange_invoice_addon_parse_shortcode' );
+	$GLOBALS['it_exchange']['invoice-mail-id'] = $post_id; // Hackity hack
+
+	$meta      = it_exchange_get_product_feature( $post_id, 'invoices' );
+	$client_id = empty( $meta['client'] ) ? 0 : $meta['client'];
+	$client    = it_exchange_get_customer( $client_id );
+	$email     = empty( $client->data->user_email ) ? false : $client->data->user_email;
+
+	$email_settings    = it_exchange_get_option( 'invoice-addon' );
+	$exchange_settings = it_exchange_get_option( 'settings-general' );
+	$subject           = empty( $email_settings['client-subject-line'] ) ? false : do_shortcode( $email_settings['client-subject-line'] );
+	$message           = empty( $email_settings['client-message'] ) ? false : do_shortcode( $email_settings['client-message'] );
+	$company_name      = empty( $exchange_settings['company-name'] ) ? get_bloginfo( 'name' ) : $exchange_settings['company-name'];
+	$company_email     = empty( $exchange_settings['company-email'] ) ? get_bloginfo( 'admin_email' ) : $exchange_settings['company-email'];
+	$headers           = 'From: ' . $company_name . ' <' . $company_email . '>';
+
+	unset( $GLOBALS['it_exchange']['invoice-mail-id'] ); // Hackity hack
+	remove_shortcode( 'it-exchange-invoice-email' );
+
+	if ( empty( $email ) || empty( $subject ) || empty( $message ) )
+		return false;
+
+	return wp_mail( $email, $subject, $message, $headers );
+}
+
+/**
+ * Replaces shortcode variables in invoice emails
+ *
+ * @since 1.0.0
+ *
+ * @return string
+*/
+function it_exchange_invoice_addon_parse_shortcode( $atts ) {
+
+	$post_id           = empty( $GLOBALS['it_exchange']['invoice-mail-id'] ) ? false : $GLOBALS['it_exchange']['invoice-mail-id']; // Hackity hack
+	if ( empty( $post_id ) )
+		return '';
+
+	$defaults = array(
+		'data' => false,
+	);
+	$atts = shortcode_atts( $defaults, $atts );
+
+	$meta              = it_exchange_get_product_feature( $post_id, 'invoices' );
+	$client_id         = empty( $meta['client'] ) ? 0 : $meta['client'];
+	$client            = it_exchange_get_customer( $client_id );
+	$exchange_settings = it_exchange_get_option( 'settings-general' );
+
+	$client_name       = empty( $client->data->display_name ) ? '' : $client->data->display_name;
+	$client_company    = empty( $meta['company'] ) ? '' : $meta['company'];
+	$client_email      = empty( $client->data->user_email ) ? false : $client->data->user_email;
+	$from_company      = empty( $exchange_settings['company-name'] ) ? get_bloginfo( 'name' ) : $exchange_settings['company-name'];
+	$from_email        = empty( $exchange_settings['company-email'] ) ? get_bloginfo( 'admin_email' ) : $exchange_settings['company-email'];
+	$from_address      = empty( $exchange_settings['company-address'] ) ? '' : $exchange_settings['company-address'];
+	$date_issued       = empty( $meta['date_issued'] ) ? '' : $meta['date_issued'];
+	$total_due         = it_exchange_format_price( it_exchange_get_product_feature( $post_id, 'base-price' ) );
+	$terms             = empty( $meta['terms'] ) ? '' : $meta['terms'];
+	$available_terms   = it_exchange_invoice_addon_get_available_terms();
+	$terms             = empty( $available_terms[$terms]['title'] ) ? '' : $available_terms[$terms]['title'];
+	$description       = it_exchange_get_product_feature( $post_id, 'description' );
+	$notes             = empty( $meta['notes'] ) ? '' : $meta['notes'];
+	$payment_link      = add_query_arg( 'client', $meta['hash'], get_permalink( $post_id ) );
+
+	switch( $atts['data'] ) {
+		case 'client-name' :
+			return $client_name;
+			break;
+		case 'client-company' :
+			return $client_company;
+			break;
+		case 'client-email' :
+			return $client_email;
+			break;
+		case 'from-company' :
+			return $from_company;
+			break;
+		case 'from-email' :
+			return $from_email;
+			break;
+		case 'from-address' :
+			return $from_address;
+			break;
+		case 'date-issued' :
+			return $date_issued;
+			break;
+		case 'total-due' :
+			return $total_due;
+			break;
+		case 'terms' :
+			return $terms;
+			break;
+		case 'description' :
+			return $description;
+			break;
+		case 'notes' :
+			return $notes;
+			break;
+		case 'payment-link' :
+			return $payment_link;
+			break;
+		default :
+			return '';
+	}
+
+}
+
+function testerss() {
+	it_exchange_invoice_addon_send_invoice( 287 );
+}
+add_action( 'template_redirect', 'testerss' );
