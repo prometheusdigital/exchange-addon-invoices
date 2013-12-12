@@ -380,7 +380,7 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	if ( is_user_logged_in() )
 		return;
 
-	// If product in cart is an invoice, we're going to log in the user the invoice was sent to for the duration of this script.	
+	// If product in cart is an invoice, we're going to log in the user the invoice was sent to for the duration of this script.
 	$products   = (array) it_exchange_get_cart_products();
 	$products   = reset( $products );
 	$product_id = empty( $products['product_id'] ) ? 0 : $products['product_id'];
