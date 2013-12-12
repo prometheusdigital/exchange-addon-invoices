@@ -376,20 +376,30 @@ add_action( 'template_redirect', 'it_exchange_invoice_addon_login_client' );
 
 
 function it_exchange_invoice_log_client_in_for_superwidget() {
-	$query_parts = parse_url( wp_get_referer(), PHP_URL_QUERY );
-	$query_parts = wp_parse_args( $query_parts );
-	$hash = empty( $query_parts['client'] ) ? false : $query_parts['client'];
-
-	if ( empty( $hash ) || is_user_logged_in() )
+	// If user is already logged in, we don't need to do anything
+	if ( is_user_logged_in() )
 		return;
 
-	$product =  empty( $_REQUEST['sw-product'] ) ? 0 : $_REQUEST['sw-product'];
-	$meta    = it_exchange_get_product_feature( $product, 'invoices' );
-	if ( empty( $meta['client'] ) || empty( $meta['hash'] ) || $meta['hash'] != $hash )
+	// If product in cart is an invoice, we're going to log in the user the invoice was sent to for the duration of this script.	
+	$products   = (array) it_exchange_get_cart_products();
+	$products   = reset( $products );
+	$product_id = empty( $products['product_id'] ) ? 0 : $products['product_id'];
+	$product    = it_exchange_get_product( $product_id );
+
+	// Abandon if product is not an invoice
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $product_id ) )
 		return;
 
-	$client = it_exchange_get_customer( $meta['client'] );
-	$GLOBALS['current_user'] = $client->wp_user;
+	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
+	$exchange_user = it_exchange_get_customer( $meta['client'] );
+	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
+
+	// Abandon if no WP user was found
+	if ( empty( $wp_user->ID ) )
+		return;
+
+	// Log client in
+	$GLOBALS['current_user'] = $wp_user;
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
 
