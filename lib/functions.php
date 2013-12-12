@@ -331,7 +331,7 @@ function it_exchange_invoice_addon_get_available_terms() {
 }
 
 /**
- * Logs the User in on an invoice page
+ * Logs the User in for invoice and transaction
  *
  * @since 1.0.0
  *
@@ -339,26 +339,26 @@ function it_exchange_invoice_addon_get_available_terms() {
 */
 function it_exchange_invoice_addon_login_client() {
 
-	// Is hash correct for post
+	// Abandon if not on invoice page, if not doing transaction, or if hash is not correct for product
 	if ( ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) && ! it_exchange_is_page( 'transaction' ) )
 		return;
 
+	// If doing a transaction, we will log the user in based on the product... if the product is a invoice
 	if ( it_exchange_is_page( 'transaction' ) ) {
-		$referal = wp_get_referer();
-		if ( empty( $referal ) )
-			return;
 
-		$query_parts = parse_url( wp_get_referer(), PHP_URL_QUERY );
-		$query_parts = wp_parse_args( $query_parts );
+		// Only use the first product in the cart because invoices should not be purchased with anything else
+		$products   = (array) it_exchange_get_cart_products();
+		$products   = reset( $products );
+		$product_id = empty( $products['product_id'] ) ? 0 : $products['product_id'];
+		$product    = it_exchange_get_product( $product_id );
 
-		$product_id  = empty( $query_parts['sw-product'] ) ? false: $query_parts['sw-product'];
-		$product     = empty( $product_id ) ? false : it_exchange_get_product( $product_id );
 	} else {
+		// If not on transaction
 		$product       = it_exchange_get_product( false );
 		$product_id    = empty( $product->ID ) ? 0 : $product->ID;
 	}
 
-	// Abandon if product was not an invoice
+	// Abandon if product is not an invoice
 	if ( 'invoices-product-type' != it_exchange_get_product_type( $product_id ) )
 		return;
 
@@ -500,6 +500,10 @@ function it_exchange_invoice_addon_get_invoice_transaction_id( $invoice_id ) {
  * @return void
 */
 function it_exchange_invoice_addon_auto_add_remove_invoice_cart_items() {
+
+	if ( ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'cart' ) && ! it_exchange_is_page( 'checkout' ) )
+		return;
+
 	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() ) {
 		if ( $products = it_exchange_get_cart_products() ) {
 			foreach( $products as $product ) {
