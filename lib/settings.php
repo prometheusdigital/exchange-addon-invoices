@@ -15,7 +15,6 @@ function it_exchange_invoice_addon_settings_callback() {
 		<?php do_action( 'it_exchange_addon_settings_page_top' ); ?>
 
 		<?php
-		delete_option( 'it-storage-exchange_invoice-addon' );
 		$after  = '<br /><strong>Possible data keys</strong><ul>';
 		$after .= '<li><em>client-name</em> - ' . __( 'The WordPress display_name for the user associated with the invoice', 'LION' ) . '</li>';
 		$after .= '<li><em>client-company</em> - ' . __( 'The Company field for the current invoice', 'LION' ) . '</li>';
