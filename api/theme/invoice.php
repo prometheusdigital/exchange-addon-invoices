@@ -422,8 +422,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			case 'html' :
 			default :
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
-				$return .= '	<span class="label">' . $label . '</span> ';
-				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '	<span class="label">' . $label . '</span><span class="value">' . $value . '</span>';
 				$return .= '</div>';
 		}
 		return $return;
@@ -467,8 +466,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			case 'html' :
 			default :
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
-				$return .= '	<span class="label">' . $label . '</span> ';
-				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '	<span class="label">' . $label . '</span><span class="value">' . $value . '</span>';
 				$return .= '</div>';
 		}
 		return $return;
