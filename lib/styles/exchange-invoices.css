@@ -3,6 +3,10 @@
 .it-exchange-invoice-section .label{display:block;font-size:.9em;color:#AAAAAA;text-transform:uppercase;}
 .it-exchange-invoice-header{padding:1em;background:#D7DADC;text-transform:uppercase;color:#41484C;}
 .it-exchange-invoice-header .label{display:inline;font-size:1em;color:#41484C;}
+.it-exchange-invoice-header .it-exchange-left,
+.it-exchange-invoice-header .it-exchange-right,
+.it-exchange-invoice-to-from .it-exchange-left,
+.it-exchange-invoice-to-from .it-exchange-right{width:50%;}
 .it-exchange-invoice-header .it-exchange-right{text-align:right;}
 .it-exchange-invoice-payment-amount .value{font-size:2.5em;}
 .it-exchange-invoice-payment-status-block{margin-top:.3em;padding:.3em 0;border:3px solid #F86C6B;font-size:3em;color:#F86C6B;text-align:center;text-transform:uppercase;}
@@ -10,6 +14,5 @@
 .it-exchange-invoice-payment-status-block-pending{border-color:#F4E150;color:#F4E150;}
 .it-exchange-invoice-resend{border-width:1px;padding-top:1em;}
 .it-exchange-invoice-description-block{margin-bottom:10px;}
-
 .it-exchange-super-widget .cart-items-wrapper,
-.it-exchange-super-widget .cart-actions-wrapper { display:none; }
+.it-exchange-super-widget .cart-actions-wrapper{display:none;}
