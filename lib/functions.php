@@ -372,6 +372,10 @@ function it_exchange_invoice_addon_login_client() {
 
 	// Log client in
 	$GLOBALS['current_user'] = $wp_user;
+
+	// Remove taxes
+	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
+
 }
 add_action( 'template_redirect', 'it_exchange_invoice_addon_login_client' );
 
