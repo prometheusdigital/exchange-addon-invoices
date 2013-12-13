@@ -798,3 +798,30 @@ function it_exchange_invoice_addon_prevent_editing_paid_invoice() {
 	die();
 }
 add_action( 'admin_init', 'it_exchange_invoice_addon_prevent_editing_paid_invoice' );
+
+function it_exchange_invoice_addon_add_details_to_payment_details( $transaction_post, $transaction_product ) {
+	$product = empty( $transaction_product['product_id'] ) ? 0 : $transaction_product['product_id'];
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $product ) )
+		return;
+
+	$permalink  = get_permalink( $product );
+	$admin_link = admin_url() . 'post.php?post=' . $product . '&action=edit';
+	$meta       = it_exchange_get_product_feature( $product, 'invoices' );
+	$hash       = empty( $meta['hash'] ) ? 0 : $meta['hash'];
+
+	if ( it_exchange_product_has_feature( $product, 'description' ) ) :
+	?>
+	<div class="it-exchange-invoices-description">
+		<?php echo apply_filters( 'wpautop', it_exchange_get_product_feature( $product, 'description' ) ); ?>
+	</div>
+	<?php endif; ?>
+
+	<div class="it-exchange-invoice-addon-links">
+		<p>
+			<a class="frontend-link" href="<?php echo add_query_arg( 'client', $hash, $permalink ); ?>"><?php _e( 'View Invoice', 'LION' ); ?></a>
+			<a class="backend-link" href="<?php echo $admin_link; ?>"><?php _e( 'Edit Invoice', 'LION' ); ?></a>
+		</p>
+	</div>
+	<?php
+}
+add_action( 'it_exchange_transaction_details_end_product_details', 'it_exchange_invoice_addon_add_details_to_payment_details', 10, 2 );
