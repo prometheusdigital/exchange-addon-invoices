@@ -726,3 +726,32 @@ function it_exchange_invoice_addon_resend_email_on_request() {
 	it_exchange_add_message( 'notice', __( 'Email sent', 'LION' ) );
 }
 add_action( 'template_redirect', 'it_exchange_invoice_addon_resend_email_on_request', 12 );
+
+/**
+ * Modify the View and Preview product buttons for invoices
+ *
+ * @since 1.0.0
+ *
+ * @param string $label incoming from WP filter
+ * @param object $post  incoming WP post from WP filter
+ * @return string
+*/
+function it_exchange_invoice_addon_filter_preview_view_product_button_labels( $label, $post ) {
+
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $post ) )
+		return $label;
+
+	$preview = __( 'Preview Invoice', 'LION' );
+	$view    = __( 'View Invoice', 'LION' );
+
+	$current = current_filter();
+
+	if ( 'it_exchange_preview_product_button_label' == $current )
+		return $preview;
+	if ( 'it_exchange_view_product_button_label' == $current )
+		return $view;
+
+	return $label;
+}
+add_filter( 'it_exchange_preview_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
+add_filter( 'it_exchange_view_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
