@@ -755,3 +755,27 @@ function it_exchange_invoice_addon_filter_preview_view_product_button_labels( $l
 }
 add_filter( 'it_exchange_preview_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
 add_filter( 'it_exchange_view_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
+
+/**
+ * Modify the View and Preview product button URLs for invoices
+ *
+ * @since 1.0.0
+ *
+ * @param string $url  incoming from WP filter
+ * @param object $post incoming WP post from WP filter
+ * @return string
+*/
+function it_exchange_invoice_addon_filter_preview_view_product_button_urls( $url, $post ) {
+
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $post ) )
+		return $url;
+
+	$invoice_meta = it_exchange_get_product_feature( $post->ID, 'invoices' );
+	$client_hash  = empty( $invoice_meta['hash'] ) ? '': $invoice_meta['hash'];
+
+	$url = add_query_arg( 'client', $client_hash, $url );
+
+	return $url;
+}
+add_filter( 'it_exchange_preview_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
+add_filter( 'it_exchange_view_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
