@@ -501,9 +501,16 @@ class IT_Exchange_Product_Feature_Invoices {
 		if ( empty( $current_screen->base ) || 'post' != $current_screen->base || 'invoices-product-type' != it_exchange_get_product_type( $product_id ) || ! it_exchange_invoice_addon_get_invoice_transaction_id( $product_id ) )
 			return;
 		?>
-		<div id="it-exchange-wizard-nag" class="it-exchange-nag">
+		<div id="it-exchange-invoices-paid-nag" class="it-exchange-nag hide-if-js">
 			<?php printf( __( 'This invoice has already been paid and may no longer be edited. %sView Payment%s', 'LION' ), '<a href="' . admin_url() . 'post.php?post=' . it_exchange_invoice_addon_get_invoice_transaction_id( $product_id ) . '&action=edit">', '</a>' ); ?>
 		</div>
+		<script type="text/javascript">
+			jQuery( document ).ready( function() {
+				if ( jQuery( '.wrap > h2' ).length == '1' ) {
+					jQuery("#it-exchange-invoices-paid-nag").insertAfter( '.wrap > h2' ).addClass( 'after-h2' ).fadeIn();
+				}
+			});
+		</script>
 		<?php
 	}
 }
