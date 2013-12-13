@@ -546,7 +546,9 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-amount-block' : 'it-exchange-invoice-payment-amount-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
 		$value   = it_exchange_get_cart_total( false );
-		$value   = it_exchange_invoice_addon_get_invoice_transaction_id( $this->meta['transaction_id'] ) ? it_exchange_get_transaction_total( $this->meta['transaction_id'], false ) : $value;
+
+		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
+		$value   = ! empty( $transaction_id ) ? it_exchange_get_transaction_total( $transaction_id, false ) : $value;
 
 		$value   = it_exchange_format_price( $value );
 
