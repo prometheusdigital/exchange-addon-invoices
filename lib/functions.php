@@ -779,3 +779,22 @@ function it_exchange_invoice_addon_filter_preview_view_product_button_urls( $url
 }
 add_filter( 'it_exchange_preview_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
 add_filter( 'it_exchange_view_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
+
+function it_exchange_invoice_addon_prevent_editing_paid_invoice() {
+	$action       = empty( $_POST['action'] ) ? false : $_POST['action'];
+	$post_type    = empty( $_POST['post_type'] ) ? false : $_POST['post_type'];
+	$post_id      = empty( $_POST['post_ID'] ) ? false : $_POST['post_ID'];
+	$product_type = empty( $_POST['it-exchange-product-type'] ) ? false : $_POST['it-exchange-product-type'];
+
+	if ( 'editpost' != $action || 'it_exchange_prod' != $post_type || empty( $post_id ) || 'invoices-product-type' != $product_type )
+		return;
+
+	if ( ! $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $post_id ) )
+		return;
+
+	$url = admin_url() . 'post.php?post=' . $post_id . '&action=edit';
+
+	wp_redirect( $url );
+	die();
+}
+add_action( 'admin_init', 'it_exchange_invoice_addon_prevent_editing_paid_invoice' );

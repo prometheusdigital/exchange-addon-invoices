@@ -21,6 +21,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			add_action( 'load-post-new.php', array( $this, 'init_feature_metaboxes' ) );
 			add_action( 'load-post.php', array( $this, 'init_feature_metaboxes' ) );
 			add_action( 'it_exchange_save_product', array( $this, 'save_feature_on_product_save' ) );
+			add_action( 'admin_notices', array( $this, 'admin_notice_disabled' ) );
 		}
 		add_action( 'it_exchange_enabled_addons_loaded', array( $this, 'register_feature_support' ) );
 		add_action( 'it_exchange_enabled_addons_loaded', array( $this, 'add_feature_support_to_invoices' ) );
@@ -134,9 +135,17 @@ class IT_Exchange_Product_Feature_Invoices {
 			'password'     => '',
 			'hash'         => false,
 		);
-		$invoice_data = ITUtility::merge_defaults( $invoice_data, $defaults );
-		$client_info = it_exchange_get_customer( $invoice_data['client'] );
+		$invoice_data  = ITUtility::merge_defaults( $invoice_data, $defaults );
+		$client_info   = it_exchange_get_customer( $invoice_data['client'] );
+		$paid_readonly = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) ? 'disabled="disabled"' : false;
+		if ( ! empty( $paid_readonly ) ) :
 		?>
+		<script type="text/javascript">
+			jQuery( document ).ready( function(){
+				jQuery('#it-exchange-product-description-field').attr('disabled','disabled');
+			});
+		</script>
+		<?php endif; ?>
 		<label for="it-exchange-invoice-details-field"><?php _e( 'Invoice Details', 'LION' ); ?> <span class="tip" title="">i</span></label>
 		<div class="sections-wrapper">
 			<div class="invoice-section section-customer-select <?php echo empty( $invoice_data['client'] ) ? '' : 'hide-if-js'; ?>">
@@ -203,38 +212,40 @@ class IT_Exchange_Product_Feature_Invoices {
 						<?php _e( 'Client', 'LION' ); ?>
 					</label>
 					<input type="text" class="it-exchange-invoices-client-name" value="<?php esc_attr_e( empty( $client_info->data->display_name ) ? '' : $client_info->data->display_name ); ?>" disabled />
-					<a id="it-exchange-invoices-edit-client" href=""><?php _e( 'Edit' ); ?></a>
+					<?php if ( ! $paid_readonly ) : ?>
+						<a id="it-exchange-invoices-edit-client" href=""><?php _e( 'Edit' ); ?></a>
+					<?php endif; ?>
 					<input type="hidden" id="it-exchange-invoices-client-id" name="it-exchange-invoices-client-id" value="<?php esc_attr_e( $invoice_data['client'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-date-issued">
 					<label for="it-exchange-invoices-date-issued" class="invoice-field-label">
 						<?php _e( 'Date Issued', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" value="<?php esc_attr_e( $invoice_data['date_issued'] ); ?>" />
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" value="<?php esc_attr_e( $invoice_data['date_issued'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-company">
 					<label for="it-exchange-invoices-company" class="invoice-field-label">
 						<?php _e( 'Company', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-company" name="it-exchange-invoices-company" value="<?php esc_attr_e( $invoice_data['company'] ); ?>" />
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-company" name="it-exchange-invoices-company" value="<?php esc_attr_e( $invoice_data['company'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-number">
 					<label for="it-exchange-invoices-number" class="invoice-field-label">
 						<?php _e( 'Invoice #', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" value="<?php esc_attr_e( $invoice_data['number'] ); ?>" />
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" value="<?php esc_attr_e( $invoice_data['number'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-emails">
 					<label for="it-exchange-invoices-emails" class="invoice-field-label">
 						<?php _e( 'Client Email Address', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" value="<?php esc_attr_e( $invoice_data['emails'] ); ?>" />
+					<input readonly="readonly" type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" value="<?php esc_attr_e( $invoice_data['emails'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-po">
 					<label for="it-exchange-invoices-po" class="invoice-field-label">
 						<?php _e( 'P.O. Number', 'LION' ); ?>
 					</label>
-					<input type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" value="<?php esc_attr_e( $invoice_data['po'] ); ?>" />
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-po" name="it-exchange-invoices-po" value="<?php esc_attr_e( $invoice_data['po'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-send-emails">
 					<?php if ( empty( $invoice_data['hash'] ) ) : ?>
@@ -253,7 +264,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-terms" class="invoice-field-label">
 						<?php _e( 'Terms', 'LION' ); ?>
 					</label>
-					<select id="it-exchange-invoices-terms" name="it-exchange-invoices-terms">
+					<select <?php echo $paid_readonly; ?> id="it-exchange-invoices-terms" name="it-exchange-invoices-terms">
 						<?php $this->print_term_select_options( $invoice_data['terms'] ); ?>
 					</select>
 				</div>
@@ -263,7 +274,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-notes" class="invoice-field-label">
 						<?php _e( 'Notes', 'LION' ); ?>
 					</label>
-					<textarea id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
+					<textarea <?php echo $paid_readonly; ?> id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
 		</div>
@@ -472,6 +483,28 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Does this product type support this feature?
 		$product_type = it_exchange_get_product_type( $product_id );
 		return it_exchange_product_type_supports_feature( $product_type, 'invoices' );
+	}
+
+	/**
+	 * Display admin notice when on Edit invoice sceen that has already been paid for by the client
+	 *
+	 * @since 1.0.0
+	 * @return void
+	*/
+	function admin_notice_disabled() {
+		$current_screen = get_current_screen();
+		if ( empty( $current_screen->base ) || 'post' != $current_screen->base )
+			return;
+
+		$product = it_exchange_get_product( false );
+		$product_id = empty( $product->ID ) ? 0 : $product->ID;
+		if ( empty( $current_screen->base ) || 'post' != $current_screen->base || 'invoices-product-type' != it_exchange_get_product_type( $product_id ) || ! it_exchange_invoice_addon_get_invoice_transaction_id( $product_id ) )
+			return;
+		?>
+		<div id="it-exchange-wizard-nag" class="it-exchange-nag">
+			<?php printf( __( 'This invoice has already been paid and may no longer be edited. %sView Payment%s', 'LION' ), '<a href="' . admin_url() . 'post.php?post=' . it_exchange_invoice_addon_get_invoice_transaction_id( $product_id ) . '&action=edit">', '</a>' ); ?>
+		</div>
+		<?php
 	}
 }
 $IT_Exchange_Product_Feature_Invoices = new IT_Exchange_Product_Feature_Invoices();
