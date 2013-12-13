@@ -262,7 +262,8 @@ add_filter( 'it_exchange_add_edit_product_description_tooltip', 'it_exchange_inv
  * @param mixed $post incoming post id/object from WP Filter
  * @return string
 */
-function it_exchange_invoice_addon_change_admin_price_label( $label, $post ) {
+function it_exchange_invoice_addon_change_admin_price_label( $label, $post=false ) {
+	$post = empty( $post ) ? $GLOBALS['post'] : $post;
 	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
 		$label = __( 'Total Due', 'LION' );
 
