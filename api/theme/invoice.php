@@ -404,7 +404,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$defaults      = array(
 			'format'      => 'html',
 			'class'  => false,
-			'label' => __( 'Invoice Number', 'LION' ),
+			'label' => __( 'Invoice #', 'LION' ),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
 
@@ -449,7 +449,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$defaults      = array(
 			'format'      => 'html',
 			'class'  => false,
-			'label' => __( 'P.O. Number', 'LION' ),
+			'label' => __( 'P.O. #', 'LION' ),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
 
