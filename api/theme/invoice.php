@@ -563,7 +563,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			default :
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
 				$return .= '	<span class="label">' . $label . '</span>';
-				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '	<span class="value">' . apply_filters( 'it_exchange_api_theme_product_base_price', $value, $this->product->ID ) . '</span>';
 				$return .= '</div>';
 		}
 		return $return;
