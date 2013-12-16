@@ -830,3 +830,17 @@ function it_exchange_invoice_addon_add_details_to_payment_details( $transaction_
 	<?php
 }
 add_action( 'it_exchange_transaction_details_end_product_details', 'it_exchange_invoice_addon_add_details_to_payment_details', 10, 2 );
+
+/**
+ * Remove product support for inventory and quantity
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_remove_product_features_from_invoices() {
+	it_exchange_remove_feature_support_for_product_type( 'extended-description', 'invoices-product-type' );
+	it_exchange_remove_feature_support_for_product_type( 'purchase-quantity', 'invoices-product-type' );
+	it_exchange_remove_feature_support_for_product_type( 'inventory', 'invoices-product-type' );
+}
+add_action( 'init', 'it_exchange_invoice_addon_remove_product_features_from_invoices' );
