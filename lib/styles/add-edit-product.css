@@ -30,7 +30,7 @@
 #it-exchange-product-invoices .invoice-field-container-client-id{position:relative;}
 #it-exchange-product-invoices .it-exchange-invoices-client-name:disabled{color:#000;}
 #it-exchange-product-invoices #it-exchange-invoices-edit-client{position:absolute;top:40px;right:15px;background:#FFF;box-shadow:#FFF -12px 0 5px 0px,#FFF 4px 0 5px 0px;text-decoration:none;}
-#disabled-client-link{background:#ebebeb;border:none;margin-bottom:12px;}
+#it-exchange-product-invoices #disabled-client-link{background:#ebebeb;border:none;margin-bottom:12px;}
 
 /** Hidden at first and then revealed by JS after its moved to prevent flickering */
 #it-exchange-product-description{display:none;}
