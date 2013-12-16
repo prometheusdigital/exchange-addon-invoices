@@ -68,3 +68,16 @@ function ithemes_exchange_addon_invoices_updater_register( $updater ) {
 }
 add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_invoices_updater_register' );
 require( dirname( __FILE__ ) . '/lib/updater/load.php' );
+
+/**
+ * Sets options on activation if they're empty
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_activation() {
+	include_once( 'lib/settings.php' );
+	it_exchange_invoice_addon_set_default_options();
+}
+register_activation_hook( __FILE__, 'it_exchange_invoice_addon_activation' );

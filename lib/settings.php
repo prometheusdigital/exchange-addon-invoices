@@ -30,6 +30,7 @@ function it_exchange_invoice_addon_settings_callback() {
 		$after .= '<li><em>payment-link</em> - ' . __( 'The Unique link with client hash the current invoice', 'LION' ) . '</li>';
 		$after .= '</ul>';
 
+		$defaults = it_exchange_invoice_addon_get_default_settings();
 		$options = array(
 			'prefix'      => 'invoice-addon',
 			'form-fields' => array(
@@ -43,7 +44,7 @@ function it_exchange_invoice_addon_settings_callback() {
 					'label'   => __( 'Invoice Email Subject Line', 'LION' ),
 					'slug'    => 'client-subject-line',
 					'tooltip' => __( 'Subject line of the email that contains the Invoice Details?', 'LION' ),
-					'default' => 'Invoice from [it-exchange-invoice-email data="from-company"]',
+					'default' => $defaults['client-subject-line'],
 					'options' => array( 'class' => 'large-text', ),
 				),
 				array( 
@@ -52,15 +53,7 @@ function it_exchange_invoice_addon_settings_callback() {
 					'slug'    => 'client-message',
 					'tooltip' => __( 'The content of the message', 'LION' ),
 					'options' => array( 'class' => 'large-text', 'rows' => 10 ),
-					'default' => '
-Hey [it-exchange-invoice-email data="client-name"],
-[it-exchange-invoice-email data="from-company"] has sent you an invoice for [it-exchange-invoice-email data="total-due"].
-Please review and pay here: [it-exchange-invoice-email data="payment-link"]
-
-Thank you,
-[it-exchange-invoice-email data="from-company"],
-[it-exchange-invoice-email data="from-email"]
-					',
+					'default' => $defaults['client-message'],
 					'after'   => $after,
 				),
 			),
@@ -69,4 +62,42 @@ Thank you,
 		?>
 	</div>
 	<?php
+}
+
+/**
+ * Default Form Settings
+ *
+ * @since 1.0.0
+ *
+ * @return array
+*/
+function it_exchange_invoice_addon_get_default_settings() {
+	$default_settings = array(
+		'client-subject-line' => __( 'Invoice from [it-exchange-invoice-email data="from-company"]', 'LION' ),
+		'client-message'      => '
+Hey [it-exchange-invoice-email data="client-name"],
+[it-exchange-invoice-email data="from-company"] has sent you an invoice for [it-exchange-invoice-email data="total-due"].
+Please review and pay here: [it-exchange-invoice-email data="payment-link"]
+
+Thank you,
+[it-exchange-invoice-email data="from-company"],
+[it-exchange-invoice-email data="from-email"]
+',
+	);
+	return $default_settings;
+}
+
+/**
+ * Set default settings if empty
+ *
+ * @since 1.0.0
+ *
+ * @return
+*/
+function it_exchange_invoice_addon_set_default_options() {
+	$defaults = it_exchange_invoice_addon_get_default_settings();
+	$current  = it_exchange_get_option( 'invoice-addon' );
+
+	if ( empty( $current ) )
+		it_exchange_save_option( 'invoice-addon', $defaults );
 }
