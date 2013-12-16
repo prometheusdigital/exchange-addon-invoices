@@ -254,7 +254,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<?php else: ?>
 						<label><?php _e( 'Client Link', 'LION' ); ?></label>
 						<?php echo '<input id="disabled-client-link" type="text" readonly="readonly" value="' . esc_attr( add_query_arg( 'client', $invoice_data['hash'], get_permalink( $post ) ) ) . '" />'; ?>
-						<br /><a id="it-exchange-invoice-resend-link" href="#" class="button" data-invoice-id="<?php esc_attr_e( $post->ID ); ?>"><?php _e( 'Resend email to client', 'LION' ); ?></a> 
+						<br /><a id="it-exchange-invoice-resend-link" href="#" class="button" data-invoice-id="<?php esc_attr_e( $post->ID ); ?>"><?php _e( 'Resend email to client', 'LION' ); ?></a>
 						<span id="it-exchange-client-link-message" class="hide-if-js"><?php _e( 'Email Sent', 'LION' ); ?></span>
 					<?php endif; ?>
 				</div>
@@ -267,6 +267,16 @@ class IT_Exchange_Product_Feature_Invoices {
 					<select <?php echo $paid_readonly; ?> id="it-exchange-invoices-terms" name="it-exchange-invoices-terms">
 						<?php $this->print_term_select_options( $invoice_data['terms'] ); ?>
 					</select>
+					<div class="it-exchange-invoice-term-descriptions">
+						<?php foreach( (array) it_Exchange_invoice_addon_get_available_terms() as $term => $termdata ) : ?>
+							<?php
+							if ( empty( $termdata['description'] ) )
+								continue;
+							$visibility = $term == $invoice_data['terms'] ? '' : 'hide-if-js';
+							?>
+							<p class="it-exchange-invoice-term-description it-exchange-invoice-term-description-<?php esc_attr_e( $term ); ?> <?php echo $visibility; ?>"><?php echo $termdata['description']; ?></p>
+						<?php endforeach; ?>
+					</div>
 				</div>
 			</div>
 			<div class="invoice-section section-three <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
@@ -316,15 +326,15 @@ class IT_Exchange_Product_Feature_Invoices {
 
 		$args = array(
 			'fields' => array( 'ID', 'display_name' )
-		);  
+		);
 		$users = get_users( $args );
 
 		$options = array();
-		foreach( (array) $users as $user ) { 
+		foreach( (array) $users as $user ) {
 			if ( empty( $user->ID ) || empty( $user->display_name) )
 				continue;
 			$options[$user->ID] = $user->display_name;
-		} 
+		}
 		$clients = apply_filters( 'it_exchange_invoices_get_existing_client_select_options', $options );
 
 		foreach( $clients as $value => $option ) {
@@ -370,7 +380,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Invoice Client Email Addresses
 		$emails = empty( $_POST['it-exchange-invoices-emails'] ) ? '' : $_POST['it-exchange-invoices-emails'];
 
-		// Update Invoice PO Number 
+		// Update Invoice PO Number
 		$po= empty( $_POST['it-exchange-invoices-po'] ) ? '' : $_POST['it-exchange-invoices-po'];
 
 		// Update Invoice Send Email on Creation
