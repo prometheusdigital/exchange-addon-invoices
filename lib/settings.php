@@ -75,7 +75,7 @@ function it_exchange_invoice_addon_get_default_settings() {
 	$default_settings = array(
 		'client-subject-line' => __( 'Invoice from [it-exchange-invoice-email data="from-company"]', 'LION' ),
 		'client-message'      => '
-Hey [it-exchange-invoice-email data="client-name"],
+Hi [it-exchange-invoice-email data="client-name"],
 [it-exchange-invoice-email data="from-company"] has sent you an invoice for [it-exchange-invoice-email data="total-due"].
 Please review and pay here: [it-exchange-invoice-email data="payment-link"]
 
