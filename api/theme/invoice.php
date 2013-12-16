@@ -96,6 +96,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				'name',
 				'company',
 				'address',
+				'email',
 			),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
@@ -110,6 +111,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$general = it_exchange_get_option( 'settings_general' );
 		$company = empty( $general['company-name'] ) ? '' : $general['company-name'];
 		$address = empty( $general['company-address'] ) ? '' : $general['company-address'];
+		$email   = empty( $general['company-email'] ) ? '' : $general['company-email'];
 
 		// Build the Value
 		$value   = array();
@@ -119,6 +121,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $company;
 		if ( in_array( 'address', $options['fields'] ) && ! empty( $address ) )
 			$value[] = nl2br( $address );
+		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
+			$value[] = $email;
 		$value = implode( $value, '<br />' );
 
 		switch( $options['format'] ) {
