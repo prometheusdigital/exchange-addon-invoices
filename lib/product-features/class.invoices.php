@@ -377,7 +377,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		$send_emails = ! empty( $_POST['it-exchange-invoices-send-emails'] );
 
 		// Update Invoice Terms
-		$terms = empty( $_POST['it-exchange-invoices-terms'] ) ? 0 : $_POST['it-exchange-invoices-terms'];
+		$terms = isset( $_POST['it-exchange-invoices-terms'] ) ? $_POST['it-exchange-invoices-terms'] : 0;
 
 		// Update Invoice Notes
 		$notes = empty( $_POST['it-exchange-invoices-notes'] ) ? '' : $_POST['it-exchange-invoices-notes'];

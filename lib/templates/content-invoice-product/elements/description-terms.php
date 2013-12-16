@@ -14,15 +14,19 @@
  * in your theme.
 */
 ?>
-<?php do_action( 'it_exchange_content_invoice_product_before_description-terms_wrap' ); ?>
-<div class="it-exchange-invoice-section it-exchange-invoice-description-terms it-exchange-clearfix">
-	<?php do_action( 'it_exchange_content_invoice_product_begin_description-terms_wrap' ); ?>
-	<div class="it-exchange-invoice-description">
-		<?php it_exchange( 'invoice', 'description' ); ?>
+<?php if ( it_exchange( 'product', 'has-description' ) || it_exchange( 'invoice', 'has-terms' ) ) : ?>
+	<?php do_action( 'it_exchange_content_invoice_product_before_description-terms_wrap' ); ?>
+	<div class="it-exchange-invoice-section it-exchange-invoice-description-terms it-exchange-clearfix">
+		<?php do_action( 'it_exchange_content_invoice_product_begin_description-terms_wrap' ); ?>
+		<div class="it-exchange-invoice-description">
+			<?php it_exchange( 'invoice', 'description' ); ?>
+		</div>
+		<?php if ( it_exchange( 'invoice', 'has-terms' ) ) : ?>
+		<div class="it-exchange-invoice-terms">
+			<?php it_exchange( 'invoice', 'terms' ); ?>
+		</div>
+		<?php endif; ?>
+		<?php do_action( 'it_exchange_content_invoice_product_end_description-terms_wrap' ); ?>
 	</div>
-	<div class="it-exchange-invoice-terms">
-		<?php it_exchange( 'invoice', 'terms' ); ?>
-	</div>
-	<?php do_action( 'it_exchange_content_invoice_product_end_description-terms_wrap' ); ?>
-</div>
-<?php do_action( 'it_exchange_content_invoice_product_after_description-terms_wrap' ); ?>
+	<?php do_action( 'it_exchange_content_invoice_product_after_description-terms_wrap' ); ?>
+<?php endif; ?>

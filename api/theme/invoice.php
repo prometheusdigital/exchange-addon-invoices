@@ -350,7 +350,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		// Return boolean if has flag was set
 		if ( $options['has']  )
-			return ! empty( $this->meta['terms'] );
+			return ! ( empty( $this->meta['terms'] ) || 'none' == $this->meta['terms'] );
 
 		// Parse options
 		$defaults      = array(
@@ -602,7 +602,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$term_time = empty( $terms[$this->meta['terms']]['seconds'] ) ? 0 : $terms[$this->meta['terms']]['seconds'];
 
 			$status = ( ( $date_unix + $term_time ) > time() ) ? 'unpaid' : 'late';
-			$status = ( 'receipt' == $this->meta['terms'] ) ? 'due-now' : $status;
+			$status = ( 'none' == $this->meta['terms'] || 'receipt' == $this->meta['terms'] ) ? 'due-now' : $status;
 		} else {
 			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
 		}

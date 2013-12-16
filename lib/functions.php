@@ -296,6 +296,11 @@ add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts
 function it_exchange_invoice_addon_get_available_terms() {
 
 	$terms = array(
+		'none'      => array(
+					'title'       => __( 'No Terms', 'LION' ),
+					'description' => false,
+					'seconds'     => false,
+					),
 		'net-7'  => array(
 					'title'       => __( 'Net 7', 'Title of invoice terms', 'LION' ),
 					'description' => __( 'Payment is due seven days after invoice', 'Description for Net 7 terms', 'LION' ),
