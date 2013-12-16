@@ -146,7 +146,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			});
 		</script>
 		<?php endif; ?>
-		<label for="it-exchange-invoice-details-field"><?php _e( 'Invoice Details', 'LION' ); ?> <span class="tip" title="">i</span></label>
+		<label for="it-exchange-invoice-details-field"><?php _e( 'Invoice Details', 'LION' ); ?></label>
 		<div class="sections-wrapper">
 			<div class="invoice-section section-customer-select <?php echo empty( $invoice_data['client'] ) ? '' : 'hide-if-js'; ?>">
 				<div class="invoice-field-container invoice-field-container-client-type">
@@ -272,7 +272,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			<div class="invoice-section section-three <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-notes">
 					<label for="it-exchange-invoices-notes" class="invoice-field-label">
-						<?php _e( 'Notes', 'LION' ); ?>
+						<?php _e( 'Notes', 'LION' ); ?> <span class="tip" title="<?php esc_attr_e( __( 'Additional notes for your client', 'LION' ) ); ?>">i</span>
 					</label>
 					<textarea <?php echo $paid_readonly; ?> id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
