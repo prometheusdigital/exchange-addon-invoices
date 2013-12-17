@@ -184,7 +184,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<input type="text" id="it-exchange-client-type-new-company" placeholder="<?php _e( 'Company Name', 'LION' ); ?>"/>
 				</div>
 				<div class="invoice-field-container invoice-field-container-client-type-new-email">
-					<input type="text" id="it-exchange-client-type-new-email" placeholder="<?php _e( 'Email Address', 'LION' ); ?>" />
+					<input type="text" id="it-exchange-client-type-new-email" placeholder="<?php esc_attr_e( __( 'Email Address', 'LION' ) ); ?> <?php esc_attr_e( __( '(Required)', 'LION' ) ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-client-type-new-custom-password">
 					<label for="it-exchange-client-type-new-use-custom-username">
