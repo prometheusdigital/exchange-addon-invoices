@@ -17,7 +17,7 @@
 <?php do_action( 'it_exchange_content_invoice_product_before_resend_wrap' ); ?>
 <div class="it-exchange-invoice-section it-exchange-invoice-resend it-exchange-clearfix">
 	<?php do_action( 'it_exchange_content_invoice_product_begin_resend_wrap' ); ?>
-	<h3><?php _e( 'Error', 'LION' ); ?></h3>
+	<h3><?php _e( 'Protected', 'LION' ); ?></h3>
 	<p>
 		<?php printf( __( 'This invoice may only be accessed using the link in your email. %sResend email%s', 'LION' ), '<a href="' . add_query_arg( 'it-exchange-invoice-resend', '1' ) . '">', '</a>' ); ?>
 	</p>
