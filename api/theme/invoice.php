@@ -229,9 +229,13 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-date-issued-block' : 'it-exchange-invoice-date-issued-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
-		$value   = empty( $this->meta['date_issued'] ) ? '' : $this->meta['date_issued'];
+		$unix    = empty( $this->meta['date_issued'] ) ? '' : $this->meta['date_issued'];
+		$value   = empty( $unix ) ? '' : date( get_option( 'date_format' ), $unix );
 
 		switch( $options['format'] ) {
+			case 'unix' :
+				return $unix;
+				break;
 			case 'label' :
 				$return = $label;
 				break;
@@ -599,13 +603,12 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		// Set status if no transaction
 		if ( empty( $transaction_id ) ) {
-			$date_issued = it_exchange( 'invoice', 'get-issued-date', array( 'format' => 'value' ) );
-			$date_unix   = strtotime( $date_issued );
+			$date_issued = it_exchange( 'invoice', 'get-issued-date', array( 'format' => 'unix' ) );
 
 			$terms = it_exchange_invoice_addon_get_available_terms();
 			$term_time = empty( $terms[$this->meta['terms']]['seconds'] ) ? 0 : $terms[$this->meta['terms']]['seconds'];
 
-			$status = ( ( $date_unix + $term_time ) > time() ) ? 'unpaid' : 'late';
+			$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
 			$status = ( 'none' == $this->meta['terms'] || 'receipt' == $this->meta['terms'] ) ? 'due-now' : $status;
 		} else {
 			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';

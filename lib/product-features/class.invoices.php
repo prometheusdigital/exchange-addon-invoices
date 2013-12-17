@@ -111,8 +111,11 @@ class IT_Exchange_Product_Feature_Invoices {
 	 * @return void
 	*/
 	function print_metabox( $post ) {
-		$screen = get_current_screen();
-		$is_new_invoice = ! empty( $screen->action ) && 'add' == $screen->action;
+		$screen             = get_current_screen();
+		$is_new_invoice     = ! empty( $screen->action ) && 'add' == $screen->action;
+
+        $date_format        = get_option( 'date_format' );
+        $jquery_date_format = it_exchange_php_date_format_to_jquery_datepicker_format( $date_format );
 
 		// Grab the iThemes Exchange Product object from the WP $post object
 		$product = it_exchange_get_product( $post );
@@ -221,7 +224,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-date-issued" class="invoice-field-label">
 						<?php _e( 'Date Issued', 'LION' ); ?>
 					</label>
-					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" value="<?php esc_attr_e( $invoice_data['date_issued'] ); ?>" />
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-date-issued" name="it-exchange-invoices-date-issued" data-jquery-date-format="<?php esc_attr_e( $jquery_date_format ); ?>" value="<?php esc_attr_e( date( $date_format, $invoice_data['date_issued'] ) ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-company">
 					<label for="it-exchange-invoices-company" class="invoice-field-label">
@@ -370,6 +373,25 @@ class IT_Exchange_Product_Feature_Invoices {
 
 		// Update Invoice Date Issued
 		$date_issued = empty ( $_POST['it-exchange-invoices-date-issued'] ) ? date( 'Y-m-d' ) : $_POST['it-exchange-invoices-date-issued'];
+
+		// Get the user's option set in WP General Settings
+		$wp_date_format = get_option( 'date_format' );
+
+		// strtotime requires formats starting with day to be separated by - and month separated by /
+		if ( 'd' == substr( $wp_date_format, 0, 1 ) )
+			$date_issued = str_replace( '/', '-', $date_issued );
+
+		// Transfer to epoch
+		if ( $epoch = strtotime( $date_issued ) ) {
+			 // Returns an array with values of each date segment
+			 $date = date_parse( $date_issued );
+
+			 // Confirms we have a legitimate date
+			 if ( checkdate( $date['month'], $date['day'], $date['year'] ) )
+				 $date_issued = $epoch;
+		} else {
+			$date_issued = time();
+		}
 
 		// Update Invoice Company
 		$company = empty( $_POST['it-exchange-invoices-company'] ) ? '' : $_POST['it-exchange-invoices-company'];
