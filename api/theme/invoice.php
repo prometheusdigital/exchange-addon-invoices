@@ -266,7 +266,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		// Return boolean if has flag was set
 		if ( $options['has']  )
-			return ! empty( $this->meta['date_paid'] );
+			return (bool) it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
 
 		// Parse options
 		$defaults      = array(
@@ -278,7 +278,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-date-paid-block' : 'it-exchange-invoice-date-paid-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
-		$value   = empty( $this->meta['date_paid'] ) ? '' : $this->meta['date_paid'];
+		$value   = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
+		$value   = empty( $value ) ? false : it_exchange_get_transaction_date( $value );
 
 		switch( $options['format'] ) {
 			case 'label' :
