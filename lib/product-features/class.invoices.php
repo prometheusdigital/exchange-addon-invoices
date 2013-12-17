@@ -141,6 +141,13 @@ class IT_Exchange_Product_Feature_Invoices {
 		$invoice_data  = ITUtility::merge_defaults( $invoice_data, $defaults );
 		$client_info   = it_exchange_get_customer( $invoice_data['client'] );
 		$paid_readonly = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) ? 'disabled="disabled"' : false;
+		if ( empty( $invoice_data['hash'] ) ) {
+			?>
+			<style type="text/css">
+				a#post-preview{display:none;}
+			</style>
+			<?php
+		}
 		if ( ! empty( $paid_readonly ) ) :
 		?>
 		<script type="text/javascript">

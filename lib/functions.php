@@ -147,7 +147,7 @@ add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_
 function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) {
 
 	// Return if not an invoice product type
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) ) || 'invoices-product-type' != it_exchange_get_product_type() )
 		return $template_paths;
 
 	// If content-invoice-product.php is in template_names, add our template path and return
@@ -174,7 +174,7 @@ add_filter( 'it_exchange_possible_template_paths', 'it_exchange_invoices_add_tem
  *
 */
 function it_exchange_invoices_hijack_product_template( $template_names, $load, $require_once, $template_part ) {
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() || ! $template_part )
+	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) ) || 'invoices-product-type' != it_exchange_get_product_type() || ! $template_part )
 		return $template_names;
 
 	foreach( (array) $template_names as $key => $name ) {
