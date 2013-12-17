@@ -447,8 +447,10 @@ class IT_Exchange_Product_Feature_Invoices {
 
 
 		// Send email to client if checked.
-		if ( ! empty( $send_emails ) )
+		if ( ! empty( $send_emails ) ) {
 			it_exchange_invoice_addon_send_invoice( $product_id );
+			remove_action( 'it_exchange_save_product', array( $this, 'save_feature_on_product_save' ) );
+		}
 	}
 
 	/**
