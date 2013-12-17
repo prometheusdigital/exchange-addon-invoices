@@ -761,30 +761,6 @@ function it_exchange_invoice_addon_filter_preview_view_product_button_labels( $l
 add_filter( 'it_exchange_preview_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
 add_filter( 'it_exchange_view_product_button_label', 'it_exchange_invoice_addon_filter_preview_view_product_button_labels', 10, 2 );
 
-/**
- * Modify the View and Preview product button URLs for invoices
- *
- * @since 1.0.0
- *
- * @param string $url  incoming from WP filter
- * @param object $post incoming WP post from WP filter
- * @return string
-*/
-function it_exchange_invoice_addon_filter_preview_view_product_button_urls( $url, $post ) {
-
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $post ) )
-		return $url;
-
-	$invoice_meta = it_exchange_get_product_feature( $post->ID, 'invoices' );
-	$client_hash  = empty( $invoice_meta['hash'] ) ? '': $invoice_meta['hash'];
-
-	$url = add_query_arg( 'client', $client_hash, $url );
-
-	return $url;
-}
-add_filter( 'it_exchange_preview_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
-add_filter( 'it_exchange_view_product_button_link', 'it_exchange_invoice_addon_filter_preview_view_product_button_urls', 10, 2 );
-
 function it_exchange_invoice_addon_prevent_editing_paid_invoice() {
 	$action       = empty( $_POST['action'] ) ? false : $_POST['action'];
 	$post_type    = empty( $_POST['post_type'] ) ? false : $_POST['post_type'];
@@ -844,3 +820,27 @@ function it_exchange_invoice_addon_remove_product_features_from_invoices() {
 	it_exchange_remove_feature_support_for_product_type( 'inventory', 'invoices-product-type' );
 }
 add_action( 'init', 'it_exchange_invoice_addon_remove_product_features_from_invoices' );
+
+/**
+ * Updates the Get Permalink for invoice to attach the client query arg
+ *
+ * @since 1.0.0
+ *
+ * @param string  $link link
+ * @param id      $post post object
+ * @return string link
+*/
+function it_exchange_invoice_addon_modify_invoice_permalink( $link, $post ) {
+	if ( ! is_admin() || ! current_user_can( 'edit_others_posts' ) || 'invoices-product-type' != it_exchange_get_product_type( $post ) )
+		return $link;
+
+	if ( ! $data = it_exchange_get_product_feature( $post->ID, 'invoices' ) )
+		return $link;
+
+	if ( empty( $data['hash'] ) )
+		return $link;
+
+	return add_query_arg( 'client', $data['hash'], $link );
+
+}
+add_filter( 'post_type_link', 'it_exchange_invoice_addon_modify_invoice_permalink', 10, 2 );
