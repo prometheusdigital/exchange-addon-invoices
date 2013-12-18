@@ -844,3 +844,29 @@ function it_exchange_invoice_addon_modify_invoice_permalink( $link, $post ) {
 
 }
 add_filter( 'post_type_link', 'it_exchange_invoice_addon_modify_invoice_permalink', 10, 2 );
+
+/**
+ * Hide non-product super widget
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_invoice_addon_hide_sidebar_superwidget() {
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type( false ) )
+		return;
+
+	?>
+	<script type="text/javascript">
+		if ( window.jQuery ) {
+			jQuery(function() {
+				if ( jQuery('.it-exchange-invoice-sw .it-exchange-super-widget').length ) {
+					jQuery('.it-exchange-product-sw').show();
+					jQuery('.it-exchange-super-widget:not(.it-exchange-invoice-sw .it-exchange-super-widget)').hide();
+				}
+			});
+		}
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'it_exchange_invoice_addon_hide_sidebar_superwidget' );
