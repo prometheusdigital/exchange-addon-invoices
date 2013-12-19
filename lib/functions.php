@@ -856,11 +856,13 @@ function it_exchange_invoice_addon_hide_sidebar_superwidget() {
 	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type( false ) )
 		return;
 
+	$valid_hash = it_exchange_invoice_addon_is_hash_valid_for_invoice();
 	?>
 	<script type="text/javascript">
+		var itExchangeInvoiceNotProtected = <?php echo empty( $valid_hash ) ? 'true' : 'false'; ?>;
 		if ( window.jQuery ) {
 			jQuery(function() {
-				if ( jQuery('.it-exchange-invoice-sw .it-exchange-super-widget').length ) {
+				if ( jQuery('.it-exchange-invoice-sw .it-exchange-super-widget').length || itExchangeInvoiceNotProtected ) {
 					jQuery('.it-exchange-product-sw').show();
 					jQuery('.it-exchange-super-widget:not(.it-exchange-invoice-sw .it-exchange-super-widget)').hide();
 				}
