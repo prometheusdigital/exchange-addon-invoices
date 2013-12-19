@@ -47,7 +47,7 @@ add_action( 'it_exchange_register_addons', 'it_exchange_register_invoices_addon'
  * Loads the translation data for WordPress
  *
  * @uses load_plugin_textdomain()
- * @since 1.0.3
+ * @since 1.0.0
  * @return void
 */
 function it_exchange_invoices_set_textdomain() {
