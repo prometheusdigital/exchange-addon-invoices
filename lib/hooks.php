@@ -589,7 +589,7 @@ function it_exchange_invoice_addon_prevent_editing_paid_invoice() {
 }
 add_action( 'admin_init', 'it_exchange_invoice_addon_prevent_editing_paid_invoice' );
 
-/** 
+/**
  * Add invoice details to the Payment Details screen
  *
  * @since 1.0.0
@@ -690,3 +690,49 @@ function it_exchange_invoice_addon_hide_sidebar_superwidget() {
 	<?php
 }
 add_action( 'wp_footer', 'it_exchange_invoice_addon_hide_sidebar_superwidget' );
+
+/**
+ * Filter purchase count for all products view for invoices
+ *
+ * @since 1.0.2
+ *
+ * @param string $column the column we're in
+ * @return string
+*/
+function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
+	global $post;
+	if ( 'invoices-product-type' != it_exchange_get_product_type( $post->ID ) )
+		return $existing;
+
+	if ( 'it_exchange_product_purchases' == $existing ) {
+		// Get transaction ID
+		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $post->ID );
+
+		// Set status if no transaction
+		if ( empty( $transaction_id ) ) {
+			$meta        = it_exchange_get_product_feature( $post->ID, 'invoices' );
+			$date_issued = empty( $meta['date_issued'] ) ? time() : $meta['date_issued'];
+
+			$terms = it_exchange_invoice_addon_get_available_terms();
+			$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
+
+			$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
+			$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
+		} else {
+			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
+		}
+
+		$labels = array(
+			'unpaid'  => __( 'Unpaid', 'LION' ),
+			'paid'    => __( 'Paid', 'LION' ),
+			'pending' => __( 'Pending', 'LION' ),
+			'late'    => __( 'Late', 'LION' ),
+			'due-now' => __( 'Due Now', 'LION' ),
+		);
+
+		$value   = empty( $labels[$status] ) ? false : $labels[$status];
+		if ( $value )
+		echo '<span class="it-exchange-invoice-addon-status"> - ' . $value . '</span>';
+	}
+}
+add_action( 'manage_it_exchange_prod_posts_custom_column', 'it_exchange_invoices_addon_filter_product_purchase_count', 11 );
