@@ -1,0 +1,6 @@
+1.0.2 - 2013.12-19 - Glenn Ansley
+	Print invoice status in All Products screen
+1.0.1 - 2013-12-19 - Packaging Bot
+	Updating git submodules
+1.0.0 - 2013-12-19 - Glenn Ansley
+	Initial Release
