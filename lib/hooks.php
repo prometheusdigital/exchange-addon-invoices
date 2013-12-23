@@ -736,3 +736,27 @@ function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
 	}
 }
 add_action( 'manage_it_exchange_prod_posts_custom_column', 'it_exchange_invoices_addon_filter_product_purchase_count', 11 );
+
+/**
+ * Alter the Transaction Order Number to display the Invoice Numeber
+ *
+ * @since CHANGEME
+ *
+ * @param  string $order_number the incoming order number from Exchange
+ * @param  object $transaction the transaction object
+ * @param  string $prefix the order number prefix
+ * @return string
+*/
+function it_exchange_invoices_addon_filter_order_number( $order_number, $transaction, $prefix='' ) {
+	$transaction_products = it_exchange_get_transaction_products( $transaction );
+	if ( ! is_array( $transaction_products ) || count( $transaction_products ) > 1 )
+		return $order_number;
+
+	$product = reset( $transaction_products );
+	if ( empty( $product['product_id'] ) || 'invoices-product-type' != it_exchange_get_product_type( $product['product_id'] ) )
+		return $order_number;
+
+	$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
+	return empty( $meta['number'] ) ? $order_number : $prefix . $meta['number'];
+}
+add_filter( 'it_exchange_get_transaction_order_number', 'it_exchange_invoices_addon_filter_order_number', 10, 3 );
