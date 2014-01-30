@@ -2,6 +2,7 @@
 #it-exchange-product-invoices input{font-size:16px;}
 #it-exchange-product-invoices .sections-wrapper{background:#FFF;border:1px solid #DFDFDF;}
 #it-exchange-product-invoices .invoice-section{padding:20px;}
+#it_exchange_normal-sortables input.it-exchange-client-type{width:16px;}
 #it-exchange-product-invoices .section-one,
 #it-exchange-product-invoices .section-customer-select,
 #it-exchange-product-invoices .section-two,
@@ -33,8 +34,3 @@
 
 /** Hidden at first and then revealed by JS after its moved to prevent flickering */
 #it-exchange-product-description{display:none;}
-
-@media screen and (max-width: 900px ) {
-#it-exchange-product-invoices .section-customer-new .invoice-field-container-left,
-#it-exchange-product-invoices .section-customer-new .invoice-field-container-right{float:none;width:100%;}
-}
