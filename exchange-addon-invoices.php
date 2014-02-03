@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: iThemes Exchange - Invoices Add-on
- * Version: 1.0.2
+ * Version: 1.0.3
  * Description: Allows you to invoice clients for services.
  * Plugin URI: http://ithemes.com/exchange/invoices/
  * Author: iThemes
