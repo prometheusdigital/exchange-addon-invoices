@@ -745,7 +745,7 @@ add_action( 'manage_it_exchange_prod_posts_custom_column', 'it_exchange_invoices
 /**
  * Alter the Transaction Order Number to display the Invoice Numeber
  *
- * @since CHANGEME
+ * @since 1.0.4
  *
  * @param  string $order_number the incoming order number from Exchange
  * @param  object $transaction the transaction object

@@ -1,8 +1,12 @@
+1.0.4 - 2014-02-05 - Glenn Ansley
+	Add offline transaction method to frontend invoice after paid with offline transaction method.
+	Replace 'Order Number' with Invoice Number in All Payments view for admin
+	Print payment status as 'Pending' when in draft mode for invoices
+1.0.3 - 2014-02-03 - Packaging Bot (lib/updater)
+	Bug Fix: Licensing on SSL-enabled sites now works properly.
 1.0.2 - 2013.12-19 - Glenn Ansley
 	Print invoice status in All Products screen
 1.0.1 - 2013-12-19 - Packaging Bot
 	Updating git submodules
 1.0.0 - 2013-12-19 - Glenn Ansley
 	Initial Release
-1.0.3 - 2014-02-03 - Packaging Bot (lib/updater)
-	Bug Fix: Licensing on SSL-enabled sites now works properly.
