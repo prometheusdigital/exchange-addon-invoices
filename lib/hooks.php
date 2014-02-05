@@ -713,11 +713,16 @@ function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
 			$meta        = it_exchange_get_product_feature( $post->ID, 'invoices' );
 			$date_issued = empty( $meta['date_issued'] ) ? time() : $meta['date_issued'];
 
-			$terms = it_exchange_invoice_addon_get_available_terms();
-			$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
+			if ( empty( $meta['terms'] ) ) {
+				// This is for drafts
+				$status = 'unpaid';
+			} else {
+				$terms = it_exchange_invoice_addon_get_available_terms();
+				$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
 
-			$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
-			$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
+				$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
+				$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
+			}
 		} else {
 			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
 		}
@@ -760,3 +765,27 @@ function it_exchange_invoices_addon_filter_order_number( $order_number, $transac
 	return empty( $meta['number'] ) ? $order_number : $prefix . $meta['number'];
 }
 add_filter( 'it_exchange_get_transaction_order_number', 'it_exchange_invoices_addon_filter_order_number', 10, 3 );
+
+/**
+ * If this was an offline payment, and it has been paid, print the message
+ *
+ * @since 1.0.4
+ *
+ * @return void
+*/
+function it_exchange_invoices_addon_print_offline_transaction_method_message() {
+	if ( ! $product = it_exchange_get_product( false ) )
+		return;
+
+	if ( empty( $product->ID ) || empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+		return;
+
+	if ( ! $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) )
+		return;
+
+	if ( ! 'offline-payments' == it_exchange_get_transaction_method( $transaction_id ) || ! it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) )
+		return;
+
+	echo '<p class="it-exchange-invoice-offline-payments-transaction-instructions">' . it_exchange_get_transaction_instructions( $transaction_id ) . '</p>';
+}
+add_action( 'it_exchange_content_invoice_product_end_payment_wrap', 'it_exchange_invoices_addon_print_offline_transaction_method_message' );

@@ -12,6 +12,7 @@
 .it-exchange-invoice-payment-status-block{margin-top:.3em;padding:.3em 0;border:3px solid #f65555;font-size:3em;color:#f65555;text-align:center;text-transform:uppercase;}
 .it-exchange-invoice-payment-status-block-paid{border-color:#42d164;color:#42d164;}
 .it-exchange-invoice-payment-status-block-pending{border-color:#f6bb55;color:#f6bb55;}
+.it-exchange-invoice-offline-payments-transaction-instructions { margin-top: 20px; }
 .it-exchange-invoice-resend{border-width:1px;padding-top:1em;}
 .it-exchange-invoice-description-block{margin-bottom:10px;}
 .it-exchange-super-widget .cart-items-wrapper,
