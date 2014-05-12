@@ -789,3 +789,31 @@ function it_exchange_invoices_addon_print_offline_transaction_method_message() {
 	echo '<p class="it-exchange-invoice-offline-payments-transaction-instructions">' . it_exchange_get_transaction_instructions( $transaction_id ) . '</p>';
 }
 add_action( 'it_exchange_content_invoice_product_end_payment_wrap', 'it_exchange_invoices_addon_print_offline_transaction_method_message' );
+
+/**
+ * Filter the login/logout links to reflect the ability to log in
+ *
+ * Invoices tell WP that the user is logged in for a specific page view even though they aren't actually logged in (no cookie is set)
+ * This means we have to manually flip the login/out link back to login because WP thinks the user is logged in.
+ *
+ * @since 1.0.5
+ *
+ * @param array $items
+ * @return array
+*/
+function it_exchange_invoices_filter_loginout_nav_link( $items ) {
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+		return $items;
+
+    if ( is_user_logged_in() ) { 
+        foreach ( $items as $item ) { 
+            if ( $item->url == it_exchange_get_page_url( 'logout' ) || $item->url == it_exchange_get_page_url( 'login' ) ) { 
+
+                $item->url = it_exchange_get_page_url( 'login' );
+                $item->title = it_exchange_get_page_name( 'login' );
+            }   
+        }   
+    } 
+	return $items;
+}
+add_filter( 'it_exchange_wp_get_nav_menu_items_filter', 'it_exchange_invoices_filter_loginout_nav_link' );
