@@ -283,7 +283,7 @@ function it_exchange_invoice_addon_load_public_scripts() {
 		wp_enqueue_style( 'it-exchange-addon-product-public-css', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices.css' ) );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts' );
+add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts', 9 );
 
 /**
  * Logs the User in for invoice and transaction
