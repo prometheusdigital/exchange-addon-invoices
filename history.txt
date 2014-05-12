@@ -1,3 +1,6 @@
+1.0.5 - 2014-05-12 - Glenn Ansley, Ty Carlson
+	Revert Log Out nav links to Log In on invoice pages
+	Responsive tweaks for invoice admin
 1.0.4 - 2014-02-05 - Glenn Ansley
 	Add offline transaction method to frontend invoice after paid with offline transaction method.
 	Replace 'Order Number' with Invoice Number in All Payments view for admin
