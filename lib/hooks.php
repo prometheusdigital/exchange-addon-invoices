@@ -293,6 +293,9 @@ add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts
  * @return void
 */
 function it_exchange_invoice_addon_login_client() {
+	// If user is already logged in, we don't need to do anything
+	if ( is_user_logged_in() )
+		return;
 
 	// Abandon if not on invoice page, if not doing transaction, or if hash is not correct for product
 	if ( ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) && ! it_exchange_is_page( 'transaction' ) )
@@ -325,6 +328,7 @@ function it_exchange_invoice_addon_login_client() {
 		return;
 
 	// Log client in
+	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
 
 	// Remove taxes
@@ -365,6 +369,7 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 		return;
 
 	// Log client in
+	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
@@ -678,9 +683,10 @@ function it_exchange_invoice_addon_hide_sidebar_superwidget() {
 	?>
 	<script type="text/javascript">
 		var itExchangeInvoiceNotProtected = <?php echo empty( $valid_hash ) ? 'true' : 'false'; ?>;
+		var itExchangeInvoicePaidFor      = <?php echo ( false == it_exchange_invoice_addon_get_invoice_transaction_id( $GLOBALS['post']->ID ) ) ? 'false' : 'true'; ?>;
 		if ( window.jQuery ) {
 			jQuery(function() {
-				if ( jQuery('.it-exchange-invoice-sw .it-exchange-super-widget').length || itExchangeInvoiceNotProtected ) {
+				if ( jQuery('.it-exchange-invoice-sw .it-exchange-super-widget').length || itExchangeInvoiceNotProtected || itExchangeInvoicePaidFor ) {
 					jQuery('.it-exchange-product-sw').show();
 					jQuery('.it-exchange-super-widget:not(.it-exchange-invoice-sw .it-exchange-super-widget)').hide();
 				}
@@ -802,15 +808,15 @@ add_action( 'it_exchange_content_invoice_product_end_payment_wrap', 'it_exchange
  * @return array
 */
 function it_exchange_invoices_filter_loginout_nav_link( $items ) {
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() || empty( $GLOBALS['it_exchange']['invoice_temp_user'] ) )
 		return $items;
 
     if ( is_user_logged_in() ) { 
         foreach ( $items as $item ) { 
             if ( $item->url == it_exchange_get_page_url( 'logout' ) || $item->url == it_exchange_get_page_url( 'login' ) ) { 
 
-                $item->url = it_exchange_get_page_url( 'login' );
-                $item->title = it_exchange_get_page_name( 'login' );
+				$item->url = it_exchange_get_page_url( 'login' );
+				$item->title = it_exchange_get_page_name( 'login' );
             }   
         }   
     } 
