@@ -9,7 +9,7 @@
 .it-exchange-invoice-to-from .it-exchange-right{width:50%;}
 .it-exchange-invoice-header .it-exchange-right{text-align:right;}
 .it-exchange-invoice-payment-amount .value{font-size:2.5em;}
-.it-exchange-invoice-payment-status-block{margin-top:.3em;padding:.3em 0;border:3px solid #f65555;font-size:3em;color:#f65555;text-align:center;text-transform:uppercase;}
+.it-exchange-invoice-payment-status-block{margin-top:.3em;padding:.3em 0;border:2px solid #F65555;font-size:1.5em;color:#F65555;text-align:center;border-radius: 3px;}
 .it-exchange-invoice-payment-status-block-paid{border-color:#42d164;color:#42d164;}
 .it-exchange-invoice-payment-status-block-pending{border-color:#f6bb55;color:#f6bb55;}
 .it-exchange-invoice-offline-payments-transaction-instructions { margin-top: 20px; }
