@@ -19,7 +19,7 @@
 	<?php do_action( 'it_exchange_content_invoice_product_begin_resend_wrap' ); ?>
 	<h3><?php _e( 'Protected', 'LION' ); ?></h3>
 	<p>
-		<?php printf( __( 'This invoice may only be accessed using the link in your email. %sResend email%s', 'LION' ), '<a href="' . add_query_arg( 'it-exchange-invoice-resend', '1' ) . '">', '</a>' ); ?>
+		<?php printf( __( 'This invoice may only be accessed using the link in your email. %sResend email%s', 'LION' ), '<a rel="nofolow" href="' . add_query_arg( 'it-exchange-invoice-resend', '1' ) . '">', '</a>' ); ?>
 	</p>
 	<?php do_action( 'it_exchange_content_invoice_product_end_resend_wrap' ); ?>
 </div>
