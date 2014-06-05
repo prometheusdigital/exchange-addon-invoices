@@ -1,3 +1,11 @@
+1.0.8 - 2014-06-05 - Glenn Anlsey, Elise Alley
+	Don't show paid invoices in Manual Purchaces admin UI.
+	Add client and date issued to product title in Maunal Purchases admin UI
+	Don't show link to resend email if invoice has been paid.
+	Don't show link to email if filter for 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link' returns false.
+	Don't send email in the event that someone guessed the query arg to fire it even when link wasn't available if either of the above two conditions are true
+	Add nofollow to resend email link
+	Update invoice due/paid/pending notice style
 1.0.7 - 2014-05-14 - Glenn Ansley, Elise Alley
 	Fixed bug showing login link on invoice when users are really logged in.
 	Fixed bug that prevents the sidebar widget from being hidden after invoice is paid for.
