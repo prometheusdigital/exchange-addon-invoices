@@ -511,8 +511,13 @@ function it_exchange_invoice_addon_remove_unsued_template_parts( $parts ) {
 			unset( $parts[$i] );
 	}
 
+	// Should we provide the template with the resend link or without the resend link?
 	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) {
-		$parts = array( 'resend-link' );
+		// Hash is invalid. Don't show the invoice details. Replace with note.
+		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
+		$part  = empty( $transaction_id ) ? 'resend-link' : 'invalid-link';
+		$part  = ( apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) && 'resend-link' == $part ) ? 'resend-link' : 'invalid-link';
+		$parts = array( $part );
 	}
 
 	return $parts;
@@ -532,6 +537,11 @@ function it_exchange_invoice_addon_resend_email_on_request() {
 
 	$product = it_exchange_get_product( false );
 	if ( empty( $product->ID ) )
+		return;
+
+	// Don't send if it has been paid alrady or if the resend link was turned off by a filter
+	$has_transaction = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
+	if ( ! empty( $has_transaction ) || false === apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) )
 		return;
 
 	it_exchange_invoice_addon_send_invoice( $product->ID );

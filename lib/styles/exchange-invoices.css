@@ -13,7 +13,7 @@
 .it-exchange-invoice-payment-status-block-paid{border-color:#42d164;color:#42d164;}
 .it-exchange-invoice-payment-status-block-pending{border-color:#f6bb55;color:#f6bb55;}
 .it-exchange-invoice-offline-payments-transaction-instructions { margin-top: 20px; }
-.it-exchange-invoice-resend{border-width:1px;padding-top:1em;}
+.it-exchange-invoice-resend, .it-exchange-invoice-invalid{border-width:1px;padding-top:1em;}
 .it-exchange-invoice-description-block{margin-bottom:10px;}
 .it-exchange-super-widget .cart-items-wrapper,
 .it-exchange-super-widget .cart-actions-wrapper{display:none;}
