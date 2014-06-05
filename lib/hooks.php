@@ -833,3 +833,50 @@ function it_exchange_invoices_filter_loginout_nav_link( $items ) {
 	return $items;
 }
 add_filter( 'it_exchange_wp_get_nav_menu_items_filter', 'it_exchange_invoices_filter_loginout_nav_link' );
+
+/**
+ * Filter an invoice out of the Manual Purchases list of products to choose from
+ *
+ * Only do this if the invoice was already paid for
+ *
+ * @since 1.0.8
+ *
+ * @param boolean $show_product passed through by WP filter
+ * @param object  $product      the it_exchange_product object
+ * @return boolean
+*/
+function it_exchange_invoices_maybe_remove_product_from_manual_purchases_list( $show_product, $product ) {
+	if ( empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+		return $show_product;
+
+	$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
+
+	// Return false if already paid for, otherwise return default
+	return it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? false : $show_product;
+}
+add_filter( 'it_exchange_manual_purchases_addon_include_product_in_select', 'it_exchange_invoices_maybe_remove_product_from_manual_purchases_list', 10, 2 );
+
+/**
+ * Filter an invoice title on the Manual Purchases list of products to choose from
+ *
+ * Add the client name
+ *
+ * @since 1.0.8
+ *
+ * @param string  $title   passed through by WP filter
+ * @param object  $product the it_exchange_product object
+ * @return string
+*/
+function it_exchange_invoices_maybe_filter_product_title_in_manual_purchases_list( $title, $product ) {
+	if ( empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+		return $title;
+
+	$meta         = it_exchange_get_product_feature( $product->ID, 'invoices' );
+	$date_issued  = empty( $meta['date_issued'] ) ? '' : $meta['date_issued'];
+	$client_id    = empty( $meta['client'] ) ? 0 : absint( $meta['client'] );
+	$user         = get_userdata( $client_id );
+	$display_name = empty( $user->display_name ) ? false : ucwords( $user->display_name );
+
+	return empty( $display_name ) ? $title : sprintf( _x( '%s. %sBilled to %s on %s%s', '[invoice title] for [customer]', 'LION' ), $title, '<br /><span class="invoice-details">', $display_name, date( get_option( 'date_format' ), $date_issued ), '</span>' );
+}
+add_filter( 'it_exchange_manual_purchases_addon_selected_product_title', 'it_exchange_invoices_maybe_filter_product_title_in_manual_purchases_list', 10, 2 );
