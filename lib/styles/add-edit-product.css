@@ -23,6 +23,7 @@
 #it-exchange-product-invoices .section-customer-new{max-width:600px;}
 #it-exchange-product-invoices .section-customer-new #it-exchange-invoices-new-client-error{margin-bottom:1em;}
 #it-exchange-product-invoices .section-customer-new input[type="text"]{margin-bottom:1em;}
+#it-exchange-product-invoices .section-customer-new textarea {margin-bottom:1em;}
 #it-exchange-product-invoices .section-customer-new input[type="password"]{margin-bottom:.5em;}
 #it-exchange-product-invoices .invoice-field-container-client-type-new-custom-password{max-width:280px;}
 

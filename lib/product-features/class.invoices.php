@@ -130,6 +130,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			'company'      => '',
 			'number'       => '',
 			'emails'       => '',
+			'address'      => '',
 			'po'           => '',
 			'send_emails'  => 0,
 			'terms'        => 0,
@@ -186,7 +187,13 @@ class IT_Exchange_Product_Feature_Invoices {
 				<div class="invoice-field-container invoice-field-container-client-type-new-email">
 					<input type="text" id="it-exchange-client-type-new-email" placeholder="<?php esc_attr_e( __( 'Email Address', 'LION' ) ); ?> <?php esc_attr_e( __( '(Required)', 'LION' ) ); ?>" />
 				</div>
-				<div class="invoice-field-container invoice-field-container-client-type-new-custom-password">
+				<div class="invoice-field-container invoice-field-container-client-type-new-use-client-address">
+					<label for="it-exchange-client-type-new-use-client-address">
+						<input type="checkbox" id="it-exchange-client-type-new-use-client-address" />&nbsp;<?php _e( 'Include client\'s address', 'LION' ); ?>
+					</label>
+					<textarea id="it-exchange-client-type-new-client-address" class="hide-if-js" placeholder="123 Client Ave..." ></textarea>
+				</div>
+				<div class="invoice-field-container invoice-field-container-client-type-new-custom-username">
 					<label for="it-exchange-client-type-new-use-custom-username">
 						<input type="checkbox" id="it-exchange-client-type-new-use-custom-username" />&nbsp;<?php _e( 'Select custom username', 'LION' ); ?>
 					</label>
@@ -250,6 +257,12 @@ class IT_Exchange_Product_Feature_Invoices {
 						<?php _e( 'Client Email Address', 'LION' ); ?>
 					</label>
 					<input readonly="readonly" type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" value="<?php esc_attr_e( $invoice_data['emails'] ); ?>" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-address">
+					<label for="it-exchange-invoices-client-address" class="invoice-field-label">
+						<?php _e( 'Client Address', 'LION' ); ?>
+					</label>
+					<textarea <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-client-address" name="it-exchange-invoices-client-address"><?php echo esc_html( $invoice_data['address'] ); ?></textarea>
 				</div>
 				<div class="invoice-field-container invoice-field-container-right invoice-field-container-po">
 					<label for="it-exchange-invoices-po" class="invoice-field-label">
@@ -403,6 +416,9 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Invoice Company
 		$company = empty( $_POST['it-exchange-invoices-company'] ) ? '' : $_POST['it-exchange-invoices-company'];
 
+		// Update Invoice Client Address
+		$address = ! isset( $_POST['it-exchange-invoices-client-address'] ) ? '' : $_POST['it-exchange-invoices-client-address'];
+
 		// Update Invoice Number
 		$number = empty( $_POST['it-exchange-invoices-number'] ) ? '' : $_POST['it-exchange-invoices-number'];
 
@@ -434,7 +450,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		$existing_settings = it_exchange_get_product_feature( $product_id, 'invoices', true );
 		$hash = empty( $existing_settings['hash'] ) ? it_exchange_create_unique_hash() : $existing_settings['hash'];
 
-		$data = compact( 'client', 'date_issued', 'company', 'number', 'emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
+		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
@@ -442,6 +458,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Client meta data
 		$client_meta =  get_user_meta( $data['client'], 'it-exchange-invoicing-meta', true );
 		$client_meta['company'] = $data['company'];
+		$client_meta['address'] = $data['address'];
 		$client_meta['terms']   = $data['terms'];
 		update_user_meta( $data['client'], 'it-exchange-invoicing-meta', $client_meta );
 

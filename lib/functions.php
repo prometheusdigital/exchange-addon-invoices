@@ -149,6 +149,7 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 	$client_name       = empty( $client->data->display_name ) ? '' : $client->data->display_name;
 	$client_company    = empty( $meta['company'] ) ? '' : $meta['company'];
 	$client_email      = empty( $client->data->user_email ) ? false : $client->data->user_email;
+	$client_address    = empty( $meta['address'] ) ? '' : $meta['address'];
 	$from_company      = empty( $exchange_settings['company-name'] ) ? get_bloginfo( 'name' ) : $exchange_settings['company-name'];
 	$from_email        = empty( $exchange_settings['company-email'] ) ? get_bloginfo( 'admin_email' ) : $exchange_settings['company-email'];
 	$from_address      = empty( $exchange_settings['company-address'] ) ? '' : $exchange_settings['company-address'];
@@ -167,6 +168,9 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 			break;
 		case 'client-company' :
 			return $client_company;
+			break;
+		case 'client-address' :
+			return $client_address;
 			break;
 		case 'client-email' :
 			return $client_email;

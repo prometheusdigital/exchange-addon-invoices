@@ -75,6 +75,7 @@ function it_exchange_invoicing_ajax_get_client_data() {
 		'clientDisplayName' => '',
 		'clientEmail'       => '',
 		'clientCompany'     => '',
+		'clientAddress'     => '',
 		'clientTerms'       => $default_term,
 	);
 
@@ -91,6 +92,7 @@ function it_exchange_invoicing_ajax_get_client_data() {
 	$meta = get_user_meta( $data->clientID, 'it-exchange-invoicing-meta', true );
 
 	$data->clientCompany = empty( $meta['company'] ) ? $defaults['clientCompany'] : $meta['company'];
+	$data->clientAddress = empty( $meta['address'] ) ? $defaults['clientAddress'] : $meta['address'];
 	$data->clientTerms   = empty( $meta['terms'] ) ? $defaults['clientTerms'] : $meta['terms'];
 
 	echo json_encode( $data );
@@ -127,7 +129,8 @@ function it_exchange_invoices_ajax_create_client() {
 		$return->id = $user_id;
 
 		$company = empty( $_POST['company'] ) ? '' : $_POST['company'];
-		update_user_meta( $user_id, 'it-exchange-invoicing-meta', array( 'company' => $company ) );
+		$address = empty( $_POST['client_address'] ) ? '' : $_POST['client_address'];
+		update_user_meta( $user_id, 'it-exchange-invoicing-meta', array( 'company' => $company, 'address' => $address ) );
 	}
 	echo json_encode( $return );
 	die();

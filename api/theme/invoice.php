@@ -167,6 +167,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				'name',
 				'company',
 				'email',
+				'address',
 			),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
@@ -184,6 +185,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $this->meta['company'];
 		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
 			$value[] = $email;
+		if ( in_array( 'address', $options['fields'] ) && ! empty( $this->meta['address'] ) )
+			$value[] = nl2br( $this->meta['address'] );
 		$value = implode( $value, '<br />' );
 
 		switch( $options['format'] ) {
