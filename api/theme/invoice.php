@@ -26,6 +26,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	 * @since 1.0.0
 	*/
 	var $_tag_map = array(
+		'print'         => 'print_link',
 		'to'            => 'to',
 		'from'          => 'from',
 		'issueddate'    => 'issued_date',
@@ -69,6 +70,24 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	*/
 	function get_api_context() {
 		return $this->_context;
+	}
+
+	/**
+	 * Returns the print button
+	 *
+	 * @since CHANGEME
+	 * @return string
+	*/
+	function print_link( $options=array() ) {
+		$defaults = array(
+			'label'  => __( 'Print Invoice', 'LION' ),
+			'before' => '<a class="it-exchange-print-invoice-link" href="#">',
+			'after' => '</a>',
+		);
+
+		$options = wp_parse_args( $options, $defaults );
+
+		return $options['before'] . $options['label'] . $options['after'];
 	}
 
 	/**

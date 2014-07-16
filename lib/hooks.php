@@ -284,6 +284,8 @@ function it_exchange_invoice_addon_load_public_scripts() {
 	// Frontend Product CSS
 	if ( is_singular( 'it_exchange_prod' ) && it_exchange_get_product_type() == 'invoices-product-type' ) {
 		wp_enqueue_style( 'it-exchange-addon-product-public-css', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices.css' ) );
+		wp_enqueue_style( 'it-exchange-addon-product-public-print', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices-print.css' ), array(), false, 'print' );
+		wp_enqueue_script( 'it-exchange-addon-product-public-js', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/js/exchange-invoices.js' ), array('jquery') );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts', 9 );

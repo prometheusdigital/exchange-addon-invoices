@@ -19,7 +19,7 @@
 	<?php it_exchange_get_template_part( 'messages' ); ?>
 	<?php do_action( 'it_exchange_content_invoice_product_begin_wrap' ); ?>
 	<?php
-	$template_parts = array( 'header', 'to-from', 'description-terms', 'notes', 'payment' );
+	$template_parts = array( 'print', 'header', 'to-from', 'description-terms', 'notes', 'payment' );
 	foreach( it_exchange_get_template_part_elements( 'content_invoice_product', 'main', $template_parts ) as $part ) :
 		it_exchange_get_template_part( 'content', 'invoice-product/elements/' . $part );
 	endforeach;
