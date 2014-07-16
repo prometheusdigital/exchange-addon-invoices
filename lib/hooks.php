@@ -824,15 +824,15 @@ function it_exchange_invoices_filter_loginout_nav_link( $items ) {
 	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() || empty( $GLOBALS['it_exchange']['invoice_temp_user'] ) )
 		return $items;
 
-    if ( is_user_logged_in() ) { 
-        foreach ( $items as $item ) { 
-            if ( $item->url == it_exchange_get_page_url( 'logout' ) || $item->url == it_exchange_get_page_url( 'login' ) ) { 
+    if ( is_user_logged_in() ) {
+        foreach ( $items as $item ) {
+            if ( $item->url == it_exchange_get_page_url( 'logout' ) || $item->url == it_exchange_get_page_url( 'login' ) ) {
 
 				$item->url = it_exchange_get_page_url( 'login' );
 				$item->title = it_exchange_get_page_name( 'login' );
-            }   
-        }   
-    } 
+            }
+        }
+    }
 	return $items;
 }
 add_filter( 'it_exchange_wp_get_nav_menu_items_filter', 'it_exchange_invoices_filter_loginout_nav_link' );
@@ -883,3 +883,27 @@ function it_exchange_invoices_maybe_filter_product_title_in_manual_purchases_lis
 	return empty( $display_name ) ? $title : sprintf( _x( '%s. %sBilled to %s on %s%s', '[invoice title] for [customer]', 'LION' ), $title, '<br /><span class="invoice-details">', $display_name, date( get_option( 'date_format' ), $date_issued ), '</span>' );
 }
 add_filter( 'it_exchange_manual_purchases_addon_selected_product_title', 'it_exchange_invoices_maybe_filter_product_title_in_manual_purchases_list', 10, 2 );
+
+/**
+ * Don't bump cart activity if viewing an invoice
+ *
+ * Integration with the Abandoned Cart Addon
+ *
+ * @since CHANGEME
+ *
+ * @param boolean  $bump     Should we bump the cart activity. defaults to true
+ * @param object   $customer IT_Exchange_Customer object
+ * @param array    $cart     Cart Details
+ * @return boolean
+*/
+function it_exchange_invoices_dont_bump_abandoned_carts( $bump, $customer, $cart ) {
+    if ( empty( $cart['products'] ) )
+        return $bump;
+
+    foreach( (array) $cart['products'] as $product ) {
+        if ( 'invoices-product-type' === it_exchange_get_product_type( $product['product_id'] ) )
+            return false;
+    }
+    return $bump;
+}
+add_filter( 'it_exchange_abandoned_carts_bump_active_shopper', 'it_exchange_invoices_dont_bump_abandoned_carts', 10, 3 );
