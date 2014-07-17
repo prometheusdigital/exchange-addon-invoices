@@ -3,8 +3,8 @@
  * Default template for displaying the a single
  * invoice product print template part.
  *
- * @since CHANGEME
- * @version CHANGEME
+ * @since 1.1.0
+ * @version 1.1.0
  * @link http://ithemes.com/codex/page/Exchange_Template_Updates
  * @package IT_Exchange
  *

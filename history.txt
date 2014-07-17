@@ -1,3 +1,9 @@
+1.1.0 - 2014-08-17 - Glenn Ansley
+	Add ability to send Invoice to additional email addresses
+	Add Company Tax ID to From section of invoice if it has a value
+	Add Invoice Number and PO number as shortcode arguments
+	Add Print Invoice to invoices
+	Add Client Address option to Invoices
 1.0.8 - 2014-06-05 - Glenn Anlsey, Elise Alley
 	Don't show paid invoices in Manual Purchaces admin UI.
 	Add client and date issued to product title in Maunal Purchases admin UI

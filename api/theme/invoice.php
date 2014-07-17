@@ -75,7 +75,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	/**
 	 * Returns the print button
 	 *
-	 * @since CHANGEME
+	 * @since 1.0.0
 	 * @return string
 	*/
 	function print_link( $options=array() ) {

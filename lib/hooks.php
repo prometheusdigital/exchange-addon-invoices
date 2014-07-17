@@ -891,7 +891,7 @@ add_filter( 'it_exchange_manual_purchases_addon_selected_product_title', 'it_exc
  *
  * Integration with the Abandoned Cart Addon
  *
- * @since CHANGEME
+ * @since 1.1.0
  *
  * @param boolean  $bump     Should we bump the cart activity. defaults to true
  * @param object   $customer IT_Exchange_Customer object
