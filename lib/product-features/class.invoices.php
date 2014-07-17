@@ -125,19 +125,20 @@ class IT_Exchange_Product_Feature_Invoices {
 
 		// Defaults
 		$defaults = array(
-			'client'       => 0,
-			'date_issued'  => date( 'U' ),
-			'company'      => '',
-			'number'       => '',
-			'emails'       => '',
-			'address'      => '',
-			'po'           => '',
-			'send_emails'  => 0,
-			'terms'        => 0,
-			'notes'        => '',
-			'use_password' => 0,
-			'password'     => '',
-			'hash'         => false,
+			'client'            => 0,
+			'date_issued'       => date( 'U' ),
+			'company'           => '',
+			'number'            => '',
+			'emails'            => '',
+			'additional_emails' => '',
+			'address'           => '',
+			'po'                => '',
+			'send_emails'       => 0,
+			'terms'             => 0,
+			'notes'             => '',
+			'use_password'      => 0,
+			'password'          => '',
+			'hash'              => false,
 		);
 		$invoice_data  = ITUtility::merge_defaults( $invoice_data, $defaults );
 		$client_info   = it_exchange_get_customer( $invoice_data['client'] );
@@ -252,11 +253,17 @@ class IT_Exchange_Product_Feature_Invoices {
 					</label>
 					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-number" name="it-exchange-invoices-number" value="<?php esc_attr_e( $invoice_data['number'] ); ?>" />
 				</div>
-				<div class="invoice-field-container invoice-field-container-left invoice-field-container-emails">
+				<div class="invoice-field-container invoice-field-container-emails">
 					<label for="it-exchange-invoices-emails" class="invoice-field-label">
 						<?php _e( 'Client Email Address', 'LION' ); ?>
 					</label>
 					<input readonly="readonly" type="text" id="it-exchange-invoices-emails" name="it-exchange-invoices-emails" value="<?php esc_attr_e( $invoice_data['emails'] ); ?>" />
+				</div>
+				<div class="invoice-field-container invoice-field-container-additional-emails">
+					<label for="it-exchange-invoices-additional-emails" class="invoice-field-label">
+						<?php _e( 'CC Email Addresses', 'LION' ); ?> <span class="tip" title="<?php esc_attr_e( __( 'A comma separated list of additional email addresses you want to receive this invoice.', 'LION' ) ); ?>">i</span>
+					</label>
+					<input <?php echo $paid_readonly; ?> type="text" id="it-exchange-invoices-additional-emails" name="it-exchange-invoices-additional-emails" value="<?php esc_attr_e( $invoice_data['additional_emails'] ); ?>" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-left invoice-field-container-client-address">
 					<label for="it-exchange-invoices-client-address" class="invoice-field-label">
@@ -425,6 +432,9 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Update Invoice Client Email Addresses
 		$emails = empty( $_POST['it-exchange-invoices-emails'] ) ? '' : $_POST['it-exchange-invoices-emails'];
 
+		// Update Invoice Additional Email Addresses
+		$additional_emails = empty( $_POST['it-exchange-invoices-additional-emails'] ) ? '' : $_POST['it-exchange-invoices-additional-emails'];
+
 		// Update Invoice PO Number
 		$po= empty( $_POST['it-exchange-invoices-po'] ) ? '' : $_POST['it-exchange-invoices-po'];
 
@@ -450,7 +460,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		$existing_settings = it_exchange_get_product_feature( $product_id, 'invoices', true );
 		$hash = empty( $existing_settings['hash'] ) ? it_exchange_create_unique_hash() : $existing_settings['hash'];
 
-		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
+		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'additional_emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
