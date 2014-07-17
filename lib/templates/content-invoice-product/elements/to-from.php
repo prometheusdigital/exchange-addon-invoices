@@ -21,7 +21,7 @@
 		<?php it_exchange( 'invoice', 'to' ); ?>
 	</div>
 	<div class="it-exchange-right">
-		<?php it_exchange( 'invoice', 'from' ); ?>
+		<?php it_exchange( 'invoice', 'from', array( 'fields' => array( 'name', 'company', 'tax-id', 'address', 'email' ) ) ); ?>
 	</div>
 	<?php do_action( 'it_exchange_content_invoice_product_end_to-from_wrap' ); ?>
 </div>

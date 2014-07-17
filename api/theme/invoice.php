@@ -111,6 +111,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			'format' => 'html',
 			'class'  => false,
 			'label'  => __( 'From', 'LION' ),
+			'tax_label' => __( 'Tax ID: ', 'LION' ),
 			'fields' => array(
 				'name',
 				'company',
@@ -131,6 +132,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		$company = empty( $general['company-name'] ) ? '' : $general['company-name'];
 		$address = empty( $general['company-address'] ) ? '' : $general['company-address'];
 		$email   = empty( $general['company-email'] ) ? '' : $general['company-email'];
+		$tax_id  = empty( $general['company-tax-id'] ) ? '' : $general['company-tax-id'];
+
 
 		// Build the Value
 		$value   = array();
@@ -138,6 +141,8 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $name;
 		if ( in_array( 'company', $options['fields'] ) && ! empty( $company ) )
 			$value[] = $company;
+		if ( in_array( 'tax-id', $options['fields'] ) && ! empty( $tax_id ) )
+			$value[] = $options['tax_label'] . $tax_id;
 		if ( in_array( 'address', $options['fields'] ) && ! empty( $address ) )
 			$value[] = nl2br( $address );
 		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
