@@ -146,6 +146,8 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 	$client            = it_exchange_get_customer( $client_id );
 	$exchange_settings = it_exchange_get_option( 'settings-general' );
 
+	$invoice_number    = empty( $meta['number'] ) ? '' : $meta['number'];
+	$po_number         = empty( $meta['po'] ) ? '' : $meta['po'];
 	$client_name       = empty( $client->data->display_name ) ? '' : $client->data->display_name;
 	$client_company    = empty( $meta['company'] ) ? '' : $meta['company'];
 	$client_email      = empty( $client->data->user_email ) ? false : $client->data->user_email;
@@ -163,6 +165,12 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 	$payment_link      = add_query_arg( 'client', $meta['hash'], get_permalink( $post_id ) );
 
 	switch( $atts['data'] ) {
+		case 'invoice-number' :
+			return $invoice_number;
+			break;
+		case 'po-number' :
+			return $po_number;
+			break;
 		case 'client-name' :
 			return $client_name;
 			break;

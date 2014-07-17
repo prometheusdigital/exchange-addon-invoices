@@ -16,6 +16,8 @@ function it_exchange_invoice_addon_settings_callback() {
 
 		<?php
 		$after  = '<br /><strong>Possible data keys</strong><ul>';
+		$after .= '<li><em>invoice-number</em> - ' . __( 'The invoice number', 'LION' ) . '</li>';
+		$after .= '<li><em>po-number</em> - ' . __( 'The PO number of the invoice', 'LION' ) . '</li>';
 		$after .= '<li><em>client-name</em> - ' . __( 'The WordPress display_name for the user associated with the invoice', 'LION' ) . '</li>';
 		$after .= '<li><em>client-company</em> - ' . __( 'The Client Company field for the current invoice', 'LION' ) . '</li>';
 		$after .= '<li><em>client-address</em> - ' . __( 'The Client Address field for the current invoice', 'LION' ) . '</li>';
