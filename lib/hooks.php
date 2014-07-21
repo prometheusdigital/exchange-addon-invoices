@@ -38,6 +38,24 @@ function it_exchange_invoices_addon_admin_wp_enqueue_scripts( $hook_suffix, $pos
 add_action( 'it_exchange_admin_wp_enqueue_scripts', 'it_exchange_invoices_addon_admin_wp_enqueue_scripts', 10, 2 );
 
 /**
+ * Change single add product menu item to Add Invoice
+ *
+ * @since 1.1.1
+ *
+ * @param string $menu_title incoming from WP Filter
+ * @param object $product_type the product type object
+ * @return string
+*/
+function it_exchange_invoices_addon_modify_admin_menu_title( $menu_title, $product_type ) {
+	if ( ! empty( $product_type['slug'] ) && 'invoices-product-type' == $product_type['slug'] ) {
+		$menu_title = __( 'Add Invoice', 'LION' );
+	}
+	return $menu_title;
+}
+add_filter( 'it_exchange_admin_add_one_product_type_product_page_title', 'it_exchange_invoices_addon_modify_admin_menu_title', 10, 2 );
+
+
+/**
  * Sets product visibility to false by default in add/edit product screen
  *
  * @since 1.0.0
