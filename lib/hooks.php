@@ -1012,7 +1012,7 @@ function it_exchange_invoices_addon_get_page_url() {
 		$base = add_query_arg( array( $account_slug => 1 ), $base );
 
 	$account_name = get_query_var( 'account' );
-	if ( $account_name && '1' != $account_name && ( 'login' != $page && 'logout' != $page ) ) {
+	if ( $account_name && '1' != $account_name ) {
 		if ( $permalinks ) {
 			$base = trailingslashit( $base . $account_name );
 		} else {
