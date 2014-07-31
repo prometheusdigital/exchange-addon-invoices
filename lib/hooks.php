@@ -167,18 +167,18 @@ add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_
 function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) {
 
 	// Return if not an invoice product type
-	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) ) || 'invoices-product-type' != it_exchange_get_product_type() )
+	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'invoices' ) ) || ( it_exchange_is_page( 'product' ) && 'invoices-product-type' != it_exchange_get_product_type() ) )
 		return $template_paths;
 
 	// If content-invoice-product.php is in template_names, add our template path and return
-	if ( in_array( 'content-invoice-product.php', (array) $template_names ) ) {
+	if ( in_array( 'content-invoice-product.php', (array) $template_names ) || in_array( 'content-invoices.php', (array) $template_names ) ) {
 		$template_paths[] = dirname( __FILE__ ) . '/templates';
 		return $template_paths;
 	}
 
 	// If any of the template_paths include content-invoice-product, return add our templates directory
 	foreach( (array) $template_names as $name ) {
-		if ( false !== strpos( $name, 'content-invoice-product' ) ) {
+		if ( false !== strpos( $name, 'content-invoice-product' ) || false !== strpos( $name, 'content-invoices' ) ) {
 			$template_paths[] = dirname( __FILE__ ) . '/templates';
 			return $template_paths;
 		}
@@ -304,6 +304,10 @@ function it_exchange_invoice_addon_load_public_scripts() {
 		wp_enqueue_style( 'it-exchange-addon-product-public-css', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices.css' ) );
 		wp_enqueue_style( 'it-exchange-addon-product-public-print', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices-print.css' ), array(), false, 'print' );
 		wp_enqueue_script( 'it-exchange-addon-product-public-js', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/js/exchange-invoices.js' ), array('jquery') );
+	}
+
+	if ( it_exchange_is_page( 'invoices' ) ) {
+		wp_enqueue_style( 'it-exchange-customer-invoices', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-customer-invoices.css' ) );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts', 9 );
@@ -927,3 +931,112 @@ function it_exchange_invoices_dont_bump_abandoned_carts( $bump, $customer, $cart
     return $bump;
 }
 add_filter( 'it_exchange_abandoned_carts_bump_active_shopper', 'it_exchange_invoices_dont_bump_abandoned_carts', 10, 3 );
+
+/**
+ * Register Invoices page
+ *
+ * @since CHANGEME
+ * @return void
+*/
+function it_exchange_invoices_addon_register_invoices_page() {
+    // Purchases
+    $options = array(
+        'slug'          => 'invoices',
+        'name'          => __( 'Invoices', 'LION' ),
+        'rewrite-rules' => array( 130, 'it_exchange_invoices_addon_get_page_rewrites' ),
+        'url'           => 'it_exchange_invoices_addon_get_page_url',
+        'settings-name' => __( 'Invoices', 'LION' ),
+        'type'          => 'exchange',
+        'menu'          => true,
+        'optional'      => true,
+    );
+    it_exchange_register_page( 'invoices', $options );
+}
+add_action( 'it_libraries_loaded', 'it_exchange_invoices_addon_register_invoices_page', 11 );
+
+/**
+ * Callback returns rewrite rules for invoices page
+ *
+ * @since CHANGEME
+ *
+ * @return array
+*/
+function it_exchange_invoices_addon_get_page_rewrites() {
+	$slug         = it_exchange_get_page_slug( 'invoices' );
+	$account_slug = it_exchange_get_page_slug( 'account' );
+
+	// If we're using WP as acount page type, add the WP slug to rewrites and return.
+	if ( 'wordpress' == it_exchange_get_page_type( 'account' ) ) {
+		$account = get_page( it_exchange_get_page_wpid( 'account' ) );
+		$account_slug = $account->post_name;
+	}
+
+	$rewrites = array(
+		$account_slug  . '/([^/]+)/' . $slug . '$' => 'index.php?' . $account_slug . '=$matches[1]&' . $slug . '=1',
+		$account_slug . '/' . $slug . '$' => 'index.php?' . $account_slug . '=1&' . $slug . '=1',
+	);
+	return $rewrites;
+}
+
+/**
+ * Callback to return the url for the invoices page
+ *
+ * @since CHANGEME
+ *
+ * @return string
+*/
+function it_exchange_invoices_addon_get_page_url() {
+    $slug       = it_exchange_get_page_slug( 'invoices' );
+    $permalinks = (boolean) get_option( 'permalink_structure' );
+    $base       = trailingslashit( get_home_url() );
+
+    // Proccess superwidget links
+    if ( it_exchange_in_superwidget() && $slug != 'transaction' && $page != 'confirmation' ) {
+        // Get current URL without exchange query args
+        $url = it_exchange_clean_query_args();
+        return add_query_arg( 'ite-sw-state', $slug, $url );
+    }
+
+	// Account Slug
+	if ( 'wordpress' == it_exchange_get_page_type( 'account' ) ) {
+		$account_page = get_page( it_exchange_get_page_wpid( 'account' ) );
+		$account_slug = $account_page->post_name;
+	} else {
+		$account_slug = it_exchange_get_page_slug( 'account' );
+	}
+
+	// Replace account value with name if user is logged in
+	if ( $permalinks )
+		$base = trailingslashit( $base . $account_slug );
+	else
+		$base = add_query_arg( array( $account_slug => 1 ), $base );
+
+	$account_name = get_query_var( 'account' );
+	if ( $account_name && '1' != $account_name && ( 'login' != $page && 'logout' != $page ) ) {
+		if ( $permalinks ) {
+			$base = trailingslashit( $base . $account_name );
+		} else {
+			$base = remove_query_arg( $account_slug, $base );
+			$base = add_query_arg( array( $account_slug => $account_name ), $base );
+		}
+	}
+
+	if ( $permalinks )
+		return trailingslashit( $base . $slug );
+	else
+		return add_query_arg( array( $slug => 1 ), $base );
+}
+
+/**
+ * Add invoices to customer menu page links (theme api)
+ *
+ * @since CHANGEME
+ *
+ * @param array $pages incomign from WP filter
+ * @return array
+*/
+function it_exchange_invoices_addon_add_invoices_page_to_customer_menu_links( $pages ) {
+	$pages[] = 'invoices';
+	return $pages;
+}
+add_filter( 'it_exchange_customer_menu_pages', 'it_exchange_invoices_addon_add_invoices_page_to_customer_menu_links' );

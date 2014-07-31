@@ -30,14 +30,19 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		'to'            => 'to',
 		'from'          => 'from',
 		'issueddate'    => 'issued_date',
+		'dateissued'    => 'issued_date',
 		'paiddate'      => 'paid_date',
 		'invoicenumber' => 'invoice_number',
 		'ponumber'      => 'po_number',
+		'title'         => 'title',
 		'description'   => 'description',
 		'notes'         => 'notes',
 		'terms'         => 'terms',
+		'datedue'       => 'date_due',
+		'totaldue'      => 'total_due',
 		'paymentamount' => 'payment_amount',
 		'paymentstatus' => 'payment_status',
+		'permalink'     => 'permalink',
 	);
 
 	/**
@@ -326,6 +331,55 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
+	 * Returns the invoice title
+	 *
+	 * @since CHANGEME
+	 *
+	 * @return string
+	*/
+	function title( $options=array() ) {
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
+
+		// Return boolean if has flag was set
+		if ( $options['has'] )
+			return it_exchange_product_has_feature( $this->product->ID, 'title' );
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
+			'class'  => false,
+			'label'  => false,
+		);
+		$options   = wp_parse_args( $options, $defaults );
+
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-title-block' : 'it-exchange-invoice-title-block ' . $options['class'];
+		$label   = empty( $options['label'] ) ? '' : $options['label'];
+		$value   = it_exchange_get_product_feature( $this->product->ID, 'title' );
+
+		switch( $options['format'] ) {
+			case 'label' :
+				$return = $label;
+				break;
+			case 'value' :
+				$return = $value;
+				break;
+			case 'html' :
+			default :
+				$return  = '<div class="' . esc_attr( $classes ) . '">';
+				if ( ! empty( $label ) ) {
+					$return .= '	<span class="label">' . $label . '</span>';
+				}
+				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '</div>';
+				if ( empty( $value ) )
+					$return = '';
+		}
+		return $return;
+	}
+
+	/**
 	 * Returns the
 	 *
 	 * @since 1.0.0
@@ -373,7 +427,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the
+	 * Returns the terms
 	 *
 	 * @since 1.0.0
 	 *
@@ -438,9 +492,9 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		// Parse options
 		$defaults      = array(
-			'format'      => 'html',
+			'format' => 'html',
 			'class'  => false,
-			'label' => __( 'Invoice #', 'LION' ),
+			'label'  => __( 'Invoice #', 'LION' ),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
 
@@ -482,9 +536,9 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		// Parse options
 		$defaults      = array(
-			'format'      => 'html',
+			'format' => 'html',
 			'class'  => false,
-			'label' => __( 'P.O. #', 'LION' ),
+			'label'  => __( 'P.O. #', 'LION' ),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
 
@@ -548,6 +602,100 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
 				$return .= '	<span class="label">' . $label . '</span>';
 				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '</div>';
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the due date 
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	*/
+	function date_due( $options=array() ) {
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
+
+		// Return boolean if has flag was set
+		if ( $options['has']  )
+			return ! ( empty( $this->meta['terms'] ) || 'none' == $this->meta['terms'] );
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
+			'class'  => false,
+			'label'  => __( 'Due Date:', 'LION' ),
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
+
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-due-date-block' : 'it-exchange-invoice-due-date-block ' . $options['class'];
+		$label   = empty( $options['label'] ) ? '' : $options['label'];
+		$unix    = it_exchange_get_invoice_due_date( $this->product->ID );
+		$value   = date( get_option( 'date_format' ), $unix );
+
+		switch( $options['format'] ) {
+			case 'unix' :
+				$return = $unix;
+				break;
+			case 'label' :
+				$return = $label;
+				break;
+			case 'value' :
+				$return = $value;
+				break;
+			case 'html' :
+			default :
+				$return  = '<div class="' . esc_attr( $classes ) . '">';
+				$return .= '	<span class="label">' . $label . '</span>';
+				$return .= '	<span class="value">' . $value . '</span>';
+				$return .= '</div>';
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the invoice total due
+	 *
+	 * @since CHANGEME
+	 *
+	 * @return string
+	*/
+	function total_due( $options=array() ) {
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
+
+		// Return boolean if has flag was set
+		if ( $options['has']  )
+			return it_exchange_product_has_feature( $this->product->ID, 'base-price' );
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
+			'class'  => false,
+			'label'  => __( 'Total Due:', 'LION' ),
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
+
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-total-due-block' : 'it-exchange-invoice-total-due-block ' . $options['class'];
+		$label   = empty( $options['label'] ) ? '' : $options['label'];
+		$value   = it_exchange_get_product_feature( $this->product->ID, 'base-price' );
+		$value   = it_exchange_format_price( $value );
+
+		switch( $options['format'] ) {
+			case 'label' :
+				$return = $label;
+				break;
+			case 'value' :
+				$return = $value;
+				break;
+			case 'html' :
+			default :
+				$return  = '<div class="' . esc_attr( $classes ) . '">';
+				$return .= '	<span class="label">' . $label . '</span> <span class="value">' . $value . '</span>';
 				$return .= '</div>';
 		}
 		return $return;
@@ -665,6 +813,49 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			default :
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
 				$return .= '	<span class="value">' . $label . '</span>';
+				$return .= '</div>';
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the permalink for the invoice
+	 *
+	 * @since CHANGEME
+	 *
+	 * @return string
+	*/
+	function permalink( $options=array() ) {
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
+
+		// Return boolean if has flag was set
+		if ( $options['has']  )
+			return true;
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
+			'class'  => false,
+			'label'  => __( 'Pay Now', 'LION' ),
+		);
+		$options   = wp_parse_args( $options, $defaults );
+		$value = add_query_arg( 'client', $this->meta['hash'], get_permalink( $this->product->ID ) );
+
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-permalink-block' : 'it-exchange-invoice-permalink-block' . ' ' . $options['class'];
+
+		switch( $options['format'] ) {
+			case 'label':
+				return $options['label'];
+				break;
+			case 'value':
+				return $value;
+				break;
+			case 'html' :
+			default     :
+				$return  = '<div class="' . esc_attr( $classes ) . '">';
+				$return .= '	<span class="value"><a href="' . esc_attr( $value ) . '">' . $options['label'] . '</a></span>';
 				$return .= '</div>';
 		}
 		return $return;
