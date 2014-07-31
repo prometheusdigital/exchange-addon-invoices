@@ -42,6 +42,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 		'totaldue'      => 'total_due',
 		'paymentamount' => 'payment_amount',
 		'paymentstatus' => 'payment_status',
+		'paymentmethod' => 'payment_method',
 		'permalink'     => 'permalink',
 	);
 
@@ -813,6 +814,58 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			default :
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
 				$return .= '	<span class="value">' . $label . '</span>';
+				$return .= '</div>';
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the payment method
+	 *
+	 * @since CHANGEME
+	 *
+	 * @return string
+	*/
+	function payment_method( $options=array() ) {
+		// Return boolean if has flag was set.
+		if ( $options['supports'] )
+			return true;
+
+		// Return boolean if has flag was set
+		if ( $options['has']  )
+			return (bool) it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
+
+		// Parse options
+		$defaults      = array(
+			'format' => 'html',
+			'class'  => false,
+			'label'  => __( 'Payment Method', 'LION' ),
+		);
+		$options   = ITUtility::merge_defaults( $options, $defaults );
+
+		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-method-block' : 'it-exchange-invoice-payment-method-block ' . $options['class'];
+		$label   = empty( $options['label'] ) ? '' : $options['label'];
+		$slug    = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
+		$slug    = empty( $slug ) ? false : it_exchange_get_transaction_method( $slug );
+
+		$value   = it_exchange_get_addon( $slug );
+		$value   = empty( $value['name'] ) ? ucwords( str_replace( '-', ' ', $slug ) ) : $value['name'];
+
+		switch( $options['format'] ) {
+			case 'label' :
+				$return = $label;
+				break;
+			case 'slug' :
+				$return = $slug;
+				break;
+			case 'value' :
+				$return = $value;
+				break;
+			case 'html' :
+			default :
+				$return  = '<div class="' . esc_attr( $classes ) . '">';
+				$return .= '	<span class="label">' . $label . '</span>';
+				$return .= '	<span class="value">' . $value . '</span>';
 				$return .= '</div>';
 		}
 		return $return;

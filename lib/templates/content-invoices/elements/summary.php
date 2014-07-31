@@ -22,9 +22,16 @@
 		_ex( ' | ', '[invoicenumber] for [invoiceamount]', 'LION' );
 	endif;
 
-	it_exchange( 'invoice', 'total-due', array( 'format' => 'value' ) );
-	_e( '| Due on ', 'LION' );
-	it_exchange( 'invoice', 'date-due', array( 'format' => 'value' ) );
+	if ( 'paid' == it_exchange( 'invoice', 'get-payment-status', array( 'format' => 'value' ) ) ) :
+		it_exchange( 'invoice', 'payment-amount', array( 'format' => 'value' ) );
+		printf( __( ' | Paid via %s on ', 'LION' ), it_exchange( 'invoice', 'get-payment-method', array( 'format' => 'value' ) ) );
+		it_exchange( 'invoice', 'paid-date', array( 'format' => 'value' ) );
+	else :
+		it_exchange( 'invoice', 'total-due', array( 'format' => 'value' ) );
+		_e( '| Due on ', 'LION' );
+		it_exchange( 'invoice', 'date-due', array( 'format' => 'value' ) );
+
+	endif;
 
 	if ( 'late' == it_exchange( 'invoice', 'get-payment-status', array( 'format' => 'value' ) ) ) :
 		_e( ' (Late)', 'LION' );
