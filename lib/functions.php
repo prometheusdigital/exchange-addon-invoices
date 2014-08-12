@@ -169,7 +169,7 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 	$from_email        = empty( $exchange_settings['company-email'] ) ? get_bloginfo( 'admin_email' ) : $exchange_settings['company-email'];
 	$from_address      = empty( $exchange_settings['company-address'] ) ? '' : $exchange_settings['company-address'];
 	$date_issued       = empty( $meta['date_issued'] ) ? '' : date( get_option( 'date_format' ), $meta['date_issued'] );
-	$total_due         = it_exchange_format_price( it_exchange_get_product_feature( $post_id, 'base-price' ) );
+	$total_due         = html_entity_decode( it_exchange_format_price( it_exchange_get_product_feature( $post_id, 'base-price' ) ) );
 	$terms             = empty( $meta['terms'] ) ? '' : $meta['terms'];
 	$available_terms   = it_exchange_invoice_addon_get_available_terms();
 	$terms             = empty( $available_terms[$terms]['title'] ) ? '' : $available_terms[$terms]['title'];
