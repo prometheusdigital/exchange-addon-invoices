@@ -1,9 +1,24 @@
-1.1.0 - 2014-08-17 - Glenn Ansley
-	Add ability to send Invoice to additional email addresses
-	Add Company Tax ID to From section of invoice if it has a value
-	Add Invoice Number and PO number as shortcode arguments
-	Add Print Invoice to invoices
-	Add Client Address option to Invoices
+1.0.0 - 2013-12-19 - Glenn Ansley
+	Initial Release
+1.0.1 - 2013-12-19 - Packaging Bot
+	Updating git submodules
+1.0.2 - 2013.12-19 - Glenn Ansley
+	Print invoice status in All Products screen
+1.0.3 - 2014-02-03 - Packaging Bot (lib/updater)
+	Bug Fix: Licensing on SSL-enabled sites now works properly.
+1.0.4 - 2014-02-05 - Glenn Ansley
+	Add offline transaction method to frontend invoice after paid with offline transaction method.
+	Replace 'Order Number' with Invoice Number in All Payments view for admin
+	Print payment status as 'Pending' when in draft mode for invoices
+1.0.5 - 2014-05-12 - Glenn Ansley, Ty Carlson
+	Revert Log Out nav links to Log In on invoice pages
+	Responsive tweaks for invoice admin
+1.0.6 - 2014-05-13 - Glenn Ansley, Elise Alley, Ronald van Weerd
+	Fixed bug preventing invoice styles from being overwritten in theme styles
+	Fixed bug that cause the date_issued email shortcode to be printed in UNIX time
+1.0.7 - 2014-05-14 - Glenn Ansley, Elise Alley
+	Fixed bug showing login link on invoice when users are really logged in.
+	Fixed bug that prevents the sidebar widget from being hidden after invoice is paid for.
 1.0.8 - 2014-06-05 - Glenn Anlsey, Elise Alley
 	Don't show paid invoices in Manual Purchaces admin UI.
 	Add client and date issued to product title in Maunal Purchases admin UI
@@ -12,24 +27,16 @@
 	Don't send email in the event that someone guessed the query arg to fire it even when link wasn't available if either of the above two conditions are true
 	Add nofollow to resend email link
 	Update invoice due/paid/pending notice style
-1.0.7 - 2014-05-14 - Glenn Ansley, Elise Alley
-	Fixed bug showing login link on invoice when users are really logged in.
-	Fixed bug that prevents the sidebar widget from being hidden after invoice is paid for.
-1.0.6 - 2014-05-13 - Glenn Ansley, Elise Alley, Ronald van Weerd
-	Fixed bug preventing invoice styles from being overwritten in theme styles
-	Fixed bug that cause the date_issued email shortcode to be printed in UNIX time
-1.0.5 - 2014-05-12 - Glenn Ansley, Ty Carlson
-	Revert Log Out nav links to Log In on invoice pages
-	Responsive tweaks for invoice admin
-1.0.4 - 2014-02-05 - Glenn Ansley
-	Add offline transaction method to frontend invoice after paid with offline transaction method.
-	Replace 'Order Number' with Invoice Number in All Payments view for admin
-	Print payment status as 'Pending' when in draft mode for invoices
-1.0.3 - 2014-02-03 - Packaging Bot (lib/updater)
-	Bug Fix: Licensing on SSL-enabled sites now works properly.
-1.0.2 - 2013.12-19 - Glenn Ansley
-	Print invoice status in All Products screen
-1.0.1 - 2013-12-19 - Packaging Bot
-	Updating git submodules
-1.0.0 - 2013-12-19 - Glenn Ansley
-	Initial Release
+1.1.0 - 2014-08-17 - Glenn Ansley
+	Add ability to send Invoice to additional email addresses
+	Add Company Tax ID to From section of invoice if it has a value
+	Add Invoice Number and PO number as shortcode arguments
+	Add Print Invoice to invoices
+	Add Client Address option to Invoices
+1.1.1
+	Fixing £ display in emails, needs testing
+	Fix PHP error on account page
+	Show payment date rather than due date for paid invoices
+	Include payment method for paid invoices
+	Frontend Invoices on Customer Account page
+	Change 'Add Product' to 'Add Invoice' when invoices are the only product_type activated
