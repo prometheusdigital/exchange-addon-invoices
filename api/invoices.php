@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * API functions for invoices
 */
@@ -23,7 +23,7 @@ function it_exchange_invoices_addon_get_invoices_for_customer( $customer=false, 
 	if ( empty( $customer ) ) {
 		return array();
 	}
-	
+
 	// Parse options
 	$defaults = array(
 		'invoice_status'  => 'any',
@@ -77,7 +77,7 @@ function it_exchange_invoices_addon_get_invoices( $options=array() ) {
 				if ( ! in_array( $status, $options['invoice_status'] ) ) {
 					unset( $invoices[$key] );
 				}
-			} else { 
+			} else {
 				if ( $status != $options['invoice_status'] ) {
 					unset( $invoices[$key] );
 				}
@@ -105,7 +105,7 @@ function it_exchange_invoices_addon_get_invoice_status( $invoice_id ) {
 	$data = it_exchange_get_product_feature( $invoice_id, 'invoices' );
 
 	// Set status if no transaction
-	if ( empty( $transaction_id ) ) { 
+	if ( empty( $transaction_id ) ) {
 
 		// When was the invoice issued?
 		$date_issued = it_exchange_get_date_issued_for_invoice( $invoice_id );
@@ -124,7 +124,7 @@ function it_exchange_invoices_addon_get_invoice_status( $invoice_id ) {
 	} else {
 		// If we have a transaction, set it as paid or pending
 		$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
-	}   
+	}
 
 	return $status;
 }
