@@ -1,4 +1,6 @@
-1.1.0 - 2014-08-17 - Glenn Ansley
+1.1.1 - 2014-08-14 - Lew Ayotte
+	Fix bug so that pound sign displays correctly in emails
+1.1.0 - 2014-07-17 - Glenn Ansley
 	Add ability to send Invoice to additional email addresses
 	Add Company Tax ID to From section of invoice if it has a value
 	Add Invoice Number and PO number as shortcode arguments
