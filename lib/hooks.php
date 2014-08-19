@@ -1040,3 +1040,23 @@ function it_exchange_invoices_addon_add_invoices_page_to_customer_menu_links( $p
 	return $pages;
 }
 add_filter( 'it_exchange_customer_menu_pages', 'it_exchange_invoices_addon_add_invoices_page_to_customer_menu_links' );
+
+/**
+ * Flush rewrite rules after first pageload after the upgrade
+ *
+ * @since CHANGEME
+ *
+ * @return void
+*/
+function it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices() {
+	$settings = it_exchange_get_option( 'invoice-addon' );
+	if ( ! empty( $settings['frontend-rewrites-flushed'] ) ) {
+		return;
+	}
+
+	$settings['frontend-rewrites-flushed'] = true;
+	it_exchange_save_option( 'invoice-addon', $settings );
+	update_option('_it-exchange-flush-rewrites', true );
+}
+add_action( 'init', 'it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices' );
+

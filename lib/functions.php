@@ -226,5 +226,4 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 		default :
 			return '';
 	}
-
 }
