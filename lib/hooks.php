@@ -1058,5 +1058,4 @@ function it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices() {
 	it_exchange_save_option( 'invoice-addon', $settings );
 	update_option('_it-exchange-flush-rewrites', true );
 }
-add_action( 'init', 'it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices', 40 );
-
+add_action( 'admin_init', 'it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices' );
