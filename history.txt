@@ -1,3 +1,7 @@
+1.2.0 - 2014-09-17 - Glenn Ansley, Elise Alley
+	Fixed bug causing SW to disappear when Print Invoices is clicked
+	Fixed JS bug preventing Print Invoice from working in FF
+	Force UTF-8 on html_entity_decode
 1.1.1 - 2014-08-14 - Lew Ayotte
 	Fix bug so that pound sign displays correctly in emails
 1.1.0 - 2014-07-17 - Glenn Ansley

@@ -2,7 +2,7 @@
 /**
  * Invoices class for THEME API
  *
- * @since CHANGEME
+ * @since 1.2.0
 */
 
 class IT_Theme_API_Invoices implements IT_Theme_API {
@@ -17,7 +17,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	/**
 	 * Maps api tags to methods
 	 * @var array $_tag_map
-	 * @since CHANGEME
+	 * @since 1.2.0
 	*/
 	public $_tag_map = array(
 		'found' => 'found',
@@ -28,7 +28,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	/**
 	 * Constructor
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return void
 	*/
@@ -38,7 +38,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	/**
 	 * Returns the context. Also helps to confirm we are an iThemes Exchange theme API class
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return string
 	*/
@@ -50,7 +50,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	 * Use this function to in a while loop to determine if there are any more invoices left to loop through.
 	 * If there are no more invoices found, it will return false. Otherwise, it returns 'true'.
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 * @return string
 	*/
 	function found( $options=array() ) {
@@ -65,7 +65,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	 *
 	 * It return false when it reaches the last invoice
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 * @return string
 	*/
 	function exist( $options=array() ) {
@@ -95,7 +95,7 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	/**
 	 * Resets the loop
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return void
 	*/

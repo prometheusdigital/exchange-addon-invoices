@@ -3,8 +3,8 @@
  * Default template for displaying the an exchange
  * customer's invoice(s).
  *
- * @since CHANGEME
- * @version CHANGEME
+ * @since 1.2.0
+ * @version 1.2.0
  * @link http://ithemes.com/codex/page/Exchange_Template_Updates
  * @package IT_Exchange
  *

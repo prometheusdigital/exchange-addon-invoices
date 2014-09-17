@@ -334,7 +334,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	/**
 	 * Returns the invoice title
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return string
 	*/
@@ -660,7 +660,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	/**
 	 * Returns the invoice total due
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return string
 	*/
@@ -822,7 +822,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	/**
 	 * Returns the payment method
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return string
 	*/
@@ -874,7 +874,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	/**
 	 * Returns the permalink for the invoice
 	 *
-	 * @since CHANGEME
+	 * @since 1.2.0
 	 *
 	 * @return string
 	*/

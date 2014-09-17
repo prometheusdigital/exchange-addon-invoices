@@ -935,7 +935,7 @@ add_filter( 'it_exchange_abandoned_carts_bump_active_shopper', 'it_exchange_invo
 /**
  * Register Invoices page
  *
- * @since CHANGEME
+ * @since 1.2.0
  * @return void
 */
 function it_exchange_invoices_addon_register_invoices_page() {
@@ -957,7 +957,7 @@ add_action( 'it_libraries_loaded', 'it_exchange_invoices_addon_register_invoices
 /**
  * Callback returns rewrite rules for invoices page
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @return array
 */
@@ -981,7 +981,7 @@ function it_exchange_invoices_addon_get_page_rewrites() {
 /**
  * Callback to return the url for the invoices page
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @return string
 */
@@ -1030,7 +1030,7 @@ function it_exchange_invoices_addon_get_page_url() {
 /**
  * Add invoices to customer menu page links (theme api)
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param array $pages incomign from WP filter
  * @return array
@@ -1044,7 +1044,7 @@ add_filter( 'it_exchange_customer_menu_pages', 'it_exchange_invoices_addon_add_i
 /**
  * Flush rewrite rules after first pageload after the upgrade
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @return void
 */

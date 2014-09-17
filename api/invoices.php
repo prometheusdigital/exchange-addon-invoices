@@ -6,7 +6,7 @@
 /**
  * Get all Invoices for a specified user
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param mixed $customer
  * @param array $opitons
@@ -42,7 +42,7 @@ function it_exchange_invoices_addon_get_invoices_for_customer( $customer=false, 
 /**
  * Grabs invoices
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param array $options
  * @return array
@@ -91,7 +91,7 @@ function it_exchange_invoices_addon_get_invoices( $options=array() ) {
 /**
  * Grab a given invoice's status
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param  integer $invoice_id  the wp post id for the invoice
  * @return string
@@ -134,7 +134,7 @@ function it_exchange_invoices_addon_get_invoice_status( $invoice_id ) {
  *
  * Return the issued date if the terms are missing or due on receipt
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param  integer $invoice_id
  * @return string
@@ -163,7 +163,7 @@ function it_exchange_get_invoice_due_date( $invoice_id ) {
 /**
  * Get date an invoice was issued
  *
- * @since CHANGEME
+ * @since 1.2.0
  *
  * @param  integer $invoice_id  the invoice id
  * @param  array   $options     options
