@@ -1,4 +1,5 @@
 1.2.0 - 2014-09-17 - Glenn Ansley, Elise Alley
+	Introduced Frontend Invoices
 	Fixed bug causing SW to disappear when Print Invoices is clicked
 	Fixed JS bug preventing Print Invoice from working in FF
 	Force UTF-8 on html_entity_decode
