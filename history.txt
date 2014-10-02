@@ -1,3 +1,5 @@
+1.2.1 - 2014-10-02 - Glenn Ansley
+	Added nonce field to register user in Invoices AJAX
 1.2.0 - 2014-09-17 - Glenn Ansley, Elise Alley
 	Introduced Frontend Invoices
 	Fixed bug causing SW to disappear when Print Invoices is clicked
