@@ -208,6 +208,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<input type="password" class="it-exchange-client-type-new-custom-passwords hide-if-js" id="it-exchange-client-type-new-custom-pass2" placeholder="password again" />
 				</div>
 				<div class="invoice-field-container invoice-field-container-client-type-new-first-name clear">
+					<?php wp_nonce_field( 'it-exchange-register-customer', '_exchange_register_nonce' ); ?>
 					<input type="button" id="it-exchange-invoicing-create-client" class="button" value="<?php _e( 'Create Client', 'LION' ); ?>" />
 				</div>
 				<div class="clear"></div>
