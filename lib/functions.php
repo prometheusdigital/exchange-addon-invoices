@@ -176,6 +176,7 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 	$description       = it_exchange_get_product_feature( $post_id, 'description' );
 	$notes             = empty( $meta['notes'] ) ? '' : $meta['notes'];
 	$payment_link      = add_query_arg( 'client', $meta['hash'], get_permalink( $post_id ) );
+	$username          = empty( $client->data->user_login ) ? '' : $client->data->user_login;
 
 	switch( $atts['data'] ) {
 		case 'invoice-number' :
@@ -222,6 +223,9 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 			break;
 		case 'payment-link' :
 			return $payment_link;
+			break;
+		case 'username' :
+			return $username;
 			break;
 		default :
 			return '';
