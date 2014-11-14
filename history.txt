@@ -44,3 +44,6 @@
 	Updating git submodules
 1.0.0 - 2013-12-19 - Glenn Ansley
 	Initial Release
+1.2.3 - 2014-11-14 - Packaging Bot (lib/updater)
+	Enhancement: Reduced caching to allow updates to appear more quickly.
+	Enhancement: Authenticating users now uses the new authentication system.
