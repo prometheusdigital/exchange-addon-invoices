@@ -1,3 +1,8 @@
+1.2.4 - 2014-12-23 - Glenn Ansley, Ronald van Weerd
+	Fixed bug causing bad dates when date format starts with 'j'
+1.2.3 - 2014-11-14 - Packaging Bot (lib/updater)
+	Enhancement: Reduced caching to allow updates to appear more quickly.
+	Enhancement: Authenticating users now uses the new authentication system.
 1.2.2 - 2014-11-10 - Glenn Ansley
 	Added client username to list of available email shortcodes
 1.2.1 - 2014-10-02 - Glenn Ansley
@@ -44,6 +49,3 @@
 	Updating git submodules
 1.0.0 - 2013-12-19 - Glenn Ansley
 	Initial Release
-1.2.3 - 2014-11-14 - Packaging Bot (lib/updater)
-	Enhancement: Reduced caching to allow updates to appear more quickly.
-	Enhancement: Authenticating users now uses the new authentication system.

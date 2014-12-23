@@ -406,8 +406,11 @@ class IT_Exchange_Product_Feature_Invoices {
 		$wp_date_format = get_option( 'date_format' );
 
 		// strtotime requires formats starting with day to be separated by - and month separated by /
-		if ( 'd' == substr( $wp_date_format, 0, 1 ) )
+		if ( 'd' == substr( $wp_date_format, 0, 1 ) || 'j' == substr( $wp_date_format, 0, 1 ) ) {
 			$date_issued = str_replace( '/', '-', $date_issued );
+			$date_issued = str_replace( ' ', '-', $date_issued );
+			$date_issued = str_replace( ',', '-', $date_issued );
+		}
 
 		// Transfer to epoch
 		if ( $epoch = strtotime( $date_issued ) ) {
