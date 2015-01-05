@@ -1,4 +1,4 @@
-1.2.4 - 2014-12-23 - Glenn Ansley, Ronald van Weerd
+1.2.4 - 2015-01-05 - Glenn Ansley, Ronald van Weerd
 	Fixed bug causing bad dates when date format starts with 'j'
 1.2.3 - 2014-11-14 - Packaging Bot (lib/updater)
 	Enhancement: Reduced caching to allow updates to appear more quickly.
