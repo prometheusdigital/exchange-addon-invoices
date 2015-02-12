@@ -1059,3 +1059,14 @@ function it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices() {
 	update_option('_it-exchange-flush-rewrites', true );
 }
 add_action( 'admin_init', 'it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices' );
+
+function it_exchange_invoices_addon_noindex_nofollow_headers() {
+	global $post;
+	if ( is_single() ) {
+		$product_type = it_exchange_get_product_type( $post );
+		if ( 'invoices-product-type' === $product_type ) {
+			echo apply_filters( 'it_exchange_invoices_addon_noindex_nofollow_headers', '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">'."\n" );
+		}
+	}
+}
+add_action( 'wp_head', 'it_exchange_invoices_addon_noindex_nofollow_headers' );
