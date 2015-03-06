@@ -123,6 +123,14 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Set the value of the feature for this product
 		$invoice_data = it_exchange_get_product_feature( $product->ID, 'invoices' );
 
+	    $interval_types = array(
+		    'day'   => __( 'Day(s)', 'LION' ),
+		    'week'  => __( 'Week(s)', 'LION' ),
+		    'month' => __( 'Month(s)', 'LION' ),
+		    'year'  => __( 'Year(s)', 'LION' ),
+		);
+		$interval_types = apply_filters( 'it_exchange_invoices_recurring_interval_types', $interval_types );
+
 		// Defaults
 		$defaults = array(
 			'client'            => 0,
@@ -139,6 +147,9 @@ class IT_Exchange_Product_Feature_Invoices {
 			'use_password'      => 0,
 			'password'          => '',
 			'hash'              => false,
+			'recurring_enabled' => false,
+			'recurring_interval_count' => 1,
+			'recurring_interval' => 'month',
 		);
 		$invoice_data  = ITUtility::merge_defaults( $invoice_data, $defaults );
 		$client_info   = it_exchange_get_customer( $invoice_data['client'] );
@@ -318,6 +329,41 @@ class IT_Exchange_Product_Feature_Invoices {
 					<textarea <?php echo $paid_readonly; ?> id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
+			<?php 
+				$ancestors = get_post_ancestors( $post );
+				ITUtility::print_r( $ancestors );			
+			?>
+			<div class="invoice-section section-four <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
+				<div class="invoice-field-container invoice-field-container-recurring-options">
+					<label for="it-exchange-invoices-recurring-options-enabled" class="invoice-field-label">
+						<?php _e( 'Auto-Invoicing Options', 'LION' ); ?> <span class="tip" title="<?php esc_attr_e( __( 'When set, a new copy of this invoice to be sent to your client on the set schedule.', 'LION' ) ); ?>">i</span>
+					</label>
+					<label for="invoice-field-container-recurring-options-enabled">
+						<input type="checkbox" id="invoice-field-container-recurring-options-enabled" name="it-exchange-invoices-recurring-options-enabled" <?php checked( $invoice_data['recurring_enabled'] ); ?> /> &nbsp; <?php _e( 'Enable Auto-Invoicing', 'LION' ); ?>
+					</label>
+					<?php
+					if ( $invoice_data['recurring_enabled'] ) {
+						$hidden = '';
+					} else {
+						$hidden = 'hidden';
+					}
+					?>
+					<div id="recurring-options-enabled-div" class="<?php echo $hidden; ?>">
+				        <label for="it-exchange-invoices-recurring-options-interval">
+					        <?php _e( 'Send this client a new copy of this invoice every...', 'LION' ); ?>
+				        </label>
+				        &nbsp;
+				        <input id="it-exchange-invoices-recurring-options-interval-count" type="number" class="small-input" name="it-exchange-invoices-recurring-options-interval-count" value="<?php echo $invoice_data['recurring_interval_count']; ?>" placeholder="#" />
+				        <select id="it-exchange-invoices-recurring-options-interval" name="it-exchange-invoices-recurring-options-interval">
+					        <?php
+						    foreach( $interval_types as $name => $label ) {
+							    echo '<option value="' . $name . '" ' . selected( $invoice_data['recurring_interval'], $name, false ) . '>' . $label . '</option>';
+						    }  
+							?>
+				        </select>
+					</div>
+				</div>
+			</div>
 		</div>
 		<?php
 	}
@@ -464,7 +510,12 @@ class IT_Exchange_Product_Feature_Invoices {
 		$existing_settings = it_exchange_get_product_feature( $product_id, 'invoices', true );
 		$hash = empty( $existing_settings['hash'] ) ? it_exchange_create_unique_hash() : $existing_settings['hash'];
 
-		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'additional_emails', 'po', 'terms', 'notes', 'use_password', 'password', 'status', 'hash' );
+		// Update Recurring Options
+		$recurring_enabled = empty( $_POST['it-exchange-invoices-recurring-options-enabled'] ) ? false : true;
+		$recurring_interval_count = empty( $_POST['it-exchange-invoices-recurring-options-interval-count'] ) ? 1 : $_POST['it-exchange-invoices-recurring-options-interval-count'];
+		$recurring_interval = empty( $_POST['it-exchange-invoices-recurring-options-interval'] ) ? 'month' : $_POST['it-exchange-invoices-recurring-options-interval'];
+
+		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'additional_emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash', 'recurring_enabled', 'recurring_interval_count', 'recurring_interval' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
@@ -475,7 +526,6 @@ class IT_Exchange_Product_Feature_Invoices {
 		$client_meta['address'] = $data['address'];
 		$client_meta['terms']   = $data['terms'];
 		update_user_meta( $data['client'], 'it-exchange-invoicing-meta', $client_meta );
-
 
 		// Send email to client if checked.
 		if ( ! empty( $send_emails ) ) {
@@ -506,6 +556,16 @@ class IT_Exchange_Product_Feature_Invoices {
 		$data = ITUtility::merge_defaults( $new_value, $existing_data );
 
 		update_post_meta( $product_id, '_it-exchange-invoice-data', $data );
+		
+		// A second place to save the recurring data, but it'll make it easier and faster when doing auto-invoicing.
+		if ( !empty( $data['recurring_enabled'] ) && !empty( $data['recurring_interval_count'] ) && !empty( $data['recurring_interval'] ) ) {
+			$recurring_data['recurring_interval_count'] = $data['recurring_interval_count'];
+			$recurring_data['recurring_interval'] = $data['recurring_interval'];
+			update_post_meta( $product_id, '_it-exchange-invoice-recurring-data', $recurring_data );
+		} else {
+			delete_post_meta( $product_id, '_it-exchange-invoice-recurring-data' );
+		}
+		
 	}
 
 	/**

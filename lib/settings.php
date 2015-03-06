@@ -102,6 +102,7 @@ function it_exchange_invoice_addon_set_default_options() {
 	$defaults = it_exchange_invoice_addon_get_default_settings();
 	$current  = it_exchange_get_option( 'invoice-addon' );
 
-	if ( empty( $current ) )
+	if ( empty( $current ) ) {
 		it_exchange_save_option( 'invoice-addon', $defaults );
+	}
 }

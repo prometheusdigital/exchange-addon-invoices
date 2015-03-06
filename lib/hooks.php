@@ -1059,3 +1059,131 @@ function it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices() {
 	update_option('_it-exchange-flush-rewrites', true );
 }
 add_action( 'admin_init', 'it_exchange_invoices_addon_flush_rewrites_for_frontend_invoices' );
+
+function it_exchange_invoices_addon_noindex_nofollow_headers() {
+	global $post;
+	if ( is_single() ) {
+		$product_type = it_exchange_get_product_type( $post );
+		if ( 'invoices-product-type' === $product_type ) {
+			echo apply_filters( 'it_exchange_invoices_addon_noindex_nofollow_headers', '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">'."\n" );
+		}
+	}
+}
+add_action( 'wp_head', 'it_exchange_invoices_addon_noindex_nofollow_headers' );
+
+/**
+ * Daily schedule use to call function for auto-invoices
+ *
+ * @since CHANGEME
+ * @return void
+*/
+function it_exchange_invoice_add_daily_schedule() {
+	it_exchange_invoice_addon_handle_auto_invoices();
+}
+add_action( 'it_exchange_invoice_add_daily_schedule', 'it_exchange_invoice_add_daily_schedule' );
+
+/**
+ * Gets all auto invoices that need to be sent out...
+ *
+ * @since CHANGEME
+ * @return void
+*/
+function it_exchange_invoice_addon_handle_auto_invoices() {	
+	$args = array(
+		'post_type' => 'it_exchange_prod',
+		'post_parent' => 0, //we only want parents
+		'meta_query' => array(
+			array(
+				'key' => '_it-exchange-invoice-recurring-data',
+				'compare' => 'EXISTS',
+			)
+		)
+	);
+	$recurring_invoices = get_posts( $args );
+	
+	foreach ( $recurring_invoices as $invoice ) {
+		$recurring_data = get_post_meta( $invoice->ID, '_it-exchange-invoice-recurring-data', true );
+		
+		$today = new DateTime( date_i18n( 'Y/m/d', strtotime( 'midnight' ) ) );
+		$publish_date = new DateTime( date_i18n( 'Y/m/d', strtotime( 'midnight', strtotime( $invoice->post_date ) ) ) );
+		$diff = $today->diff( $publish_date );
+		
+		$interval_count = $recurring_data['recurring_interval_count'];
+		$interval = $recurring_data['recurring_interval'];
+		
+		$send_invoice = false;
+		switch ( $interval ) {
+		    case 'day':
+		    	if ( 0 === $diff->days % $interval_count ) {
+			    	$send_invoice = true;
+		    	}
+		    	break;
+		    case 'week':
+		    	$modulus = 7 * $interval_count;
+		    	if ( 0 === $diff->days % $modulus ) {
+			    	$send_invoice = true;
+		    	}
+		    	break;
+		    case 'month':
+				$months_since_publish = ( $diff->format( '%y' ) * 12 ) + $diff->format( '%m' );
+		    	if ( 0 === $months_since_publish % $interval_count 
+		    			&& $today->format( 'j' ) === $publish_date->format( 'j' ) //Make sure it's the same day!
+		    		) {
+			    	$send_invoice = true;
+		    	}
+		    	break;
+		    case 'year':
+		    	if ( 0 === $diff->y % $interval_count 
+		    			&& $today->format( 'j' ) === $publish_date->format( 'j' ) //Make sure it's the same day!
+						&& $today->format( 'n' ) === $publish_date->format( 'n' )  //Make sure it's the same month!
+					) {
+			    	$send_invoice = true;
+		    	}
+		    	break;
+		}
+
+		if ( $send_invoice ) {
+			// we need to copy this invoice, create a new copy and send it!
+			$new_invoice = clone $invoice;
+			unset( $new_invoice->ID );
+			$new_invoice->post_parent = $invoice->ID;
+			$new_invoice->post_date = $today->format( 'Y/m/d h:i:s' );
+			$new_invoice->post_date_gmt = get_gmt_from_date( $new_invoice->post_date );	
+
+			$invoice_id = wp_insert_post( $new_invoice );
+			if ( !empty( $invoice_id ) ) {
+				$duplicate_product_post_meta = get_post_meta( $invoice->ID );
+				foreach ( $duplicate_product_post_meta as $key => $values ) {
+					foreach ( $values as $value ) {
+						//We do not want to copy ALL of the post meta, some of it is specific to transaction history, etc.
+						if ( in_array( $key, apply_filters( 'it_exchange_invoice_addon_duplicate_product_meta_invalid_keys', array( '_edit_lock', '_edit_last', '_it_exchange_transaction_id', '_it-exchange-invoice-data' ) ) ) ) {
+							continue;
+						}
+						$value = maybe_unserialize( $value );
+						add_post_meta( $invoice_id, $key, $value );
+					}
+				}
+
+				$invoice_data = get_post_meta( $invoice->ID, '_it-exchange-invoice-data', true );
+				unset( $invoice_data['recurring_enabled'] );
+				unset( $invoice_data['recurring_interval_count'] );
+				unset( $invoice_data['recurring_interval'] );
+				if ( !empty( $invoice_data['number'] ) ) {
+					$invoice_data['number'] .= '-' . $invoice_id;
+				}
+				update_post_meta( $invoice_id, '_it-exchange-invoice-data', $invoice_data );
+				if ( ! empty( $invoice_data['send_emails'] ) ) {
+					it_exchange_invoice_addon_send_invoice( $invoice_id );
+				}
+			} else {
+				if ( is_wp_error( $invoice_id ) ) {
+					error_log( $invoice_id->get_error_message() );
+				} else {
+					error_log( 'wut' );
+				}
+			}
+		}
+		
+	}	
+}
+add_action( 'it_exchange_invoice_addon_daily_schedule', 'it_exchange_invoice_addon_handle_auto_invoices' );
