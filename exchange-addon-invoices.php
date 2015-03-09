@@ -93,3 +93,5 @@ function it_exchange_invoice_addon_deactivation() {
 }
 register_deactivation_hook( __FILE__, 'it_exchange_invoice_addon_deactivation' );
 
+//Since we're supporting auto-invoicing, I want to make child invoices look proper...
+add_filter( 'ithemes_exchange_products_post_type_hierarchical', '__return_true' );

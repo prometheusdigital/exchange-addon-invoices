@@ -150,6 +150,7 @@ class IT_Exchange_Product_Feature_Invoices {
 			'recurring_enabled' => false,
 			'recurring_interval_count' => 1,
 			'recurring_interval' => 'month',
+			'send_recurring_emails' => false,
 		);
 		$invoice_data  = ITUtility::merge_defaults( $invoice_data, $defaults );
 		$client_info   = it_exchange_get_customer( $invoice_data['client'] );
@@ -330,8 +331,8 @@ class IT_Exchange_Product_Feature_Invoices {
 				</div>
 			</div>
 			<?php 
-				$ancestors = get_post_ancestors( $post );
-				ITUtility::print_r( $ancestors );			
+			$ancestors = get_post_ancestors( $post );
+			if ( empty( $ancestors ) ) {
 			?>
 			<div class="invoice-section section-four <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
 				<div class="invoice-field-container invoice-field-container-recurring-options">
@@ -349,6 +350,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					}
 					?>
 					<div id="recurring-options-enabled-div" class="<?php echo $hidden; ?>">
+				        <p>
 				        <label for="it-exchange-invoices-recurring-options-interval">
 					        <?php _e( 'Send this client a new copy of this invoice every...', 'LION' ); ?>
 				        </label>
@@ -361,9 +363,109 @@ class IT_Exchange_Product_Feature_Invoices {
 						    }  
 							?>
 				        </select>
+				        </p>
+				        <p>
+						<input id="it-exchange-invoices-send-recurring-emails" type="checkbox" value="1" name="it-exchange-invoices-recurring-emails" <?php checked( ! empty( $invoice_data['send_recurring_emails'] ) ); ?>/>&nbsp;
+						<label for="it-exchange-invoices-send-recurring-emails" class="invoice-field-label"><?php _e( 'Send email automatically when invoice is automatically published?', 'LION' ); ?></label>
+				        </p>
+					</div>
+				</div>
+				<div class="invoice-field-container invoice-field-container-child-invoices">
+					<p>
+					<label for="it-exchange-invoices-child-invoices" class="invoice-field-label">
+						<?php _e( 'Child Invoices', 'LION' ); ?>
+					</label>
+					<?php 
+					$args = array(
+						'post_parent'    => $post->ID,
+						'post_type'      => 'it_exchange_prod', 
+						'posts_per_page' => -1,
+						'post_status'    => 'any'
+					);
+					$children = get_children( $args );
+					if ( !empty( $children ) ) { 
+						foreach( $children as $child ) {
+							$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $child->ID );
+					
+							// Set status if no transaction
+							if ( empty( $transaction_id ) ) {
+								$meta        = it_exchange_get_product_feature( $child->ID, 'invoices' );
+								$date_issued = empty( $meta['date_issued'] ) ? time() : $meta['date_issued'];
+					
+								if ( empty( $meta['terms'] ) ) {
+									// This is for drafts
+									$status = 'unpaid';
+								} else {
+									$terms = it_exchange_invoice_addon_get_available_terms();
+									$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
+					
+									$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
+									$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
+								}
+							} else {
+								$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
+							}
+					
+							$labels = array(
+								'unpaid'  => __( 'Unpaid', 'LION' ),
+								'paid'    => __( 'Paid', 'LION' ),
+								'pending' => __( 'Pending', 'LION' ),
+								'late'    => __( 'Late', 'LION' ),
+								'due-now' => __( 'Due Now', 'LION' ),
+							);
+							
+							$child_invoice_data = it_exchange_get_product_feature( $child->ID, 'invoices' );
+							$child_invoice_data  = ITUtility::merge_defaults( $child_invoice_data, $defaults );
+							$payment_link = add_query_arg( 'client', $child_invoice_data['hash'], get_permalink( $child ) );
+					
+							$value   = empty( $labels[$status] ) ? false : $labels[$status];
+							if ( $value ) {
+								$payment_status = '<span class="it-exchange-invoice-addon-status">' . $value . '</span>';
+							} else {
+								$payment_status = '';
+							}
+							?>
+							<p><a href="<?php echo get_edit_post_link( $child->ID ); ?>"><?php echo get_the_title( $child ); ?></a> | <?php echo date_i18n( get_option( 'date_format' ), strtotime( $child->post_date ) ); ?> | <?php echo $payment_status ?> | <a href="<?php echo $payment_link; ?>"><?php _e( 'Payment Link', 'LION' ); ?></a></p>
+						<?php 
+						}
+					} else {
+						?>
+						<p><?php _e( 'No Child Invoices Found.', 'LION' ); ?></p>
+						<?php 
+					}
+					?>
+					</p>
+				</div>
+			</div>
+			<?php } else { ?>
+			<div class="invoice-section section-four <?php echo empty( $invoice_data['client'] ) ? 'hide-if-js' : ''; ?>">
+				<div class="invoice-field-container invoice-field-container-parent-invoice">
+					<label for="it-exchange-invoices-parent-invoice" class="invoice-field-label">
+						<?php _e( 'Parent Invoice', 'LION' ); ?>
+					</label>
+					<?php 
+					foreach( $ancestors as $ancestor_id ) { //should only be one
+						?>
+						<p><a href="<?php echo get_edit_post_link( $ancestor_id ); ?>"><?php echo get_the_title( $ancestor_id ); ?></a> | <?php echo date_i18n( get_option( 'date_format' ), strtotime( get_the_date( '', $ancestor_id ) ) ); ?></p>
+						<div class="it-exchange-invoice-field-container-parent-invoice-list">
+						<?php 
+						$ancestor_invoice_data = it_exchange_get_product_feature( $ancestor_id, 'invoices' );
+						if ( $ancestor_invoice_data['recurring_enabled'] ) {
+							?>
+							<input type="button" id="it-exchange-invoicing-cancel-auto-invoicing" class="button" data-invoice-id="<?php echo $ancestor_id; ?>" value="<?php _e( 'Stop Auto-Invoicing', 'LION' ); ?>" />
+							<?php
+						} else {
+							echo '<p>' . __( 'Auto-invoicing has been disabled on the parent invoice.', 'LION' ) . '</p>';
+						}
+						?>
+						</div>
+						<?php
+					} 
+					?>
 					</div>
 				</div>
 			</div>
+			<?php } ?>
 		</div>
 		<?php
 	}
@@ -514,8 +616,9 @@ class IT_Exchange_Product_Feature_Invoices {
 		$recurring_enabled = empty( $_POST['it-exchange-invoices-recurring-options-enabled'] ) ? false : true;
 		$recurring_interval_count = empty( $_POST['it-exchange-invoices-recurring-options-interval-count'] ) ? 1 : $_POST['it-exchange-invoices-recurring-options-interval-count'];
 		$recurring_interval = empty( $_POST['it-exchange-invoices-recurring-options-interval'] ) ? 'month' : $_POST['it-exchange-invoices-recurring-options-interval'];
+		$send_recurring_emails = !empty( $_POST['it-exchange-invoices-recurring-emails'] );
 
-		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'additional_emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash', 'recurring_enabled', 'recurring_interval_count', 'recurring_interval' );
+		$data = compact( 'client', 'date_issued', 'company', 'address', 'number', 'emails', 'additional_emails', 'po', 'send_emails', 'terms', 'notes', 'use_password', 'password', 'status', 'hash', 'recurring_enabled', 'recurring_interval_count', 'recurring_interval', 'send_recurring_emails' );
 		$data = apply_filters( 'it_exchange_invoices_save_feature_on_product_save', $data );
 
 		it_exchange_update_product_feature( $product_id, 'invoices', $data );
@@ -561,6 +664,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		if ( !empty( $data['recurring_enabled'] ) && !empty( $data['recurring_interval_count'] ) && !empty( $data['recurring_interval'] ) ) {
 			$recurring_data['recurring_interval_count'] = $data['recurring_interval_count'];
 			$recurring_data['recurring_interval'] = $data['recurring_interval'];
+			$recurring_data['send_recurring_emails'] = $data['send_recurring_emails'];
 			update_post_meta( $product_id, '_it-exchange-invoice-recurring-data', $recurring_data );
 		} else {
 			delete_post_meta( $product_id, '_it-exchange-invoice-recurring-data' );

@@ -118,6 +118,21 @@ function it_exchange_invoicing_ajax_get_client_data() {
 }
 add_action( 'wp_ajax_it-exchange-invoices-get-client-data', 'it_exchange_invoicing_ajax_get_client_data' );
 
+function it_exchange_invoicing_cancel_auto_invoicing() {
+	$results = '';
+	$invoice_id = empty( $_POST['invoiceID'] ) ? 0 : $_POST['invoiceID'];
+
+	if ( !empty( $invoice_id ) ) {
+		$invoice_data = it_exchange_get_product_feature( $invoice_id, 'invoices' );
+		$invoice_data['recurring_enabled'] = false;
+		it_exchange_update_product_feature( $invoice_id, 'invoices', $invoice_data );
+		$results ='<p>' . __( 'Auto-invoicing has been disabled on the parent invoice.', 'LION' ) . '</p>';
+	}
+	
+	die( $results );
+}
+add_action( 'wp_ajax_it-exchange-invoicing-cancel-auto-invoicing', 'it_exchange_invoicing_cancel_auto_invoicing' );
+
 /**
  * Add Client to WordPress Users
  *
@@ -1172,7 +1187,7 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 					$invoice_data['number'] .= '-' . $invoice_id;
 				}
 				update_post_meta( $invoice_id, '_it-exchange-invoice-data', $invoice_data );
-				if ( ! empty( $invoice_data['send_emails'] ) ) {
+				if ( ! empty( $invoice_data['send_recurring_emails'] ) ) {
 					it_exchange_invoice_addon_send_invoice( $invoice_id );
 				}
 			} else {
