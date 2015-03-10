@@ -79,7 +79,9 @@ require( dirname( __FILE__ ) . '/lib/updater/load.php' );
 function it_exchange_invoice_addon_activation() {
 	include_once( 'lib/settings.php' );
 	it_exchange_invoice_addon_set_default_options();
-	wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
+	if ( ! wp_next_scheduled( 'it_exchange_invoice_addon_daily_schedule' ) ) {
+		wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
+	}
 }
 register_activation_hook( __FILE__, 'it_exchange_invoice_addon_activation' );
 
