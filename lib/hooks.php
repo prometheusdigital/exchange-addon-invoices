@@ -1162,8 +1162,8 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 			$new_invoice = clone $invoice;
 			unset( $new_invoice->ID );
 			$new_invoice->post_parent = $invoice->ID;
-			$new_invoice->post_date = $today->format( 'Y/m/d h:i:s' );
-			$new_invoice->post_date_gmt = get_gmt_from_date( $new_invoice->post_date );	
+			unset( $new_invoice->post_date );
+			unset( $new_invoice->post_date_gmt );	
 
 			$invoice_id = wp_insert_post( $new_invoice );
 			if ( !empty( $invoice_id ) ) {
