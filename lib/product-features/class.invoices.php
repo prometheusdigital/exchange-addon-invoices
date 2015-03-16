@@ -134,7 +134,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		// Defaults
 		$defaults = array(
 			'client'            => 0,
-			'date_issued'       => date( 'U' ),
+			'date_issued'       => date_i18n( 'U' ),
 			'company'           => '',
 			'number'            => '',
 			'emails'            => '',

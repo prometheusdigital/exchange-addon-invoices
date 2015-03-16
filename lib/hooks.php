@@ -1180,6 +1180,7 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 				}
 
 				$invoice_data = get_post_meta( $invoice->ID, '_it-exchange-invoice-data', true );
+				$invoice_data['date_issued'] = date_i18n( 'U' ); //We want today's date!
 				unset( $invoice_data['recurring_enabled'] );
 				unset( $invoice_data['recurring_interval_count'] );
 				unset( $invoice_data['recurring_interval'] );
