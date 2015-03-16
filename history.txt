@@ -1,3 +1,5 @@
+1.3.0 - 2015-03-16 - Lew Ayotte
+	New Feature: Auto-Invoicing!
 1.2.5 - 2015-02-12 - Lew Ayotte
 	Adding noindex and nofollow meta headers to product page for Invoices to help prevent search engines from indexing these products
 1.2.4 - 2015-01-05 - Glenn Ansley, Ronald van Weerd
