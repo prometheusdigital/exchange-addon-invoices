@@ -453,7 +453,7 @@ function it_exchange_invoice_addon_intercept_confirmation_page_url( $url, $trans
 			}
 		}
 	}
-	return $url;
+	return esc_url( $url );
 }
 add_filter( 'it_exchange_get_transaction_confirmation_url', 'it_exchange_invoice_addon_intercept_confirmation_page_url', 10, 2 );
 
@@ -674,7 +674,7 @@ function it_exchange_invoice_addon_add_details_to_payment_details( $transaction_
 
 	<div class="it-exchange-invoice-addon-links">
 		<p>
-			<a class="frontend-link" href="<?php echo add_query_arg( 'client', $hash, $permalink ); ?>"><?php _e( 'View Invoice', 'LION' ); ?></a>
+			<a class="frontend-link" href="<?php echo esc_url( add_query_arg( 'client', $hash, $permalink ) ); ?>"><?php _e( 'View Invoice', 'LION' ); ?></a>
 			<a class="backend-link" href="<?php echo $admin_link; ?>"><?php _e( 'Edit Invoice', 'LION' ); ?></a>
 		</p>
 	</div>
@@ -715,7 +715,7 @@ function it_exchange_invoice_addon_modify_invoice_permalink( $link, $post ) {
 	if ( empty( $data['hash'] ) )
 		return $link;
 
-	return add_query_arg( 'client', $data['hash'], $link );
+	return esc_url( add_query_arg( 'client', $data['hash'], $link ) );
 
 }
 add_filter( 'post_type_link', 'it_exchange_invoice_addon_modify_invoice_permalink', 10, 2 );
@@ -1009,7 +1009,7 @@ function it_exchange_invoices_addon_get_page_url() {
     if ( it_exchange_in_superwidget() && $slug != 'transaction' && $page != 'confirmation' ) {
         // Get current URL without exchange query args
         $url = it_exchange_clean_query_args();
-        return add_query_arg( 'ite-sw-state', $slug, $url );
+        return esc_url( add_query_arg( 'ite-sw-state', $slug, $url ) );
     }
 
 	// Account Slug
@@ -1037,9 +1037,9 @@ function it_exchange_invoices_addon_get_page_url() {
 	}
 
 	if ( $permalinks )
-		return trailingslashit( $base . $slug );
+		return trailingslashit( esc_url( $base . $slug ) );
 	else
-		return add_query_arg( array( $slug => 1 ), $base );
+		return esc_url( add_query_arg( array( $slug => 1 ), $base ) );
 }
 
 /**

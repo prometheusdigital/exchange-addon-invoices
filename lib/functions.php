@@ -222,7 +222,7 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 			return $notes;
 			break;
 		case 'payment-link' :
-			return $payment_link;
+			return esc_url( $payment_link );
 			break;
 		case 'username' :
 			return $username;
