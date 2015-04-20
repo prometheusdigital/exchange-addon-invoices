@@ -1,3 +1,5 @@
+1.4.0 - 2015-04-20 - Lew Ayotte
+	Multiple updates involving add_query_arg and remove_query_arg to esc_url()
 1.3.1 - 2015-03-16 - Lew Ayotte
 	Fix to properly set Date Issued when auto-invoices are created
 1.3.0 - 2015-03-16 - Lew Ayotte
