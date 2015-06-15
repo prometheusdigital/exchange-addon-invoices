@@ -57,3 +57,5 @@
 	Updating git submodules
 1.0.0 - 2013-12-19 - Glenn Ansley
 	Initial Release
+1.4.1 - 2015-04-23 - Packaging Bot (lib/updater)
+	Compatibility Fix: Updated plugin and theme update data format to match changes in WordPress 4.2.
