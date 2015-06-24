@@ -728,11 +728,16 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-amount-block' : 'it-exchange-invoice-payment-amount-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
-		$value   = it_exchange_get_cart_total( false );
+		
+		if ( 'publish' !== get_post_status( $this->product->ID ) ) {
+			//If it's not a published product, then we don't have proper cart, so we need to grab the base price
+			$value = it_exchange_get_product_feature( $this->product->ID, 'base-price' );
+		} else {
+			$value = it_exchange_get_cart_total( false );
+		}
 
 		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $this->product->ID );
 		$value   = ! empty( $transaction_id ) ? it_exchange_get_transaction_total( $transaction_id, false ) : $value;
-
 		$value   = it_exchange_format_price( $value );
 
 		switch( $options['format'] ) {
