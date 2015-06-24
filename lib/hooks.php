@@ -715,7 +715,7 @@ function it_exchange_invoice_addon_modify_invoice_permalink( $link, $post ) {
 	if ( empty( $data['hash'] ) )
 		return $link;
 
-	return esc_url( add_query_arg( 'client', $data['hash'], $link ) );
+	return esc_url_raw( add_query_arg( 'client', $data['hash'], $link ) );
 
 }
 add_filter( 'post_type_link', 'it_exchange_invoice_addon_modify_invoice_permalink', 10, 2 );
