@@ -1,3 +1,6 @@
+1.5.0 - 2015-06-30 - Lew Ayotte
+	Display correct price when viewing a draft/unpublished invoice
+	Fixing esc url for preview link
 1.4.2 - 2015-06-15 - Lew Ayotte
 	Fix for Child Invoices showing up as paid if the Parent was paid during it's creation
 1.4.1 - 2015-04-23 - Packaging Bot (lib/updater)
