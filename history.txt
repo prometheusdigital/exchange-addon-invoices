@@ -64,3 +64,5 @@
 	Updating git submodules
 1.0.0 - 2013-12-19 - Glenn Ansley
 	Initial Release
+1.5.1 - 2015-07-14 - Packaging Bot (lib/updater)
+	Enhancement: Updated link to iThemes support.
