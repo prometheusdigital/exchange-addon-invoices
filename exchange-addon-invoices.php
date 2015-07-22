@@ -40,6 +40,11 @@ function it_exchange_register_invoices_addon() {
 		),
 	);
 	it_exchange_register_addon( 'invoices-product-type', $options );
+	
+	//Reschedule the cron if it doesn't exist!
+	if ( ! wp_next_scheduled( 'it_exchange_invoice_addon_daily_schedule' ) ) {
+		wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
+	}
 }
 add_action( 'it_exchange_register_addons', 'it_exchange_register_invoices_addon' );
 
