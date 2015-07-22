@@ -18,3 +18,7 @@
 .it-exchange-super-widget .cart-items-wrapper,
 .it-exchange-super-widget .cart-actions-wrapper{display:none;}
 .it-exchange-super-widget{margin-top:15px;}
+#it-exchange-product #it-exchange-invoice-product .it-exchange-product-has-images .it-exchange-product-images-gallery { margin: 20px; }
+#it-exchange-product #it-exchange-invoice-product .it-exchange-product-has-images .it-exchange-product-images { width: 100%; }
+#it-exchange-product #it-exchange-invoice-product .it-exchange-product-has-images .it-exchange-product-images .it-exchange-product-images-gallery .it-exchange-featured-image { margin: 10px 10px 0 0; width: 45%; float: left; }
+#it-exchange-product #it-exchange-invoice-product .it-exchange-product-has-images .it-exchange-product-images .it-exchange-product-images-gallery .it-exchange-thumbnail-images { width: 45%; float: right; }
