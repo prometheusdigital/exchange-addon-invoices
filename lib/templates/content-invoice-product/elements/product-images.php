@@ -17,7 +17,7 @@
 
 <?php if ( it_exchange( 'product', 'has-images' ) ) : ?>
 	<?php do_action( 'it_exchange_invoices_addon_content_product_before_product_images_element' ); ?>
-	<div class="it-exchange-column <?php echo ( ! it_exchange( 'product', 'has-images' ) ) ? ' it-exchange-product-no-images' : 'it-exchange-product-has-images'; ?> it-exchange-clearfix">
+	<div class="<?php echo ( ! it_exchange( 'product', 'has-images' ) ) ? ' it-exchange-product-no-images' : 'it-exchange-product-has-images'; ?> it-exchange-clearfix">
 		<div class="it-exchange-product-images">
 			<div class="it-exchange-column-inner">
 				<?php it_exchange( 'product', 'gallery' ); ?>
