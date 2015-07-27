@@ -66,3 +66,7 @@
 	Initial Release
 1.5.1 - 2015-07-14 - Packaging Bot (lib/updater)
 	Enhancement: Updated link to iThemes support.
+1.6.0 - 2015-07-27 - Lew Ayotte
+	Enable invoice cron if it doesn't exist, for upgrade situations
+	Adding product images to invoices frontend template
+	Updating updater
