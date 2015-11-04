@@ -32,7 +32,18 @@ class IT_Theme_API_Invoices implements IT_Theme_API {
 	 *
 	 * @return void
 	*/
+	function __construct() {
+	}
+
+	/**
+	 * Deprecated Constructor
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return void
+	*/
 	function IT_Theme_API_Invoices() {
+		self::__construct();
 	}
 
 	/**
