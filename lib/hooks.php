@@ -289,7 +289,7 @@ function it_exchange_invoice_addon_change_admin_description_tooltip( $tooltip, $
 add_filter( 'it_exchange_add_edit_product_description_tooltip', 'it_exchange_invoice_addon_change_admin_description_tooltip', 10, 2 );
 
 /**
- * Change Product Price to Total Do on add/edit screen
+ * Change Product Price to Total Due on add/edit screen
  *
  * @since 1.0.0
  *
@@ -305,6 +305,24 @@ function it_exchange_invoice_addon_change_admin_price_label( $label, $post=false
 	return $label;
 }
 add_filter( 'it_exchange_base-price_addon_metabox_description', 'it_exchange_invoice_addon_change_admin_price_label', 10, 2 );
+
+/**
+ * Change Product Sale Price to Discount Price on add/edit screen
+ *
+ * @since 1.0.0
+ *
+ * @param string $label incoming from WP filter
+ * @param mixed $post incoming post id/object from WP Filter
+ * @return string
+ */
+function it_exchange_invoice_addon_change_admin_sale_price_label( $label, $post=false ) {
+	$post = empty( $post ) ? $GLOBALS['post'] : $post;
+	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+		$label = __( 'Discount Price', 'LION' );
+
+	return $label;
+}
+add_filter( 'it_exchange_sale-price_addon_metabox_description', 'it_exchange_invoice_addon_change_admin_sale_price_label', 10, 2 );
 
 /**
  * Loads the frontend CSS on all exchange pages
