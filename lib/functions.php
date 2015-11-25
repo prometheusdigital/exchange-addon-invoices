@@ -145,7 +145,7 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 */
 function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 
-	$post_id           = empty( $GLOBALS['it_exchange']['invoice-mail-id'] ) ? false : $GLOBALS['it_exchange']['invoice-mail-id']; // Hackity hack
+	$post_id = empty( $GLOBALS['it_exchange']['invoice-mail-id'] ) ? false : $GLOBALS['it_exchange']['invoice-mail-id']; // Hackity hack
 	if ( empty( $post_id ) )
 		return '';
 
@@ -222,7 +222,7 @@ function it_exchange_invoice_addon_parse_shortcode( $atts ) {
 			return $notes;
 			break;
 		case 'payment-link' :
-			return esc_url( $payment_link );
+			return esc_url_raw( $payment_link );
 			break;
 		case 'username' :
 			return $username;
