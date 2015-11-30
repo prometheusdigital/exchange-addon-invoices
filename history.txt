@@ -1,3 +1,13 @@
+1.8.0 - 2015-11-30 - Lew Ayotte, Timothy Jacobs
+	Fix esc_url_raw() for payment link to fix issues with no-permalink settings
+	Change Sale Price label to Discount Price
+1.7.0 - 2015-11-04 - Lew Ayotte 
+	PHP7 Updates and Updating updater
+1.6.0 - 2015-07-27 - Lew Ayotte
+	Enable invoice cron if it doesn't exist, for upgrade situations
+	Update CSS styling
+	Adding product images to invoices frontend template
+	Updating updater
 1.5.0 - 2015-06-30 - Lew Ayotte
 	Display correct price when viewing a draft/unpublished invoice
 	Fixing esc url for preview link
