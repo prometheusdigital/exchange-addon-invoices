@@ -1296,7 +1296,7 @@ add_filter( 'it_exchange_basic_coupons_valid_product_for_coupon', 'it_exchange_i
 
 /**
  * Get the total price of the invoice.
- * 
+ *
  * @since 1.8.0
  */
 function it_exchange_invoices_sw_ajax_get_total() {
@@ -1304,3 +1304,40 @@ function it_exchange_invoices_sw_ajax_get_total() {
 }
 
 add_action( 'it_exchange_processing_super_widget_ajax_invoices-get-total', 'it_exchange_invoices_sw_ajax_get_total' );
+
+/**
+ * Remove the coupon template part from the SuperWidget.
+ *
+ * @since 1.8.0
+ *
+ * @param array $parts
+ *
+ * @return array
+ */
+function it_exchange_invoices_remove_coupon_template_from_sw( $parts ) {
+
+	if ( it_exchange_get_product_type( it_exchange_get_the_product_id() ) === 'invoices-product-type' ) {
+
+		$coupons = it_exchange_get_coupons( array(
+			'meta_query' => array(
+				array(
+					'key'       => '_it_exchange_use_invoices',
+					'value'     => true
+				)
+			),
+			'numberposts' => 1
+		) );
+
+		if ( empty( $coupons ) ) {
+			$i = array_search( 'single-item-update-coupons', $parts );
+
+			if ( $i !== false ) {
+				unset( $parts[ $i ] );
+			}
+		}
+	}
+
+	return $parts;
+}
+
+add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elements', 'it_exchange_invoices_remove_coupon_template_from_sw' );
