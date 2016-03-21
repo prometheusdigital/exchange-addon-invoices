@@ -1228,7 +1228,7 @@ add_action( 'it_exchange_invoice_addon_daily_schedule', 'it_exchange_invoice_add
 /**
  * Add settings to the coupon form.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param ITForm $form
  */
@@ -1257,7 +1257,7 @@ add_action( 'it_exchange_basic_coupons_coupon_edit_tab_product', 'it_exchange_in
 /**
  * Save coupon settings.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $data
  *
@@ -1275,7 +1275,7 @@ add_filter( 'it_exchange_basic_coupons_save_coupon', 'it_exchange_invoices_save_
 /**
  * Validate the coupon for a particular product.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param bool                    $valid
  * @param array                   $cart_product
@@ -1299,7 +1299,7 @@ add_filter( 'it_exchange_basic_coupons_valid_product_for_coupon', 'it_exchange_i
 /**
  * Get the total price of the invoice.
  *
- * @since 1.8.0
+ * @since 1.9.0
  */
 function it_exchange_invoices_sw_ajax_get_total() {
 	die( it_exchange_get_cart_total() );
@@ -1310,7 +1310,7 @@ add_action( 'it_exchange_processing_super_widget_ajax_invoices-get-total', 'it_e
 /**
  * Remove the coupon template part from the SuperWidget.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $parts
  *
