@@ -128,7 +128,7 @@ function it_exchange_invoicing_cancel_auto_invoicing() {
 		it_exchange_update_product_feature( $invoice_id, 'invoices', $invoice_data );
 		$results ='<p>' . __( 'Auto-invoicing has been disabled on the parent invoice.', 'LION' ) . '</p>';
 	}
-	
+
 	die( $results );
 }
 add_action( 'wp_ajax_it-exchange-invoicing-cancel-auto-invoicing', 'it_exchange_invoicing_cancel_auto_invoicing' );
@@ -431,6 +431,8 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	// Log client in
 	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
+	
+	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
 
@@ -1121,7 +1123,7 @@ add_action( 'it_exchange_invoice_add_daily_schedule', 'it_exchange_invoice_add_d
  * @since CHANGEME
  * @return void
 */
-function it_exchange_invoice_addon_handle_auto_invoices() {	
+function it_exchange_invoice_addon_handle_auto_invoices() {
 	$args = array(
 		'post_type' => 'it_exchange_prod',
 		'post_parent' => 0, //we only want parents
@@ -1133,17 +1135,17 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 		)
 	);
 	$recurring_invoices = get_posts( $args );
-	
+
 	foreach ( $recurring_invoices as $invoice ) {
 		$recurring_data = get_post_meta( $invoice->ID, '_it-exchange-invoice-recurring-data', true );
-		
+
 		$today = new DateTime( date_i18n( 'Y/m/d', strtotime( 'midnight' ) ) );
 		$publish_date = new DateTime( date_i18n( 'Y/m/d', strtotime( 'midnight', strtotime( $invoice->post_date ) ) ) );
 		$diff = $today->diff( $publish_date );
-		
+
 		$interval_count = $recurring_data['recurring_interval_count'];
 		$interval = $recurring_data['recurring_interval'];
-		
+
 		$send_invoice = false;
 		switch ( $interval ) {
 		    case 'day':
@@ -1159,14 +1161,14 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 		    	break;
 		    case 'month':
 				$months_since_publish = ( $diff->format( '%y' ) * 12 ) + $diff->format( '%m' );
-		    	if ( 0 === $months_since_publish % $interval_count 
+		    	if ( 0 === $months_since_publish % $interval_count
 		    			&& $today->format( 'j' ) === $publish_date->format( 'j' ) //Make sure it's the same day!
 		    		) {
 			    	$send_invoice = true;
 		    	}
 		    	break;
 		    case 'year':
-		    	if ( 0 === $diff->y % $interval_count 
+		    	if ( 0 === $diff->y % $interval_count
 		    			&& $today->format( 'j' ) === $publish_date->format( 'j' ) //Make sure it's the same day!
 						&& $today->format( 'n' ) === $publish_date->format( 'n' )  //Make sure it's the same month!
 					) {
@@ -1181,7 +1183,7 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 			unset( $new_invoice->ID );
 			$new_invoice->post_parent = $invoice->ID;
 			unset( $new_invoice->post_date );
-			unset( $new_invoice->post_date_gmt );	
+			unset( $new_invoice->post_date_gmt );
 
 			$invoice_id = wp_insert_post( $new_invoice );
 			if ( !empty( $invoice_id ) ) {
@@ -1218,7 +1220,126 @@ function it_exchange_invoice_addon_handle_auto_invoices() {
 				}
 			}
 		}
-		
-	}	
+
+	}
 }
 add_action( 'it_exchange_invoice_addon_daily_schedule', 'it_exchange_invoice_addon_handle_auto_invoices' );
+
+/**
+ * Add settings to the coupon form.
+ *
+ * @since 1.8.0
+ *
+ * @param ITForm $form
+ */
+function it_exchange_invoices_add_coupon_settings( $form ) {
+
+	$post_id = empty( $_GET['post'] ) ? false : $_GET['post'];
+
+	$form->set_option( 'invoices', get_post_meta( $post_id, '_it_exchange_use_invoices', true ) );
+	?>
+
+	<div class="field invoices">
+		<p>
+			<?php $form->add_check_box( 'invoices' ); ?>
+			<label for="invoices">
+				<?php _e( 'Allow to be used on invoices', 'LION' ); ?>
+			</label>
+		</p>
+	</div>
+
+<?php
+
+}
+
+add_action( 'it_exchange_basic_coupons_coupon_edit_tab_product', 'it_exchange_invoices_add_coupon_settings' );
+
+/**
+ * Save coupon settings.
+ *
+ * @since 1.8.0
+ *
+ * @param array $data
+ *
+ * @return array
+ */
+function it_exchange_invoices_save_coupon_settings( $data ) {
+
+	$data['post_meta']['_it_exchange_use_invoices'] = $data['invoices'];
+
+	return $data;
+}
+
+add_filter( 'it_exchange_basic_coupons_save_coupon', 'it_exchange_invoices_save_coupon_settings' );
+
+/**
+ * Validate the coupon for a particular product.
+ *
+ * @since 1.8.0
+ *
+ * @param bool                    $valid
+ * @param array                   $cart_product
+ * @param IT_Exchange_Cart_Coupon $coupon
+ *
+ * @return bool
+ */
+function it_exchange_invoices_validate_coupon( $valid, $cart_product, $coupon ) {
+
+	$product_id = $cart_product['product_id'];
+
+	if ( it_exchange_get_product_type( $product_id ) === 'invoices-product-type' ) {
+		$valid = (bool) get_post_meta( $coupon->get_ID(), '_it_exchange_use_invoices', true );
+	}
+
+	return $valid;
+}
+
+add_filter( 'it_exchange_basic_coupons_valid_product_for_coupon', 'it_exchange_invoices_validate_coupon', 10, 3 );
+
+/**
+ * Get the total price of the invoice.
+ *
+ * @since 1.8.0
+ */
+function it_exchange_invoices_sw_ajax_get_total() {
+	die( it_exchange_get_cart_total() );
+}
+
+add_action( 'it_exchange_processing_super_widget_ajax_invoices-get-total', 'it_exchange_invoices_sw_ajax_get_total' );
+
+/**
+ * Remove the coupon template part from the SuperWidget.
+ *
+ * @since 1.8.0
+ *
+ * @param array $parts
+ *
+ * @return array
+ */
+function it_exchange_invoices_remove_coupon_template_from_sw( $parts ) {
+
+	if ( it_exchange_get_product_type( it_exchange_get_the_product_id() ) === 'invoices-product-type' ) {
+
+		$coupons = it_exchange_get_coupons( array(
+			'meta_query' => array(
+				array(
+					'key'       => '_it_exchange_use_invoices',
+					'value'     => true
+				)
+			),
+			'numberposts' => 1
+		) );
+
+		if ( empty( $coupons ) ) {
+			$i = array_search( 'single-item-update-coupons', $parts );
+
+			if ( $i !== false ) {
+				unset( $parts[ $i ] );
+			}
+		}
+	}
+
+	return $parts;
+}
+
+add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elements', 'it_exchange_invoices_remove_coupon_template_from_sw' );
