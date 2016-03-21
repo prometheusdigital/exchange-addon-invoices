@@ -431,7 +431,7 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	// Log client in
 	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
-	
+
 	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
@@ -1343,3 +1343,29 @@ function it_exchange_invoices_remove_coupon_template_from_sw( $parts ) {
 }
 
 add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elements', 'it_exchange_invoices_remove_coupon_template_from_sw' );
+
+/**
+ * Register emails with Exchange.
+ *
+ * @since 1.8.1
+ *
+ * @param IT_Exchange_Email_Notifications $notifications
+ */
+function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_Notifications $notifications ) {
+
+	$notifications->register_notification( new IT_Exchange_Customer_Email_Notification(
+		__( 'New Invoice', 'LION') , 'new-invoice', null, array(
+			'defaults' => array(
+				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), '[it_exchange_email show="company_name"]'),
+				'body' => 'Hi [it_exchange_email show="name"],
+[it_exchange_email show="company_name"] has sent you an invoice for [it_exchange_email show="total-due"].
+Please review and pay here: [it_exchange_email show="payment-link"]
+
+Thank you,
+[it_exchange_email show="company_name"]',
+		),
+		'group' => __( 'Invoices', 'LION' )
+	) ) );
+}
+
+add_action( 'it_exchange_register_email_notifications', 'it_exchange_invoices_register_email_notifications' );
