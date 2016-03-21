@@ -431,6 +431,8 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	// Log client in
 	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
+	
+	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
 
