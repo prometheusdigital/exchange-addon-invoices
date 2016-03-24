@@ -98,42 +98,30 @@ function it_exchange_invoice_addon_get_invoice_transaction_id( $invoice_id ) {
 */
 function it_exchange_invoice_addon_send_invoice( $post_id ) {
 
-	add_shortcode( 'it-exchange-invoice-email', 'it_exchange_invoice_addon_parse_shortcode' );
-	$GLOBALS['it_exchange']['invoice-mail-id'] = $post_id; // Hackity hack
-
-	$meta              = it_exchange_get_product_feature( $post_id, 'invoices' );
-	$client_id         = empty( $meta['client'] ) ? 0 : $meta['client'];
-	$client            = it_exchange_get_customer( $client_id );
-	$email             = empty( $client->data->user_email ) ? false : $client->data->user_email;
-	$additional_emails = empty( $meta['additional_emails'] ) ? false : explode( ',', $meta['additional_emails'] );
-
-	$email_settings    = it_exchange_get_option( 'invoice-addon' );
-	$exchange_settings = it_exchange_get_option( 'settings-general' );
-	$subject           = empty( $email_settings['client-subject-line'] ) ? false : do_shortcode( $email_settings['client-subject-line'] );
-	$message           = empty( $email_settings['client-message'] ) ? false : do_shortcode( $email_settings['client-message'] );
-	$company_name      = empty( $exchange_settings['company-name'] ) ? get_bloginfo( 'name' ) : $exchange_settings['company-name'];
-	$company_email     = empty( $exchange_settings['company-email'] ) ? get_bloginfo( 'admin_email' ) : $exchange_settings['company-email'];
-	$headers           = 'From: ' . $company_name . ' <' . $company_email . '>';
-
-	unset( $GLOBALS['it_exchange']['invoice-mail-id'] ); // Hackity hack
-	remove_shortcode( 'it-exchange-invoice-email' );
-
-	if ( empty( $email ) || empty( $subject ) || empty( $message ) )
+	$product = it_exchange_get_product( $post_id );
+	$meta    = $product->get_feature( 'invoices' );
+	
+	$customer = it_exchange_get_customer( $meta['client'] );
+	
+	if ( empty( $customer ) ) {
 		return false;
-
-	wp_mail( $email, $subject, $message, $headers );
-
-	// Send CCs if needed
-	if ( ! empty( $additional_emails ) ) {
-		foreach( (array) $additional_emails as $email ) {
-			$email = trim( $email );
-			if ( is_email( $email ) ) {
-				wp_mail( $email, $subject, $message, $headers );
-			}
-		}
 	}
 
-	return true;
+	$additional_emails = empty( $meta['additional_emails'] ) ? array() : $meta['additional_emails'];
+	
+	$recipient = new IT_Exchange_Email_Recipient_Customer( $customer );
+	$notification = it_exchange_email_notifications()->get_notification( 'new-invoice' );
+	
+	$email = new IT_Exchange_Email( $recipient, $notification, array(
+		'invoice'   => $product,
+		'customer'  => $customer
+	) );
+
+	foreach ( $additional_emails as $additional_email ) {
+		$email->add_cc( new IT_Exchange_Email_Recipient_Email( $additional_email ) );
+	}
+	
+	return it_exchange_send_email( $email );
 }
 
 /**

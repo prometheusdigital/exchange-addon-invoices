@@ -137,6 +137,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
+		$options['fields'] = (array) $options['fields'];
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-from-block' : 'it-exchange-invoice-from-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
@@ -212,6 +213,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			),
 		);
 		$options   = ITUtility::merge_defaults( $options, $defaults );
+		$options['fields'] = (array) $options['fields'];
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-to-block' : 'it-exchange-invoice-to-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];

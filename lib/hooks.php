@@ -181,26 +181,9 @@ add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_
 */
 function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) {
 
-	// Return if not an invoice product type
-	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'invoices' ) ) || ( it_exchange_is_page( 'product' ) && 'invoices-product-type' != it_exchange_get_product_type() ) )
-		return $template_paths;
+	$template_paths[] = dirname( __FILE__ ) . '/templates';
 
-	// If content-invoice-product.php is in template_names, add our template path and return
-	if ( in_array( 'content-invoice-product.php', (array) $template_names ) || in_array( 'content-invoices.php', (array) $template_names ) ) {
-		$template_paths[] = dirname( __FILE__ ) . '/templates';
-		return $template_paths;
-	}
-
-	// If any of the template_paths include content-invoice-product, return add our templates directory
-	foreach( (array) $template_names as $name ) {
-		if ( false !== strpos( $name, 'content-invoice-product' ) || false !== strpos( $name, 'content-invoices' ) ) {
-			$template_paths[] = dirname( __FILE__ ) . '/templates';
-			return $template_paths;
-		}
-	}
-
-	// We shouldn't make it here but return just in case we do.
-    return $template_paths;
+	return $template_paths;
 }
 add_filter( 'it_exchange_possible_template_paths', 'it_exchange_invoices_add_template_directory', 10, 2 );
 
@@ -1347,25 +1330,38 @@ add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elem
 /**
  * Register emails with Exchange.
  *
- * @since 1.8.1
+ * @since 1.10
  *
  * @param IT_Exchange_Email_Notifications $notifications
  */
 function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_Notifications $notifications ) {
 
 	$notifications->register_notification( new IT_Exchange_Customer_Email_Notification(
-		__( 'New Invoice', 'LION') , 'new-invoice', null, array(
+		__( 'New Invoice', 'LION') , 'new-invoice', new IT_Exchange_Email_Template( 'invoice' ), array(
 			'defaults' => array(
-				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), '[it_exchange_email show="company_name"]'),
+				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), '[it_exchange_email show=company_name]'),
 				'body' => 'Hi [it_exchange_email show="name"],
-[it_exchange_email show="company_name"] has sent you an invoice for [it_exchange_email show="total-due"].
-Please review and pay here: [it_exchange_email show="payment-link"]
 
-Thank you,
-[it_exchange_email show="company_name"]',
+[it_exchange_email show="company_name"] has sent [it_exchange_email show="client_name"] an invoice for [it_exchange_email show="invoice_total"].',
 		),
 		'group' => __( 'Invoices', 'LION' )
 	) ) );
 }
 
 add_action( 'it_exchange_register_email_notifications', 'it_exchange_invoices_register_email_notifications' );
+
+/**
+ * Globalize the email context for the Theme API.
+ *
+ * @since 1.10
+ *
+ * @param array $context
+ */
+function it_exchange_invoices_globalize_context( $context ) {
+
+	if ( ! empty( $context['invoice'] ) ) {
+		$GLOBALS['it_exchange']['product'] = $context['invoice'];
+	}
+}
+
+add_action( 'it_exchange_email_template_globalize_context', 'it_exchange_invoices_globalize_context' );
