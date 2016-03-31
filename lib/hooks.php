@@ -1340,7 +1340,7 @@ function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_No
 		__( 'New Invoice', 'LION') , 'new-invoice', new IT_Exchange_Email_Template( 'invoice' ), array(
 			'defaults' => array(
 				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), '[it_exchange_email show=company_name]'),
-				'body' => 'Hi [it_exchange_email show="name"],
+				'body' => 'Hi [it_exchange_email show="first_name"],
 
 [it_exchange_email show="company_name"] has sent [it_exchange_email show="client_name"] an invoice for [it_exchange_email show="invoice_total"].',
 		),
