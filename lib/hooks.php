@@ -1335,14 +1335,18 @@ add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elem
  * @param IT_Exchange_Email_Notifications $notifications
  */
 function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_Notifications $notifications ) {
+	
+	$r = $notifications->get_replacer();
 
 	$notifications->register_notification( new IT_Exchange_Customer_Email_Notification(
 		__( 'New Invoice', 'LION') , 'new-invoice', new IT_Exchange_Email_Template( 'invoice' ), array(
 			'defaults' => array(
-				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), '[it_exchange_email show=company_name]'),
-				'body' => 'Hi [it_exchange_email show="first_name"],
+				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), $r->format_tag( 'company_name' ) ),
+				'body' => "Hi {$r->format_tag( 'first_name' )}
 
-[it_exchange_email show="company_name"] has sent [it_exchange_email show="client_name"] an invoice for [it_exchange_email show="invoice_total"].',
+{$r->format_tag( 'company_name' )} has sent {$r->format_tag( 'client_name' )} an invoice for {$r->format_tag( 'invoice_total' )}.
+
+Please review the details below.",
 		),
 		'group' => __( 'Invoices', 'LION' )
 	) ) );
