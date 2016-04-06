@@ -46,7 +46,7 @@
 								<?php if ( it_exchange( 'invoice', 'has-invoice-number' ) ) : ?>
 									<td align="right" style="font-weight: bold; ">
 										<strong>
-											<?php printf( __( 'Invoice #%s', 'LION' ), it_exchange( 'invoice', 'get-invoice-number' ) ); ?>
+											<?php it_exchange( 'invoice', 'invoice-number' ); ?>
 										</strong>
 									</td>
 								<?php endif; ?>
