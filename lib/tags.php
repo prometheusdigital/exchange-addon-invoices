@@ -50,6 +50,18 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 				'context'   => array( 'invoice' ),
 				'available' => array( 'new-invoice' )
 			),
+			'client_email'      => array(
+				'name'      => __( 'Client Email', 'LION' ),
+				'desc'      => __( "The client's email address.", 'LION' ),
+				'context'   => array( 'invoice' ),
+				'available' => array( 'new-invoice' )
+			),
+			'client_username'   => array(
+				'name'      => __( 'Client Username', 'LION' ),
+				'desc'      => __( "The username your client needs to log in to your site.", 'LION' ),
+				'context'   => array( 'invoice' ),
+				'available' => array( 'new-invoice' )
+			),
 			'client_company'    => array(
 				'name'      => __( 'Client Company', 'LION' ),
 				'desc'      => __( "The client's company's name.", 'LION' ),
@@ -112,6 +124,46 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 		}
 
 		return it_exchange_get_customer( $meta['client'] )->data->display_name;
+	}
+
+	/**
+	 * Replace the client email tag.
+	 *
+	 * @since 1.36
+	 *
+	 * @param array $context
+	 *
+	 * @return string
+	 */
+	public function client_email( $context ) {
+
+		$meta = $context['invoice']->get_feature( 'invoices' );
+
+		if ( empty( $meta['client'] ) ) {
+			return '';
+		}
+
+		return it_exchange_get_customer( $meta['client'] )->data->user_email;
+	}
+
+	/**
+	 * Replace the client username tag.
+	 *
+	 * @since 1.36
+	 *
+	 * @param array $context
+	 *
+	 * @return string
+	 */
+	public function client_username( $context ) {
+
+		$meta = $context['invoice']->get_feature( 'invoices' );
+
+		if ( empty( $meta['client'] ) ) {
+			return '';
+		}
+
+		return it_exchange_get_customer( $meta['client'] )->data->user_login;
 	}
 
 	/**
