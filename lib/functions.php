@@ -113,8 +113,7 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 	$notification = it_exchange_email_notifications()->get_notification( 'new-invoice' );
 	
 	$email = new IT_Exchange_Email( $recipient, $notification, array(
-		'invoice'   => $product,
-		'customer'  => $customer
+		'invoice'   => $product
 	) );
 
 	foreach ( $additional_emails as $additional_email ) {
