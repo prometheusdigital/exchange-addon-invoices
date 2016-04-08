@@ -163,8 +163,16 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $options['tax_label'] . $tax_id;
 		if ( in_array( 'address', $options['fields'] ) && ! empty( $address ) )
 			$value[] = nl2br( $address );
-		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
-			$value[] = $email;
+		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) ) {
+			
+			if ( it_exchange( 'email', 'has-context', 'key=invoice' ) ) {
+				$color = it_exchange( 'email', 'get-body-highlight-color' );
+				
+				$value[] = "<a href='mailto:$email' style='color: $color;'>$email</a>";
+			} else {
+				$value[] = $email;
+			}
+		}
 		$value = implode( $value, '<br />' );
 
 		switch( $options['format'] ) {
@@ -226,8 +234,15 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 			$value[] = $name;
 		if ( in_array( 'company', $options['fields'] ) && ! empty( $this->meta['company'] ) )
 			$value[] = $this->meta['company'];
-		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) )
-			$value[] = $email;
+		if ( in_array( 'email', $options['fields'] ) && ! empty( $email ) ) {
+			if ( it_exchange( 'email', 'has-context', 'key=invoice' ) ) {
+				$color = it_exchange( 'email', 'get-body-highlight-color' );
+
+				$value[] = "<a href='mailto:$email' style='color: $color;'>$email</a>";
+			} else {
+				$value[] = $email;
+			}
+		}
 		if ( in_array( 'address', $options['fields'] ) && ! empty( $this->meta['address'] ) )
 			$value[] = nl2br( $this->meta['address'] );
 		$value = implode( $value, '<br />' );
