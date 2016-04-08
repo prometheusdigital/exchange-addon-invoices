@@ -107,7 +107,7 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 		return false;
 	}
 
-	$additional_emails = empty( $meta['additional_emails'] ) ? array() : $meta['additional_emails'];
+	$additional_emails = empty( $meta['additional_emails'] ) ? array() : explode(',', $meta['additional_emails'] );
 	
 	$recipient = new IT_Exchange_Email_Recipient_Customer( $customer );
 	$notification = it_exchange_email_notifications()->get_notification( 'new-invoice' );
@@ -117,7 +117,7 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 	) );
 
 	foreach ( $additional_emails as $additional_email ) {
-		$email->add_cc( new IT_Exchange_Email_Recipient_Email( $additional_email ) );
+		$email->add_cc( new IT_Exchange_Email_Recipient_Email( trim( $additional_email ) ) );
 	}
 	
 	return it_exchange_send_email( $email );
