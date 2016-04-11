@@ -111,6 +111,10 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 	
 	$recipient = new IT_Exchange_Email_Recipient_Customer( $customer );
 	$notification = it_exchange_email_notifications()->get_notification( 'new-invoice' );
+
+	if ( ! $notification->is_active() ) {
+		return;
+	}
 	
 	$email = new IT_Exchange_Email( $recipient, $notification, array(
 		'invoice'   => $product
