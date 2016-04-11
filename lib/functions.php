@@ -113,7 +113,7 @@ function it_exchange_invoice_addon_send_invoice( $post_id ) {
 	$notification = it_exchange_email_notifications()->get_notification( 'new-invoice' );
 
 	if ( ! $notification->is_active() ) {
-		return;
+		return false;
 	}
 	
 	$email = new IT_Exchange_Email( $recipient, $notification, array(
