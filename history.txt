@@ -85,3 +85,6 @@
 	Updating updater
 1.9.0 - 2016-03-21 - Timothy Jacobs
 	Add: Support for using coupons on invoices
+1.9.1 - 2016-05-12 - Timothy Jacobs
+	Add: Support for VAT on invoices
+	Tweak: New hooks in /content-invoice-product/elements/payment.php
