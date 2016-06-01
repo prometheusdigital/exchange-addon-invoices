@@ -760,12 +760,45 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 				break;
 			case 'html' :
 			default :
+
+				remove_filter( 'it_exchange_api_theme_product_base_price', 'it_exchange_add_sale_information_to_base_price_theme', 20 );
+				add_filter( 'it_exchange_api_theme_product_base_price', array( $this, '_add_sale_price_to_theme' ), 20, 2 );
+				
+				$this->total = $value;
+
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
 				$return .= '	<span class="label">' . $label . '</span>';
 				$return .= '	<span class="value">' . apply_filters( 'it_exchange_api_theme_product_base_price', $value, $this->product->ID ) . '</span>';
 				$return .= '</div>';
+
+				remove_filter( 'it_exchange_api_theme_product_base_price', array( $this, '_add_sale_price_to_theme' ), 20 );
+				add_filter( 'it_exchange_api_theme_product_base_price', 'it_exchange_add_sale_information_to_base_price_theme', 20, 2 );
 		}
+
 		return $return;
+	}
+
+	/**
+	 * Add sale price to the theme for invoice products.
+	 *
+	 * @since 1.9.2
+	 *
+	 * @param string $price
+	 * @param int $product_id
+	 *
+	 * @return string
+	 */
+	public function _add_sale_price_to_theme( $price, $product_id ) {
+
+		if ( it_exchange_is_product_sale_active( $product_id ) ) {
+
+			$original   = it_exchange_get_product_feature( $product_id, 'base-price' );
+
+			$price = "<del>$original</del>&nbsp;";
+			$price .= "<ins>{$this->total}</ins>";
+		}
+
+		return $price;
 	}
 
 	/**
