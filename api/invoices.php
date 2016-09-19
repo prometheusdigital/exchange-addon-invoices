@@ -52,6 +52,7 @@ function it_exchange_invoices_addon_get_invoices( $options=array() ) {
 		'invoice_status' => 'any',
 		'customer'       => false,
 		'post_status'    => 'publish',
+		'numberposts'    => -1,
 	);
 
 	$options = wp_parse_args( $options, $defaults );
