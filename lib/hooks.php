@@ -64,6 +64,8 @@ function it_exchange_invoices_addon_admin_wp_enqueue_scripts( $hook_suffix, $pos
 }
 add_action( 'it_exchange_admin_wp_enqueue_scripts', 'it_exchange_invoices_addon_admin_wp_enqueue_scripts', 10, 2 );
 
+add_filter( 'it_exchange_using_child_transactions', '__return_true' );
+
 /**
  * Change single add product menu item to Add Invoice
  *
