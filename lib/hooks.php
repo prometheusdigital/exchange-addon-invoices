@@ -972,9 +972,15 @@ function it_exchange_invoices_dont_bump_abandoned_carts( $bump, $customer, $cart
         return $bump;
 
     foreach( (array) $cart['products'] as $product ) {
+
+	    if  ( ! isset( $product['product_id'] ) ) {
+		    continue;
+	    }
+
         if ( 'invoices-product-type' === it_exchange_get_product_type( $product['product_id'] ) )
             return false;
     }
+
     return $bump;
 }
 add_filter( 'it_exchange_abandoned_carts_bump_active_shopper', 'it_exchange_invoices_dont_bump_abandoned_carts', 10, 3 );
