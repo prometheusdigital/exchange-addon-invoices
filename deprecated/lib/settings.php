@@ -96,12 +96,9 @@ Thank you,
  *
  * @since 1.0.0
  *
- * @deprecated 2.0.0
+ * @return
 */
 function it_exchange_invoice_addon_set_default_options() {
-
-    _deprecated_function( __FUNCTION__, '2.0.0' );
-
 	$defaults = it_exchange_invoice_addon_get_default_settings();
 	$current  = it_exchange_get_option( 'invoice-addon' );
 

@@ -2,7 +2,7 @@
 /**
  * Contains the invoices email tags.
  *
- * @since   1.10.0
+ * @since   2.0.0
  * @license GPLv2
  */
 
@@ -23,7 +23,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 	/**
 	 * Register the default tags.
 	 *
-	 * @since 1.10
+	 * @since 2.0.0
 	 *
 	 * @param IT_Exchange_Email_Tag_Replacer $replacer
 	 */
@@ -109,7 +109,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 	/**
 	 * Replace the client name tag.
 	 *
-	 * @since 1.10
+	 * @since 2.0.0
 	 *
 	 * @param array $context
 	 *
@@ -169,7 +169,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 	/**
 	 * Replace the invoice total tag.
 	 *
-	 * @since 1.10
+	 * @since 2.0.0
 	 *
 	 * @param array $context
 	 *
@@ -184,7 +184,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 	 *
 	 * Used to simplify tags that are just calling meta.
 	 *
-	 * @since 1.10.0
+	 * @since 2.0.0
 	 *
 	 * @param string $name
 	 * @param array  $arguments

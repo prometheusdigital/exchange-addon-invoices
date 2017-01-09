@@ -2,7 +2,7 @@
 /**
  * This file contains the markup for the email invoice totals.
  *
- * @since   1.10
+ * @since   2.0.0
  * @link    http://ithemes.com/codex/page/Exchange_Template_Updates
  * @package IT_Exchange
  *

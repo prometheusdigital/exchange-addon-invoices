@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Enqueues styles for add-edit product page
  *
@@ -37,8 +36,6 @@ function it_exchange_invoices_addon_admin_wp_enqueue_scripts( $hook_suffix, $pos
     }
 }
 add_action( 'it_exchange_admin_wp_enqueue_scripts', 'it_exchange_invoices_addon_admin_wp_enqueue_scripts', 10, 2 );
-
-add_filter( 'it_exchange_using_child_transactions', '__return_true' );
 
 /**
  * Change single add product menu item to Add Invoice
@@ -184,9 +181,26 @@ add_action( 'wp_ajax_it-exchange-invoices-create-client', 'it_exchange_invoices_
 */
 function it_exchange_invoices_add_template_directory( $template_paths, $template_names ) {
 
-	$template_paths[] = dirname( __FILE__ ) . '/templates';
+	// Return if not an invoice product type
+	if ( ( ! is_preview() && ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'invoices' ) ) || ( it_exchange_is_page( 'product' ) && 'invoices-product-type' != it_exchange_get_product_type() ) )
+		return $template_paths;
 
-	return $template_paths;
+	// If content-invoice-product.php is in template_names, add our template path and return
+	if ( in_array( 'content-invoice-product.php', (array) $template_names ) || in_array( 'content-invoices.php', (array) $template_names ) ) {
+		$template_paths[] = dirname( __FILE__ ) . '/templates';
+		return $template_paths;
+	}
+
+	// If any of the template_paths include content-invoice-product, return add our templates directory
+	foreach( (array) $template_names as $name ) {
+		if ( false !== strpos( $name, 'content-invoice-product' ) || false !== strpos( $name, 'content-invoices' ) ) {
+			$template_paths[] = dirname( __FILE__ ) . '/templates';
+			return $template_paths;
+		}
+	}
+
+	// We shouldn't make it here but return just in case we do.
+    return $template_paths;
 }
 add_filter( 'it_exchange_possible_template_paths', 'it_exchange_invoices_add_template_directory', 10, 2 );
 
@@ -332,6 +346,83 @@ function it_exchange_invoice_addon_load_public_scripts() {
 add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts', 9 );
 
 /**
+ * Set the user ID for logged-out nonces if the action matches a whitelist.
+ *
+ * @since 1.9.1
+ *
+ * @param int|bool $uid
+ * @param string   $action
+ *
+ * @return int|bool
+ */
+function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action ) {
+
+	if ( $uid ) {
+		return $uid;
+	}
+
+	$whitelist = apply_filters( 'it_exchange_invoices_user_id_nonce_verification_whitelist', array(), $uid );
+
+	if ( ! in_array( $action, $whitelist ) ) {
+		return $uid;
+	}
+
+	if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+		$referrer = $_REQUEST['_wp_http_referer'];
+
+		$parsed = parse_url( $referrer );
+		
+		if ( ! isset( $parsed['query'], $parsed['path'] ) ) {
+			return $uid;
+		}
+
+		parse_str( $parsed['query'], $query );
+
+		$parts = explode( '/', trim( $parsed['path'], '/' ) );
+
+		$products = it_exchange_get_products( array(
+			'product_type'  => 'invoices-product-type',
+			'name'          => array_pop( $parts ),
+			'show_hidden'   => true
+		) );
+
+		if ( ! $products ) {
+			return $uid;
+		}
+
+		$product = reset( $products );
+		
+		it_exchange_set_the_product_id( $product->ID );
+		
+		if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice( $query['client'] ) ) {
+			return $uid;
+		}
+
+		$product = $product->ID;
+	} else {
+		$product = it_exchange_get_the_product_id();
+	}
+
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $product ) ) {
+		return $uid;
+	}
+
+	$meta          = it_exchange_get_product_feature( $product, 'invoices' );
+	$exchange_user = it_exchange_get_customer( $meta['client'] );
+	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
+
+	if ( empty( $wp_user->ID ) ) {
+		return $uid;
+	}
+
+	$uid = $wp_user->ID;
+
+	return $uid;
+}
+
+add_filter( 'nonce_user_logged_out', 'it_exchange_invoice_set_user_id_for_nonce_verification', 10, 2 );
+
+/**
  * Logs the User in for invoice and transaction
  *
  * @since 1.0.0
@@ -417,7 +508,7 @@ function it_exchange_invoice_log_client_in_for_superwidget() {
 	// Log client in
 	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
-
+	
 	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
 }
 add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
@@ -946,15 +1037,9 @@ function it_exchange_invoices_dont_bump_abandoned_carts( $bump, $customer, $cart
         return $bump;
 
     foreach( (array) $cart['products'] as $product ) {
-
-	    if  ( ! isset( $product['product_id'] ) ) {
-		    continue;
-	    }
-
         if ( 'invoices-product-type' === it_exchange_get_product_type( $product['product_id'] ) )
             return false;
     }
-
     return $bump;
 }
 add_filter( 'it_exchange_abandoned_carts_bump_active_shopper', 'it_exchange_invoices_dont_bump_abandoned_carts', 10, 3 );
@@ -1220,7 +1305,7 @@ add_action( 'it_exchange_invoice_addon_daily_schedule', 'it_exchange_invoice_add
 /**
  * Add settings to the coupon form.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param ITForm $form
  */
@@ -1249,7 +1334,7 @@ add_action( 'it_exchange_basic_coupons_coupon_edit_tab_product', 'it_exchange_in
 /**
  * Save coupon settings.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $data
  *
@@ -1267,7 +1352,7 @@ add_filter( 'it_exchange_basic_coupons_save_coupon', 'it_exchange_invoices_save_
 /**
  * Validate the coupon for a particular product.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param bool                    $valid
  * @param array                   $cart_product
@@ -1291,7 +1376,7 @@ add_filter( 'it_exchange_basic_coupons_valid_product_for_coupon', 'it_exchange_i
 /**
  * Get the total price of the invoice.
  *
- * @since 1.8.0
+ * @since 1.9.0
  */
 function it_exchange_invoices_sw_ajax_get_total() {
 	die( it_exchange_get_cart_total() );
@@ -1302,7 +1387,7 @@ add_action( 'it_exchange_processing_super_widget_ajax_invoices-get-total', 'it_e
 /**
  * Remove the coupon template part from the SuperWidget.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $parts
  *
@@ -1335,46 +1420,3 @@ function it_exchange_invoices_remove_coupon_template_from_sw( $parts ) {
 }
 
 add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elements', 'it_exchange_invoices_remove_coupon_template_from_sw' );
-
-/**
- * Register emails with Exchange.
- *
- * @since 2.0.0
- *
- * @param IT_Exchange_Email_Notifications $notifications
- */
-function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_Notifications $notifications ) {
-	
-	$r = $notifications->get_replacer();
-
-	$notifications->register_notification( new IT_Exchange_Customer_Email_Notification(
-		__( 'New Invoice', 'LION') , 'new-invoice', new IT_Exchange_Email_Template( 'invoice' ), array(
-			'defaults' => array(
-				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), $r->format_tag( 'company_name' ) ),
-				'body' => "Hi {$r->format_tag( 'first_name' )}
-
-{$r->format_tag( 'company_name' )} has sent {$r->format_tag( 'client_name' )} an invoice for {$r->format_tag( 'invoice_total' )}.
-
-Please review the details below.",
-		),
-		'group' => __( 'Invoices', 'LION' )
-	) ) );
-}
-
-add_action( 'it_exchange_register_email_notifications', 'it_exchange_invoices_register_email_notifications' );
-
-/**
- * Globalize the email context for the Theme API.
- *
- * @since 2.0.0
- *
- * @param array $context
- */
-function it_exchange_invoices_globalize_context( $context ) {
-
-	if ( ! empty( $context['invoice'] ) ) {
-		$GLOBALS['it_exchange']['product'] = $context['invoice'];
-	}
-}
-
-add_action( 'it_exchange_email_template_globalize_context', 'it_exchange_invoices_globalize_context' );

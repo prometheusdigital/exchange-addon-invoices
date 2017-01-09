@@ -1,0 +1,92 @@
+1.8.0 - 2015-11-30 - Lew Ayotte, Timothy Jacobs
+	Fix esc_url_raw() for payment link to fix issues with no-permalink settings
+	Change Sale Price label to Discount Price
+1.7.0 - 2015-11-04 - Lew Ayotte 
+	PHP7 Updates and Updating updater
+1.6.0 - 2015-07-27 - Lew Ayotte
+	Enable invoice cron if it doesn't exist, for upgrade situations
+	Update CSS styling
+	Adding product images to invoices frontend template
+	Updating updater
+1.5.0 - 2015-06-30 - Lew Ayotte
+	Display correct price when viewing a draft/unpublished invoice
+	Fixing esc url for preview link
+1.4.2 - 2015-06-15 - Lew Ayotte
+	Fix for Child Invoices showing up as paid if the Parent was paid during it's creation
+1.4.1 - 2015-04-23 - Packaging Bot (lib/updater)
+	Compatibility Fix: Updated plugin and theme update data format to match changes in WordPress 4.2.
+1.4.0 - 2015-04-20 - Lew Ayotte
+	Multiple updates involving add_query_arg and remove_query_arg to esc_url()
+1.3.1 - 2015-03-16 - Lew Ayotte
+	Fix to properly set Date Issued when auto-invoices are created
+1.3.0 - 2015-03-16 - Lew Ayotte
+	New Feature: Auto-Invoicing!
+1.2.5 - 2015-02-12 - Lew Ayotte
+	Adding noindex and nofollow meta headers to product page for Invoices to help prevent search engines from indexing these products
+1.2.4 - 2015-01-05 - Glenn Ansley, Ronald van Weerd
+	Fixed bug causing bad dates when date format starts with 'j'
+1.2.3 - 2014-11-14 - Packaging Bot (lib/updater)
+	Enhancement: Reduced caching to allow updates to appear more quickly.
+	Enhancement: Authenticating users now uses the new authentication system.
+1.2.2 - 2014-11-10 - Glenn Ansley
+	Added client username to list of available email shortcodes
+1.2.1 - 2014-10-02 - Glenn Ansley
+	Added nonce field to register user in Invoices AJAX
+1.2.0 - 2014-09-17 - Glenn Ansley, Elise Alley
+	Introduced Frontend Invoices
+	Fixed bug causing SW to disappear when Print Invoices is clicked
+	Fixed JS bug preventing Print Invoice from working in FF
+	Force UTF-8 on html_entity_decode
+1.1.1 - 2014-08-14 - Lew Ayotte
+	Fix bug so that pound sign displays correctly in emails
+1.1.0 - 2014-07-17 - Glenn Ansley
+	Add ability to send Invoice to additional email addresses
+	Add Company Tax ID to From section of invoice if it has a value
+	Add Invoice Number and PO number as shortcode arguments
+	Add Print Invoice to invoices
+	Add Client Address option to Invoices
+1.0.8 - 2014-06-05 - Glenn Anlsey, Elise Alley
+	Don't show paid invoices in Manual Purchaces admin UI.
+	Add client and date issued to product title in Maunal Purchases admin UI
+	Don't show link to resend email if invoice has been paid.
+	Don't show link to email if filter for 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link' returns false.
+	Don't send email in the event that someone guessed the query arg to fire it even when link wasn't available if either of the above two conditions are true
+	Add nofollow to resend email link
+	Update invoice due/paid/pending notice style
+1.0.7 - 2014-05-14 - Glenn Ansley, Elise Alley
+	Fixed bug showing login link on invoice when users are really logged in.
+	Fixed bug that prevents the sidebar widget from being hidden after invoice is paid for.
+1.0.6 - 2014-05-13 - Glenn Ansley, Elise Alley, Ronald van Weerd
+	Fixed bug preventing invoice styles from being overwritten in theme styles
+	Fixed bug that cause the date_issued email shortcode to be printed in UNIX time
+1.0.5 - 2014-05-12 - Glenn Ansley, Ty Carlson
+	Revert Log Out nav links to Log In on invoice pages
+	Responsive tweaks for invoice admin
+1.0.4 - 2014-02-05 - Glenn Ansley
+	Add offline transaction method to frontend invoice after paid with offline transaction method.
+	Replace 'Order Number' with Invoice Number in All Payments view for admin
+	Print payment status as 'Pending' when in draft mode for invoices
+1.0.3 - 2014-02-03 - Packaging Bot (lib/updater)
+	Bug Fix: Licensing on SSL-enabled sites now works properly.
+1.0.2 - 2013.12-19 - Glenn Ansley
+	Print invoice status in All Products screen
+1.0.1 - 2013-12-19 - Packaging Bot
+	Updating git submodules
+1.0.0 - 2013-12-19 - Glenn Ansley
+	Initial Release
+1.5.1 - 2015-07-14 - Packaging Bot (lib/updater)
+	Enhancement: Updated link to iThemes support.
+1.6.0 - 2015-07-27 - Lew Ayotte
+	Enable invoice cron if it doesn't exist, for upgrade situations
+	Adding product images to invoices frontend template
+	Updating updater
+1.7.0 - 2015-11-04 - Lew Ayotte
+	PHP7 Updates
+	Updating updater
+1.9.0 - 2016-03-21 - Timothy Jacobs
+	Add: Support for using coupons on invoices
+1.9.1 - 2016-05-12 - Timothy Jacobs
+	Add: Support for VAT on invoices
+	Tweak: New hooks in /content-invoice-product/elements/payment.php
+1.9.2 - 2016-06-02 - Timothy Jacobs
+	Fix: Discounted Price would not properly show the savings on published invoices

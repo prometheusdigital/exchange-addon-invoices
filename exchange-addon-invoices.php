@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: iThemes Exchange - Invoices Add-on
- * Version: 1.8.0
+ * Version: 2.0.0
  * Description: Allows you to invoice clients for services.
  * Plugin URI: http://ithemes.com/exchange/invoices/
  * Author: iThemes
@@ -17,47 +17,19 @@
 */
 
 /**
- * This registers our plugin as a invoices addon
+ * Load the Stripe plugin.
  *
- * @since 1.0.0
- *
- * @return void
-*/
-function it_exchange_register_invoices_addon() {
-	$options = array(
-		'name'              => __( 'Invoices', 'LION' ),
-		'description'       => __( 'Allows you to invoice clients for services.', 'LION' ),
-		'author'            => 'iThemes',
-		'author_url'        => 'http://ithemes.com/exchange/invoices/',
-		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/invoices50.png' ),
-		'wizard-icon'       => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/wizard-invoices.png' ),
-		'file'              => dirname( __FILE__ ) . '/init.php',
-		'category'          => 'product-type',
-		'basename'          => plugin_basename( __FILE__ ),
-		'labels'      => array(
-			'singular_name' => __( 'Invoice', 'LION' ),
-		),
-	);
-	it_exchange_register_addon( 'invoices-product-type', $options );
-	
-	//Reschedule the cron if it doesn't exist!
-	if ( ! wp_next_scheduled( 'it_exchange_invoice_addon_daily_schedule' ) ) {
-		wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
+ * @since 2.0.0
+ */
+function it_exchange_load_invoices() {
+	if ( ! function_exists( 'it_exchange_load_deprecated' ) || it_exchange_load_deprecated() ) {
+		require_once dirname( __FILE__ ) . '/deprecated/exchange-addon-invoices.php';
+	} else {
+		require_once dirname( __FILE__ ) . '/plugin.php';
 	}
 }
-add_action( 'it_exchange_register_addons', 'it_exchange_register_invoices_addon' );
 
-/**
- * Loads the translation data for WordPress
- *
- * @uses load_plugin_textdomain()
- * @since 1.0.0
- * @return void
-*/
-function it_exchange_invoices_set_textdomain() {
-	load_plugin_textdomain( 'LION', false, dirname( plugin_basename( __FILE__  ) ) . '/lang/' );
-}
-add_action( 'plugins_loaded', 'it_exchange_invoices_set_textdomain' );
+add_action( 'plugins_loaded', 'it_exchange_load_invoices' );
 
 /**
  * Registers Plugin with iThemes updater class
@@ -81,8 +53,6 @@ require( dirname( __FILE__ ) . '/lib/updater/load.php' );
  * @return void
 */
 function it_exchange_invoice_addon_activation() {
-	include_once( 'lib/settings.php' );
-	it_exchange_invoice_addon_set_default_options();
 	if ( ! wp_next_scheduled( 'it_exchange_invoice_addon_daily_schedule' ) ) {
 		wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
 	}
@@ -98,6 +68,3 @@ function it_exchange_invoice_addon_deactivation() {
 	wp_clear_scheduled_hook( 'it_exchange_invoice_addon_daily_schedule' );
 }
 register_deactivation_hook( __FILE__, 'it_exchange_invoice_addon_deactivation' );
-
-//Since we're supporting auto-invoicing, I want to make child invoices look proper...
-add_filter( 'ithemes_exchange_products_post_type_hierarchical', '__return_true' );

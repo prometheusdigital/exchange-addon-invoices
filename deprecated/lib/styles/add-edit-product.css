@@ -1,0 +1,42 @@
+#it-exchange-product-invoices{margin-bottom:30px;clear:both;}
+#it-exchange-product-invoices input{font-size:16px;}
+#it-exchange-product-invoices .sections-wrapper{background:#FFF;border:1px solid #DFDFDF;}
+#it-exchange-product-invoices .invoice-section{padding:20px;}
+#it-exchange-product-invoices .section-one,
+#it-exchange-product-invoices .section-customer-select,
+#it-exchange-product-invoices .section-two,
+#it-exchange-product-invoices .section-three{border-bottom:1px solid #DFDFDF;}
+
+#it-exchange-product-invoices .section-customer-new .invoice-field-container-left{float:left;width:49%;}
+#it-exchange-product-invoices .section-customer-new .invoice-field-container-right{float:right;width:49%;}
+
+#it-exchange-product-invoices .section-one .invoice-field-container{margin-bottom:20px;}
+#it-exchange-product-invoices .section-one .invoice-field-container-left{float:left;width:68%;}
+#it-exchange-product-invoices .section-one .invoice-field-container-right{float:right;width:30%;}
+#it-exchange-invoices-emails{background-color:transparent;}
+#it-exchange-product-invoices .section-one .invoice-field-container-send-emails{clear:both;margin-bottom:0;}
+#it-exchange-product-invoices .section-four .invoice-field-container-password{margin-top:10px;}
+#it-exchange-product-invoices .section-four .invoice-field-container-password input{max-width:300px;}
+#it-exchange-product-invoices .section-four .dice{cursor:pointer;margin-left:10px;padding:0 3px;border:1px solid #d6d6d6;border-radius:3px;}
+
+#it-exchange-product-invoices .invoice-section input[type="button"]{width:auto;font-size:1em;padding:0 10px 1px;margin-top:1em;}
+#it-exchange-product-invoices .section-customer-new{max-width:600px;}
+#it-exchange-product-invoices .section-customer-new #it-exchange-invoices-new-client-error{margin-bottom:1em;}
+#it-exchange-product-invoices .section-customer-new input[type="text"]{margin-bottom:1em;}
+#it-exchange-product-invoices .section-customer-new textarea {margin-bottom:1em;}
+#it-exchange-product-invoices .section-customer-new input[type="password"]{margin-bottom:.5em;}
+#it-exchange-product-invoices .invoice-field-container-client-type-new-custom-password{max-width:280px;}
+
+#it-exchange-product-invoices .invoice-field-container-client-id{position:relative;}
+#it-exchange-product-invoices .it-exchange-invoices-client-name:disabled{color:#000;}
+#it-exchange-product-invoices #it-exchange-invoices-edit-client{position:absolute;top:40px;right:15px;background:#FFF;box-shadow:#FFF -12px 0 5px 0px,#FFF 4px 0 5px 0px;text-decoration:none;}
+#it-exchange-product-invoices #disabled-client-link{background:#ebebeb;border:none;margin-bottom:12px;}
+
+/** Hidden at first and then revealed by JS after its moved to prevent flickering */
+#it-exchange-product-description{display:none;}
+
+@media screen and (max-width: 900px ) {
+	#it-exchange-product-invoices .invoice-section {padding:10px;}
+	#it-exchange-product-invoices .section-customer-new .invoice-field-container-left,
+	#it-exchange-product-invoices .section-customer-new .invoice-field-container-right{float:none;width:100%;}
+}
