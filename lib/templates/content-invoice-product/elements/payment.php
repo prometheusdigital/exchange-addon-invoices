@@ -20,6 +20,9 @@
 		<div class="it-exchange-invoice-payment-amount">
 			<?php it_exchange( 'invoice', 'payment-amount' ); ?>
 		</div>
+	<?php do_action( 'it_exchange_content_invoice_product_after_payment_amount' ); ?>
+
+	<?php do_action( 'it_exchange_content_invoice_product_before_payment_status' ); ?>
 		<div class="it-exchange-invoice-payment-status">
 			<?php it_exchange( 'invoice', 'payment-status' ); ?>
 		</div>

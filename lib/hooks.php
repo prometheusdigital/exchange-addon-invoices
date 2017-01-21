@@ -332,6 +332,83 @@ function it_exchange_invoice_addon_load_public_scripts() {
 add_action( 'wp_enqueue_scripts', 'it_exchange_invoice_addon_load_public_scripts', 9 );
 
 /**
+ * Set the user ID for logged-out nonces if the action matches a whitelist.
+ *
+ * @since 1.9.1
+ *
+ * @param int|bool $uid
+ * @param string   $action
+ *
+ * @return int|bool
+ */
+function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action ) {
+
+	if ( $uid ) {
+		return $uid;
+	}
+
+	$whitelist = apply_filters( 'it_exchange_invoices_user_id_nonce_verification_whitelist', array(), $uid );
+
+	if ( ! in_array( $action, $whitelist ) ) {
+		return $uid;
+	}
+
+	if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+		$referrer = $_REQUEST['_wp_http_referer'];
+
+		$parsed = parse_url( $referrer );
+		
+		if ( ! isset( $parsed['query'], $parsed['path'] ) ) {
+			return $uid;
+		}
+
+		parse_str( $parsed['query'], $query );
+
+		$parts = explode( '/', trim( $parsed['path'], '/' ) );
+
+		$products = it_exchange_get_products( array(
+			'product_type'  => 'invoices-product-type',
+			'name'          => array_pop( $parts ),
+			'show_hidden'   => true
+		) );
+
+		if ( ! $products ) {
+			return $uid;
+		}
+
+		$product = reset( $products );
+		
+		it_exchange_set_the_product_id( $product->ID );
+		
+		if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice( $query['client'] ) ) {
+			return $uid;
+		}
+
+		$product = $product->ID;
+	} else {
+		$product = it_exchange_get_the_product_id();
+	}
+
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $product ) ) {
+		return $uid;
+	}
+
+	$meta          = it_exchange_get_product_feature( $product, 'invoices' );
+	$exchange_user = it_exchange_get_customer( $meta['client'] );
+	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
+
+	if ( empty( $wp_user->ID ) ) {
+		return $uid;
+	}
+
+	$uid = $wp_user->ID;
+
+	return $uid;
+}
+
+add_filter( 'nonce_user_logged_out', 'it_exchange_invoice_set_user_id_for_nonce_verification', 10, 2 );
+
+/**
  * Logs the User in for invoice and transaction
  *
  * @since 1.0.0
@@ -1220,7 +1297,7 @@ add_action( 'it_exchange_invoice_addon_daily_schedule', 'it_exchange_invoice_add
 /**
  * Add settings to the coupon form.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param ITForm $form
  */
@@ -1249,7 +1326,7 @@ add_action( 'it_exchange_basic_coupons_coupon_edit_tab_product', 'it_exchange_in
 /**
  * Save coupon settings.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $data
  *
@@ -1267,7 +1344,7 @@ add_filter( 'it_exchange_basic_coupons_save_coupon', 'it_exchange_invoices_save_
 /**
  * Validate the coupon for a particular product.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param bool                    $valid
  * @param array                   $cart_product
@@ -1291,7 +1368,7 @@ add_filter( 'it_exchange_basic_coupons_valid_product_for_coupon', 'it_exchange_i
 /**
  * Get the total price of the invoice.
  *
- * @since 1.8.0
+ * @since 1.9.0
  */
 function it_exchange_invoices_sw_ajax_get_total() {
 	die( it_exchange_get_cart_total() );
@@ -1302,7 +1379,7 @@ add_action( 'it_exchange_processing_super_widget_ajax_invoices-get-total', 'it_e
 /**
  * Remove the coupon template part from the SuperWidget.
  *
- * @since 1.8.0
+ * @since 1.9.0
  *
  * @param array $parts
  *

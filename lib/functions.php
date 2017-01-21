@@ -54,19 +54,25 @@ function it_exchange_invoice_addon_get_available_terms() {
  * Is correct hash set for current invoice
  *
  * @since 1.0.0
+ *        
+ * @param string $hash
  *
  * @return boolean
 */
-function it_exchange_invoice_addon_is_hash_valid_for_invoice() {
+function it_exchange_invoice_addon_is_hash_valid_for_invoice( $hash = '' ) {
 
-	$hash    = empty( $_GET['client'] ) ? false : $_GET['client'];
-	$product = it_exchange_get_product( false );
+	if ( ! $hash ) {
+		$hash = empty( $_GET['client'] ) ? false : $_GET['client'];
+	}
+	
+	$product = it_exchange_get_the_product_id();
 
-	if ( empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+	if ( empty( $product ) || 'invoices-product-type' !== it_exchange_get_product_type( $product ) )
 		return false;
 
-	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
-	if ( empty( $hash) || empty( $meta['hash'] ) || $meta['hash'] !== $hash )
+	$meta = it_exchange_get_product_feature( $product, 'invoices' );
+
+	if ( empty( $hash ) || empty( $meta['hash'] ) || ! hash_equals( $meta['hash'], $hash ) )
 		return false;
 
 	return true;

@@ -13,11 +13,10 @@
  * 2. If you use the WordPress plugin uploader to install this plugin skip to step 4.
  * 3. Upload the entire plugin directory to your `/wp-content/plugins/` directory.
  * 4. Activate the plugin through the 'Plugins' menu in WordPress Administration.
- *
 */
 
 /**
- * Load the Stripe plugin.
+ * Load the Invoices plugin.
  *
  * @since 2.0.0
  */
