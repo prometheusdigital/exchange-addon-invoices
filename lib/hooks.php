@@ -87,6 +87,10 @@ add_filter( 'it_exchange_add_ediit_product_visibility', 'it_exchange_invoices_ad
 */
 function it_exchange_invoicing_ajax_get_client_data() {
 
+    if ( ! current_user_can( 'edit_users' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Not allowed.', 'LION' ) ) );
+    }
+
 	// Set default Term
 	$terms = array_keys( it_exchange_invoice_addon_get_available_terms() );
 	$default_term = reset( $terms );
@@ -126,6 +130,11 @@ function it_exchange_invoicing_cancel_auto_invoicing() {
 	$invoice_id = empty( $_POST['invoiceID'] ) ? 0 : $_POST['invoiceID'];
 
 	if ( !empty( $invoice_id ) ) {
+
+        if ( ! current_user_can( 'edit_post', $invoice_id ) ) {
+            die( '<p>' . __( "You don't have permissions to do this.", 'LION' ) . '</p>' );
+        }
+
 		$invoice_data = it_exchange_get_product_feature( $invoice_id, 'invoices' );
 		$invoice_data['recurring_enabled'] = false;
 		it_exchange_update_product_feature( $invoice_id, 'invoices', $invoice_data );
@@ -146,8 +155,9 @@ add_action( 'wp_ajax_it-exchange-invoicing-cancel-auto-invoicing', 'it_exchange_
 function it_exchange_invoices_ajax_create_client() {
 	$return = new stdClass();
 
-	// Custom errors
-	if ( empty( $_POST['first_name'] ) ) {
+	if ( ! current_user_can( 'edit_users' ) ) {
+	    $user_id = new WP_Error( 'not-allowed', __( "You don't have permission to do this.", 'LION' ) );
+    } elseif ( empty( $_POST['first_name'] ) ) { // Custom errors
 		$user_id = new WP_Error( 'empty-first-name', __( 'Error: Please include a First Name', 'LION' ) );
 	} else if ( empty( $_POST['last_name'] ) ) {
 		$user_id = new WP_Error( 'empty-last-name', __( 'Error: Please include a Last Name', 'LION' ) );
@@ -199,8 +209,9 @@ function it_exchange_invoices_hijack_product_template( $template_names, $load, $
 		return $template_names;
 
 	foreach( (array) $template_names as $key => $name ) {
-		if ( 'content-product.php' == $name )
-			$template_names[$key] = 'content-invoice-product.php';
+		if ( 'content-product.php' === $name ) {
+			$template_names[ $key ] = 'content-invoice-product.php';
+		}
 	}
 	return $template_names;
 }
@@ -216,8 +227,9 @@ add_action( 'it_exchange_locate_template_template_names', 'it_exchange_invoices_
  * @return string
 */
 function it_exchange_invoice_addon_change_admin_title_label( $label, $post ) {
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) ) {
 		$label = __( 'Invoice Title', 'LION' );
+	}
 
 	return $label;
 }
@@ -233,7 +245,7 @@ add_filter( 'it_exchange_add_edit_product_title_label', 'it_exchange_invoice_add
  * @return string
 */
 function it_exchange_invoice_addon_change_admin_title_tooltip( $tooltip, $post ) {
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) )
 		$tooltip = __( 'Name your invoice something descriptive for future reference.', 'LION' );
 
 	return $tooltip;
@@ -250,7 +262,7 @@ add_filter( 'it_exchange_add_edit_product_title_tooltip', 'it_exchange_invoice_a
  * @return string
 */
 function it_exchange_invoice_addon_change_admin_description_label( $label, $post ) {
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) )
 		$label = __( 'Invoice Description', 'LION' );
 
 	return $label;
@@ -267,7 +279,7 @@ add_filter( 'it_exchange_add_edit_product_description_label', 'it_exchange_invoi
  * @return string
 */
 function it_exchange_invoice_addon_change_admin_description_tooltip( $tooltip, $post ) {
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) )
 		$tooltip = __( 'This is a quick, descriptive summary of your invoice. It is usually 3-5 sentences long. To add additional info, use the Notes area below.', 'LION' );
 
 	return $tooltip;
@@ -285,7 +297,7 @@ add_filter( 'it_exchange_add_edit_product_description_tooltip', 'it_exchange_inv
 */
 function it_exchange_invoice_addon_change_admin_price_label( $label, $post=false ) {
 	$post = empty( $post ) ? $GLOBALS['post'] : $post;
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) )
 		$label = __( 'Total Due', 'LION' );
 
 	return $label;
@@ -303,7 +315,7 @@ add_filter( 'it_exchange_base-price_addon_metabox_description', 'it_exchange_inv
  */
 function it_exchange_invoice_addon_change_admin_sale_price_label( $label, $post=false ) {
 	$post = empty( $post ) ? $GLOBALS['post'] : $post;
-	if ( 'invoices-product-type' == it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' === it_exchange_get_product_type( $post ) )
 		$label = __( 'Discount Price', 'LION' );
 
 	return $label;
@@ -319,7 +331,7 @@ add_filter( 'it_exchange_sale-price_addon_metabox_description', 'it_exchange_inv
 */
 function it_exchange_invoice_addon_load_public_scripts() {
 	// Frontend Product CSS
-	if ( is_singular( 'it_exchange_prod' ) && it_exchange_get_product_type() == 'invoices-product-type' ) {
+	if ( is_singular( 'it_exchange_prod' ) && it_exchange_get_product_type() === 'invoices-product-type' ) {
 		wp_enqueue_style( 'it-exchange-addon-product-public-css', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices.css' ) );
 		wp_enqueue_style( 'it-exchange-addon-product-public-print', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/styles/exchange-invoices-print.css' ), array(), false, 'print' );
 		wp_enqueue_script( 'it-exchange-addon-product-public-js', ITUtility::get_url_from_file( dirname( __FILE__ ) . '/js/exchange-invoices.js' ), array('jquery') );
@@ -349,7 +361,7 @@ function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action )
 
 	$whitelist = apply_filters( 'it_exchange_invoices_user_id_nonce_verification_whitelist', array(), $uid );
 
-	if ( ! in_array( $action, $whitelist ) ) {
+	if ( ! in_array( $action, $whitelist, true ) && ! preg_match('/-purchase$/', $action ) ) {
 		return $uid;
 	}
 
@@ -401,9 +413,7 @@ function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action )
 		return $uid;
 	}
 
-	$uid = $wp_user->ID;
-
-	return $uid;
+	return $wp_user->ID;
 }
 
 add_filter( 'nonce_user_logged_out', 'it_exchange_invoice_set_user_id_for_nonce_verification', 10, 2 );
@@ -416,105 +426,187 @@ add_filter( 'nonce_user_logged_out', 'it_exchange_invoice_set_user_id_for_nonce_
  * @return void
 */
 function it_exchange_invoice_addon_login_client() {
+
 	// If user is already logged in, we don't need to do anything
-	if ( is_user_logged_in() )
+	if ( is_user_logged_in() ) {
 		return;
-
-	// Abandon if not on invoice page, if not doing transaction, or if hash is not correct for product
-	if ( ( is_admin() || ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) && ! it_exchange_is_page( 'transaction' ) )
-		return;
-
-	// If doing a transaction, we will log the user in based on the product... if the product is a invoice
-	if ( it_exchange_is_page( 'transaction' ) ) {
-
-		// Only use the first product in the cart because invoices should not be purchased with anything else
-		$products   = (array) it_exchange_get_cart_products();
-		$products   = reset( $products );
-		$product_id = empty( $products['product_id'] ) ? 0 : $products['product_id'];
-		$product    = it_exchange_get_product( $product_id );
-
-	} else {
-		// If not on transaction
-		$product       = it_exchange_get_product( false );
-		$product_id    = empty( $product->ID ) ? 0 : $product->ID;
 	}
 
+	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) {
+	    return;
+    }
+
+    // If not on transaction
+    $product_id = it_exchange_get_the_product_id();
+
 	// Abandon if product is not an invoice
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $product_id ) )
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $product_id ) ) {
 		return;
+	}
 
-	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
-	$exchange_user = it_exchange_get_customer( $meta['client'] );
-	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
+	$meta     = it_exchange_get_product_feature( $product_id, 'invoices' );
+	$customer = it_exchange_get_customer( $meta['client'] );
+	$wp_user  = empty( $customer->wp_user ) ? false : $customer->wp_user;
 
-	if ( empty( $wp_user->ID ) )
+	if ( empty( $wp_user->ID ) ) {
 		return;
+	}
 
-	// Log client in
-	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
-	$GLOBALS['current_user'] = $wp_user;
+	it_exchange_temporarily_load_addon( 'guest-checkout' );
 
-	// Remove taxes
-	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
+	it_exchange_init_guest_checkout_session( $wp_user->user_email );
+	$GLOBALS['current_user'] = it_exchange_guest_checkout_generate_guest_user_object( $wp_user->user_email );
 
+	$cart = it_exchange_get_current_cart();
+	$cart->empty_cart();
+
+	if ( $b = $customer->get_billing_address() ) {
+	    $cart->set_billing_address( new ITE_In_Memory_Address( $b->to_array() ) );
+    }
+
+    if ( $s = $customer->get_shipping_address() ) {
+	    $cart->set_shipping_address( new ITE_In_Memory_Address( $s->to_array() ) );
+    }
+
+	// Empty Cart
+	it_exchange_add_product_to_shopping_cart( $product_id );
 }
+
 add_action( 'template_redirect', 'it_exchange_invoice_addon_login_client' );
 
+/**
+ * Convert the guest checkout customer object to a full user right before purchase.
+ *
+ * @since 2.0.0
+ *
+ * @param stdClass      $transaction_object
+ * @param string        $method
+ * @param ITE_Cart|null $cart
+ *
+ * @return stdClass
+ */
+function it_exchange_invoices_convert_to_full_user_before_purchase( $transaction_object, $method, ITE_Cart $cart = null ) {
+
+    if ( ! $cart || ! $cart->is_guest() ) {
+        return $transaction_object;
+    }
+
+    $items = $cart->get_items( 'product' )->filter( function( ITE_Cart_Product $product ) {
+        return $product->get_product()->product_type === 'invoices-product-type';
+    } );
+
+    if ( ! $items->count() ) {
+        return $transaction_object;
+    }
+
+    /** @var ITE_Cart_Product $product */
+    $product = $items->first();
+
+	$meta     = it_exchange_get_product_feature( $product->get_product()->ID, 'invoices' );
+	$customer = it_exchange_get_customer( $meta['client'] );
+
+	if ( ! $customer ) {
+	    return $transaction_object;
+    }
+
+	$GLOBALS['current_user'] = $customer;
+	$_REQUEST['_wpnonce']    = wp_create_nonce( "{$method}-purchase" );
+
+	$cart->_set_customer( $customer );
+	$cart->remove_meta( 'guest-email' );
+
+	$transaction_object->customer_id = $customer->get_ID();
+	unset( $transaction_object->is_guest_checkout );
+
+	return $transaction_object;
+}
+
+add_filter( 'it_exchange_transaction_object', 'it_exchange_invoices_convert_to_full_user_before_purchase', 10, 3 );
+
+/**
+ * Revert converting to a full user after the transaction has been processed.
+ *
+ * @since 2.0.0
+ *
+ * @param int           $transaction_id
+ * @param ITE_Cart|null $cart
+ */
+function it_exchange_invoices_revert_full_user_after_purchase( $transaction_id, ITE_Cart $cart = null ) {
+	if ( ! $cart || ! $cart->is_guest() ) {
+		return;
+	}
+
+	$items = $cart->get_items( 'product' )->filter( function( ITE_Cart_Product $product ) {
+		return $product->get_product()->product_type === 'invoices-product-type';
+	} );
+
+	if ( ! $items->count() ) {
+		return;
+	}
+
+	it_exchange_temporarily_load_addon( 'guest-checkout' );
+
+	unset( $GLOBALS['current_user'] );
+	it_exchange_kill_guest_checkout_session();
+}
+
+add_action( 'it_exchange_add_transaction_success', 'it_exchange_invoices_revert_full_user_after_purchase', 10, 2 );
 
 /**
  * Log the client in during SuperWidget AJAX
  *
  * @since 1.0.0
  *
+ * @deprecated 2.0.0
+ *
  * @return void
 */
 function it_exchange_invoice_log_client_in_for_superwidget() {
 	// If user is already logged in, we don't need to do anything
-	if ( is_user_logged_in() )
+	if ( is_user_logged_in() ) {
 		return;
+	}
 
 	// If product in cart is an invoice, we're going to log in the user the invoice was sent to for the duration of this script.
 	$products   = (array) it_exchange_get_cart_products();
-	$products   = reset( $products );
-	$product_id = empty( $products['product_id'] ) ? 0 : $products['product_id'];
-	$product    = it_exchange_get_product( $product_id );
+	$product    = reset( $products );
+	$product_id = empty( $product['product_id'] ) ? 0 : $product['product_id'];
 
 	// Abandon if product is not an invoice
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $product_id ) )
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $product_id ) ) {
 		return;
+	}
 
 	$meta          = it_exchange_get_product_feature( $product_id, 'invoices' );
 	$exchange_user = it_exchange_get_customer( $meta['client'] );
 	$wp_user       = empty( $exchange_user->wp_user ) ? false : $exchange_user->wp_user;
 
 	// Abandon if no WP user was found
-	if ( empty( $wp_user->ID ) )
+	if ( empty( $wp_user->ID ) ) {
 		return;
+	}
 
 	// Log client in
 	$GLOBALS['it_exchange']['invoice_temp_user'] = true;
 	$GLOBALS['current_user'] = $wp_user;
 
-	remove_filter( 'it_exchange_get_cart_total', 'it_exchange_addon_taxes_simple_modify_total' );
 }
-add_action('it_exchange_super_widget_ajax_top', 'it_exchange_invoice_log_client_in_for_superwidget');
 
-/**
+/**`
  * Disables multi item carts if viewing an invoice product-type
  *
  * @since 1.0.0
+ *
  * @param bool $allowed Current status of multi-cart being allowed
+ *
  * @return bool True or False if multi-cart is allowed
 */
 function it_exchange_invoice_addon_multi_item_cart_allowed( $allowed ) {
-    if ( ! $allowed )
-        return $allowed;
+    if ( ! $allowed ) {
+	    return $allowed;
+    }
 
-	$product = it_exchange_get_product( false );
-	if ( empty( $product->ID ) || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
-		return $allowed;
-
-	return false;
+	return ! ( it_exchange_is_page( 'product' ) && 'invoices-product-type' === it_exchange_get_product_type() );
 }
 add_filter( 'it_exchange_multi_item_cart_allowed', 'it_exchange_invoice_addon_multi_item_cart_allowed', 15 );
 
@@ -530,15 +622,19 @@ add_filter( 'it_exchange_multi_item_cart_allowed', 'it_exchange_invoice_addon_mu
 function it_exchange_invoice_addon_intercept_confirmation_page_url( $url, $transaction_id ) {
 	if ( $products = it_exchange_get_transaction_products( $transaction_id ) ) {
 		foreach( $products as $product ) {
-			if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) ) {
+			if ( 'invoices-product-type' === it_exchange_get_product_type( $product['product_id'] ) ) {
 				$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
-				$url = add_query_arg( array( 'client' => $meta['hash'], 'paid' => it_exchange_get_transaction_status( $transaction_id ) ), get_permalink( $product['product_id'] ) );
+				$url  = add_query_arg( array(
+				        'client' => $meta['hash'],
+                        'paid'   => it_exchange_get_transaction_status( $transaction_id )
+                ), get_permalink( $product['product_id'] ) );
 			}
 		}
 	}
-	return esc_url( $url );
+
+	return $url;
 }
-add_filter( 'it_exchange_get_transaction_confirmation_url', 'it_exchange_invoice_addon_intercept_confirmation_page_url', 10, 2 );
+add_filter( 'it_exchange_get_transaction_confirmation_url', 'it_exchange_invoice_addon_intercept_confirmation_page_url', 20, 2 );
 
 /**
  * Updates the invoice as paid
@@ -551,7 +647,7 @@ add_filter( 'it_exchange_get_transaction_confirmation_url', 'it_exchange_invoice
 function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_id ) {
 	if ( $products = it_exchange_get_transaction_products( $transaction_id ) ) {
 		foreach( $products as $product ) {
-			if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) ) {
+			if ( 'invoices-product-type' === it_exchange_get_product_type( $product['product_id'] ) ) {
 				$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
 				$meta['transaction_id'] = $transaction_id;
 				update_post_meta( $product['product_id'], '_it-exchange-invoice-data', $meta );
@@ -562,7 +658,7 @@ function it_exchange_invoice_addon_attach_transaction_to_product( $transaction_i
 add_action( 'it_exchange_add_transaction_success', 'it_exchange_invoice_addon_attach_transaction_to_product' );
 
 /**
- * Automaically add invoice to cart when landing on the page
+ * Automatically add invoice to cart when landing on the page
  *
  * @since 1.0.0
  *
@@ -570,29 +666,24 @@ add_action( 'it_exchange_add_transaction_success', 'it_exchange_invoice_addon_at
 */
 function it_exchange_invoice_addon_auto_add_remove_invoice_cart_items() {
 
-	if ( ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'cart' ) && ! it_exchange_is_page( 'checkout' ) )
-		return;
-
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() ) {
-		if ( $products = it_exchange_get_cart_products() ) {
-			foreach( $products as $product ) {
-				if ( 'invoices-product-type' == it_exchange_get_product_type( $product['product_id'] ) )
-					it_exchange_delete_cart_product( $product['product_cart_id'] );
-			}
-		}
+	if ( ! it_exchange_is_page( 'product' ) && ! it_exchange_is_page( 'cart' ) && ! it_exchange_is_page( 'checkout' ) ) {
 		return;
 	}
 
-	$product = it_exchange_get_product( false );
-	if ( empty( $product->ID ) )
-		return;
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' !== it_exchange_get_product_type() ) {
 
-	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() || it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) )
-		return;
+	    $cart = it_exchange_get_current_cart( false );
 
-	// Empty Cart
-	it_exchange_empty_shopping_cart();
-	it_exchange_add_product_to_shopping_cart( $product->ID );
+	    if ( ! $cart ) {
+	        return;
+        }
+
+        $cart->get_items( 'product' )->filter( function( ITE_Cart_Product $product ) {
+          return it_exchange_get_product_type( $product->get_product() ) === 'invoices-product-type';
+        } )->delete();
+
+		return;
+	}
 }
 add_action( 'template_redirect', 'it_exchange_invoice_addon_auto_add_remove_invoice_cart_items' );
 
@@ -620,32 +711,39 @@ add_action( 'wp_ajax_it-exchange-invoice-resend-email', 'it_exchange_invoice_aja
  * @return array
 */
 function it_exchange_invoice_addon_remove_unsued_template_parts( $parts ) {
-	if ( is_admin() || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+
+    if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' !== it_exchange_get_product_type() ) {
 		return $parts;
+	}
 
 	$product = it_exchange_get_product( false );
-	if ( empty( $product->ID ) )
+
+	if ( empty( $product->ID ) ) {
 		return $parts;
+	}
 
 	$meta = it_exchange_get_product_feature( $product->ID, 'invoices' );
 
 	// Unset the Notes template part if it's empty
 	if ( empty( $meta['notes'] ) ) {
-		$i = array_search( 'notes', $parts );
-		if ( false !== $i)
-			unset( $parts[$i] );
+		$i = array_search( 'notes', $parts, true );
+
+		if ( false !== $i ) {
+			unset( $parts[ $i ] );
+		}
 	}
+
+	if ( it_exchange_invoice_addon_is_hash_valid_for_invoice() ) {
+	    return $parts;
+    }
 
 	// Should we provide the template with the resend link or without the resend link?
-	if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice() ) {
-		// Hash is invalid. Don't show the invoice details. Replace with note.
-		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
-		$part  = empty( $transaction_id ) ? 'resend-link' : 'invalid-link';
-		$part  = ( apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) && 'resend-link' == $part ) ? 'resend-link' : 'invalid-link';
-		$parts = array( $part );
-	}
+    // Hash is invalid. Don't show the invoice details. Replace with note.
+    $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
+    $part  = empty( $transaction_id ) ? 'resend-link' : 'invalid-link';
+    $part  = ( apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) && 'resend-link' === $part ) ? 'resend-link' : 'invalid-link';
 
-	return $parts;
+	return array( $part );
 }
 add_filter( 'it_exchange_get_content_invoice_product_main_elements', 'it_exchange_invoice_addon_remove_unsued_template_parts' );
 
@@ -657,17 +755,21 @@ add_filter( 'it_exchange_get_content_invoice_product_main_elements', 'it_exchang
  * @return void
 */
 function it_exchange_invoice_addon_resend_email_on_request() {
-	if ( empty( $_GET['it-exchange-invoice-resend'] ) || is_admin() || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() )
+	if ( empty( $_GET['it-exchange-invoice-resend'] ) || is_admin() || ! it_exchange_is_page( 'product' ) || 'invoices-product-type' !== it_exchange_get_product_type() )
 		return;
 
 	$product = it_exchange_get_product( false );
-	if ( empty( $product->ID ) )
+
+	if ( empty( $product->ID ) ) {
 		return;
+	}
 
 	// Don't send if it has been paid alrady or if the resend link was turned off by a filter
 	$has_transaction = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
-	if ( ! empty( $has_transaction ) || false === apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) )
+
+	if ( $has_transaction || ! apply_filters( 'it_exchange_invoices_include_resend_email_on_invlalid_frontend_link', true, $product ) ) {
 		return;
+	}
 
 	it_exchange_invoice_addon_send_invoice( $product->ID );
 	it_exchange_add_message( 'notice', __( 'Email sent', 'LION' ) );
@@ -685,7 +787,7 @@ add_action( 'template_redirect', 'it_exchange_invoice_addon_resend_email_on_requ
 */
 function it_exchange_invoice_addon_filter_preview_view_product_button_labels( $label, $post ) {
 
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $post ) )
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $post ) )
 		return $label;
 
 	$preview = __( 'Preview Invoice', 'LION' );
@@ -693,10 +795,13 @@ function it_exchange_invoice_addon_filter_preview_view_product_button_labels( $l
 
 	$current = current_filter();
 
-	if ( 'it_exchange_preview_product_button_label' == $current )
+	if ( 'it_exchange_preview_product_button_label' === $current ) {
 		return $preview;
-	if ( 'it_exchange_view_product_button_label' == $current )
+	}
+
+	if ( 'it_exchange_view_product_button_label' === $current ) {
 		return $view;
+	}
 
 	return $label;
 }
@@ -716,7 +821,7 @@ function it_exchange_invoice_addon_prevent_editing_paid_invoice() {
 	$post_id      = empty( $_POST['post_ID'] ) ? false : $_POST['post_ID'];
 	$product_type = empty( $_POST['it-exchange-product-type'] ) ? false : $_POST['it-exchange-product-type'];
 
-	if ( 'editpost' != $action || 'it_exchange_prod' != $post_type || empty( $post_id ) || 'invoices-product-type' != $product_type )
+	if ( 'editpost' !== $action || 'it_exchange_prod' !== $post_type || empty( $post_id ) || 'invoices-product-type' !== $product_type )
 		return;
 
 	if ( ! $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $post_id ) )
@@ -740,8 +845,10 @@ add_action( 'admin_init', 'it_exchange_invoice_addon_prevent_editing_paid_invoic
 */
 function it_exchange_invoice_addon_add_details_to_payment_details( $transaction_post, $transaction_product ) {
 	$product = empty( $transaction_product['product_id'] ) ? 0 : $transaction_product['product_id'];
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $product ) )
+
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $product ) ) {
 		return;
+	}
 
 	$permalink  = get_permalink( $product );
 	$admin_link = admin_url() . 'post.php?post=' . $product . '&action=edit';
@@ -785,18 +892,21 @@ add_action( 'init', 'it_exchange_invoice_addon_remove_product_features_from_invo
  * @since 1.0.0
  *
  * @param string  $link link
- * @param id      $post post object
+ * @param WP_Post $post post object
  * @return string link
 */
 function it_exchange_invoice_addon_modify_invoice_permalink( $link, $post ) {
-	if ( ! is_admin() || ! current_user_can( 'edit_others_posts' ) || 'invoices-product-type' != it_exchange_get_product_type( $post ) )
+	if ( ! is_admin() || ! current_user_can( 'edit_others_posts' ) || 'invoices-product-type' !== it_exchange_get_product_type( $post ) ) {
 		return $link;
+	}
 
-	if ( ! $data = it_exchange_get_product_feature( $post->ID, 'invoices' ) )
+	if ( ! $data = it_exchange_get_product_feature( $post->ID, 'invoices' ) ) {
 		return $link;
+	}
 
-	if ( empty( $data['hash'] ) )
+	if ( empty( $data['hash'] ) ) {
 		return $link;
+	}
 
 	return esc_url_raw( add_query_arg( 'client', $data['hash'], $link ) );
 
@@ -811,8 +921,9 @@ add_filter( 'post_type_link', 'it_exchange_invoice_addon_modify_invoice_permalin
  * @return void
 */
 function it_exchange_invoice_addon_hide_sidebar_superwidget() {
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type( false ) )
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' !== it_exchange_get_product_type( false ) ) {
 		return;
+	}
 
 	$valid_hash = it_exchange_invoice_addon_is_hash_valid_for_invoice();
 	?>
@@ -838,14 +949,17 @@ add_action( 'wp_footer', 'it_exchange_invoice_addon_hide_sidebar_superwidget' );
  * @since 1.0.2
  *
  * @param string $column the column we're in
- * @return string
+ *
+ * @return void
 */
-function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
+function it_exchange_invoices_addon_filter_product_purchase_count( $column ) {
 	global $post;
-	if ( 'invoices-product-type' != it_exchange_get_product_type( $post->ID ) )
-		return $existing;
 
-	if ( 'it_exchange_product_purchases' == $existing ) {
+	if ( 'invoices-product-type' !== it_exchange_get_product_type( $post->ID ) ) {
+		return;
+	}
+
+	if ( 'it_exchange_product_purchases' === $column ) {
 		// Get transaction ID
 		$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $post->ID );
 
@@ -862,7 +976,7 @@ function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
 				$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
 
 				$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
-				$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
+				$status = ( 'none' === $meta['terms'] || 'receipt' === $meta['terms'] ) ? 'due-now' : $status;
 			}
 		} else {
 			$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
@@ -877,8 +991,10 @@ function it_exchange_invoices_addon_filter_product_purchase_count( $existing ) {
 		);
 
 		$value   = empty( $labels[$status] ) ? false : $labels[$status];
-		if ( $value )
-		echo '<span class="it-exchange-invoice-addon-status"> - ' . $value . '</span>';
+
+		if ( $value ) {
+			echo '<span class="it-exchange-invoice-addon-status"> - ' . $value . '</span>';
+		}
 	}
 }
 add_action( 'manage_it_exchange_prod_posts_custom_column', 'it_exchange_invoices_addon_filter_product_purchase_count', 11 );
@@ -899,10 +1015,13 @@ function it_exchange_invoices_addon_filter_order_number( $order_number, $transac
 		return $order_number;
 
 	$product = reset( $transaction_products );
-	if ( empty( $product['product_id'] ) || 'invoices-product-type' != it_exchange_get_product_type( $product['product_id'] ) )
-		return $order_number;
 
-	$meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
+	if ( empty( $product['product_id'] ) || 'invoices-product-type' !== it_exchange_get_product_type( $product['product_id'] ) ) {
+		return $order_number;
+	}
+
+    $meta = it_exchange_get_product_feature( $product['product_id'], 'invoices' );
+
 	return empty( $meta['number'] ) ? $order_number : $prefix . $meta['number'];
 }
 add_filter( 'it_exchange_get_transaction_order_number', 'it_exchange_invoices_addon_filter_order_number', 10, 3 );
@@ -915,19 +1034,29 @@ add_filter( 'it_exchange_get_transaction_order_number', 'it_exchange_invoices_ad
  * @return void
 */
 function it_exchange_invoices_addon_print_offline_transaction_method_message() {
-	if ( ! $product = it_exchange_get_product( false ) )
+	if ( ! $product = it_exchange_get_product( false ) ) {
 		return;
+	}
 
-	if ( empty( $product->ID ) || empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+	if ( empty( $product->ID ) || empty( $product->product_type ) || 'invoices-product-type' !== $product->product_type ) {
 		return;
+	}
 
-	if ( ! $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) )
+	if ( ! $transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID ) ) {
 		return;
+	}
 
-	if ( ! 'offline-payments' == it_exchange_get_transaction_method( $transaction_id ) || ! it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) )
+	if ( it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ) {
 		return;
+	}
 
-	echo '<p class="it-exchange-invoice-offline-payments-transaction-instructions">' . it_exchange_get_transaction_instructions( $transaction_id ) . '</p>';
+	$instructions = it_exchange_get_transaction_instructions( $transaction_id );
+
+	if ( ! $instructions ) {
+	    return;
+    }
+
+	echo '<p class="it-exchange-invoice-offline-payments-transaction-instructions">' . $instructions . '</p>';
 }
 add_action( 'it_exchange_content_invoice_product_end_payment_wrap', 'it_exchange_invoices_addon_print_offline_transaction_method_message' );
 
@@ -943,8 +1072,9 @@ add_action( 'it_exchange_content_invoice_product_end_payment_wrap', 'it_exchange
  * @return array
 */
 function it_exchange_invoices_filter_loginout_nav_link( $items ) {
-	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' != it_exchange_get_product_type() || empty( $GLOBALS['it_exchange']['invoice_temp_user'] ) )
+	if ( ! it_exchange_is_page( 'product' ) || 'invoices-product-type' !== it_exchange_get_product_type() || empty( $GLOBALS['it_exchange']['invoice_temp_user'] ) ) {
 		return $items;
+	}
 
     if ( is_user_logged_in() ) {
         foreach ( $items as $item ) {
@@ -971,7 +1101,7 @@ add_filter( 'it_exchange_wp_get_nav_menu_items_filter', 'it_exchange_invoices_fi
  * @return boolean
 */
 function it_exchange_invoices_maybe_remove_product_from_manual_purchases_list( $show_product, $product ) {
-	if ( empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+	if ( empty( $product->product_type ) || 'invoices-product-type' !== $product->product_type )
 		return $show_product;
 
 	$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $product->ID );
@@ -993,7 +1123,7 @@ add_filter( 'it_exchange_manual_purchases_addon_include_product_in_select', 'it_
  * @return string
 */
 function it_exchange_invoices_maybe_filter_product_title_in_manual_purchases_list( $title, $product ) {
-	if ( empty( $product->product_type ) || 'invoices-product-type' != $product->product_type )
+	if ( empty( $product->product_type ) || 'invoices-product-type' !== $product->product_type )
 		return $title;
 
 	$meta         = it_exchange_get_product_feature( $product->ID, 'invoices' );
@@ -1070,7 +1200,7 @@ function it_exchange_invoices_addon_get_page_rewrites() {
 	$account_slug = it_exchange_get_page_slug( 'account' );
 
 	// If we're using WP as acount page type, add the WP slug to rewrites and return.
-	if ( 'wordpress' == it_exchange_get_page_type( 'account' ) ) {
+	if ( 'wordpress' === it_exchange_get_page_type( 'account' ) ) {
 		$account = get_page( it_exchange_get_page_wpid( 'account' ) );
 		$account_slug = $account->post_name;
 	}
@@ -1095,14 +1225,14 @@ function it_exchange_invoices_addon_get_page_url() {
     $base       = trailingslashit( get_home_url() );
 
     // Proccess superwidget links
-    if ( it_exchange_in_superwidget() && $slug != 'transaction' && $page != 'confirmation' ) {
+    if ( it_exchange_in_superwidget() && $slug != 'transaction' && $slug != 'confirmation' ) {
         // Get current URL without exchange query args
         $url = it_exchange_clean_query_args();
         return esc_url( add_query_arg( 'ite-sw-state', $slug, $url ) );
     }
 
 	// Account Slug
-	if ( 'wordpress' == it_exchange_get_page_type( 'account' ) ) {
+	if ( 'wordpress' === it_exchange_get_page_type( 'account' ) ) {
 		$account_page = get_page( it_exchange_get_page_wpid( 'account' ) );
 		$account_slug = $account_page->post_name;
 	} else {
