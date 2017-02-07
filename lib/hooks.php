@@ -392,7 +392,7 @@ function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action )
 		
 		it_exchange_set_the_product_id( $product->ID );
 		
-		if ( ! it_exchange_invoice_addon_is_hash_valid_for_invoice( $query['client'] ) ) {
+		if ( ! isset( $query['client'] ) || ! it_exchange_invoice_addon_is_hash_valid_for_invoice( $query['client'] ) ) {
 			return $uid;
 		}
 
