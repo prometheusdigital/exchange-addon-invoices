@@ -47,4 +47,5 @@ add_action( 'it_exchange_register_addons', 'it_exchange_register_invoices_addon'
 function it_exchange_invoices_set_textdomain() {
 	load_plugin_textdomain( 'LION', false, dirname( plugin_basename( __FILE__  ) ) . '/lang/' );
 }
-add_action( 'plugins_loaded', 'it_exchange_invoices_set_textdomain' );
+
+it_exchange_invoices_set_textdomain();
