@@ -58,7 +58,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 			),
 			'client_username'   => array(
 				'name'      => __( 'Client Username', 'LION' ),
-				'desc'      => __( "The username your client needs to log in to your site.", 'LION' ),
+				'desc'      => __( 'The username your client needs to log in to your site.', 'LION' ),
 				'context'   => array( 'invoice' ),
 				'available' => array( 'new-invoice' )
 			),
@@ -78,7 +78,7 @@ class IT_Exchange_Invoices_Email_Register_Tags {
 			),
 			'invoice_total'     => array(
 				'name'      => __( 'Total Due', 'LION' ),
-				'desc'      => __( "The total amount due on the invoice.", 'LION' ),
+				'desc'      => __( 'The total amount due on the invoice.', 'LION' ),
 				'context'   => array( 'invoice' ),
 				'available' => array( 'new-invoice' )
 			),

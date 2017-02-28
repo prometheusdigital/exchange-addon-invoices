@@ -369,7 +369,7 @@ function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action )
 		$referrer = $_REQUEST['_wp_http_referer'];
 
 		$parsed = parse_url( $referrer );
-		
+
 		if ( ! isset( $parsed['query'], $parsed['path'] ) ) {
 			return $uid;
 		}
@@ -389,9 +389,9 @@ function it_exchange_invoice_set_user_id_for_nonce_verification( $uid, $action )
 		}
 
 		$product = reset( $products );
-		
+
 		it_exchange_set_the_product_id( $product->ID );
-		
+
 		if ( ! isset( $query['client'] ) || ! it_exchange_invoice_addon_is_hash_valid_for_invoice( $query['client'] ) ) {
 			return $uid;
 		}
@@ -1551,12 +1551,14 @@ add_filter( 'it_exchange_get_super-widget-checkout_single-item-cart-actions_elem
  * @param IT_Exchange_Email_Notifications $notifications
  */
 function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_Notifications $notifications ) {
-	
+
+    $settings = it_exchange_get_option( 'invoice-addon' );
+
 	$r = $notifications->get_replacer();
 
 	$notifications->register_notification( new IT_Exchange_Customer_Email_Notification(
 		__( 'New Invoice', 'LION') , 'new-invoice', new IT_Exchange_Email_Template( 'invoice' ), array(
-			'defaults' => array(
+        'defaults' => array(
 				'subject' => sprintf( __( 'Invoice from %s', 'LION' ), $r->format_tag( 'company_name' ) ),
 				'body' => "Hi {$r->format_tag( 'first_name' )}
 
@@ -1564,7 +1566,27 @@ function it_exchange_invoices_register_email_notifications( IT_Exchange_Email_No
 
 Please review the details below.",
 		),
-		'group' => __( 'Invoices', 'LION' )
+		'group' => __( 'Invoices', 'LION' ),
+        'previous' => array(
+            'subject' => isset( $settings['client-subject-line'] ) ? $settings['client-subject-line'] : '',
+            'body'    => isset( $settings['client-message'] ) ? $settings['client-message'] : '',
+            'config'  => array(
+                'tag'     => 'it-exchange-invoice-email',
+                'attr'    => 'data',
+                'replace' => array(
+                    'po-number'      => 'invoice_po_number',
+                    'client-address' => false,
+                    'from-company'   => false,
+                    'from-email'     => false,
+                    'from-address'   => false,
+                    'date-issued'    => false,
+                    'total-due'      => 'invoice_total',
+                    'notes'          => 'invoice_notes',
+                    'description'    => false,
+                    'payment-link'    => false,
+                ),
+            )
+        ),
 	) ) );
 }
 
