@@ -127,7 +127,7 @@ class IT_Exchange_Product_Feature_Invoices {
         $date_format        = get_option( 'date_format' );
         $jquery_date_format = it_exchange_php_date_format_to_jquery_datepicker_format( $date_format );
 
-		// Grab the iThemes Exchange Product object from the WP $post object
+		// Grab the ExchangeWP Product object from the WP $post object
 		$product = it_exchange_get_product( $post );
 
 		// Set the value of the feature for this product
@@ -340,7 +340,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					<textarea <?php echo $paid_readonly; ?> id="it-exchange-invoices-notes" name="it-exchange-invoices-notes"><?php esc_attr_e( $invoice_data['notes'] ); ?></textarea>
 				</div>
 			</div>
-			<?php 
+			<?php
 			$ancestors = get_post_ancestors( $post );
 			if ( empty( $ancestors ) ) {
 			?>
@@ -370,7 +370,7 @@ class IT_Exchange_Product_Feature_Invoices {
 					        <?php
 						    foreach( $interval_types as $name => $label ) {
 							    echo '<option value="' . $name . '" ' . selected( $invoice_data['recurring_interval'], $name, false ) . '>' . $label . '</option>';
-						    }  
+						    }
 							?>
 				        </select>
 				        </p>
@@ -385,37 +385,37 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-child-invoices" class="invoice-field-label">
 						<?php _e( 'Child Invoices', 'LION' ); ?>
 					</label>
-					<?php 
+					<?php
 					$args = array(
 						'post_parent'    => $post->ID,
-						'post_type'      => 'it_exchange_prod', 
+						'post_type'      => 'it_exchange_prod',
 						'posts_per_page' => -1,
 						'post_status'    => 'any'
 					);
 					$children = get_children( $args );
-					if ( !empty( $children ) ) { 
+					if ( !empty( $children ) ) {
 						foreach( $children as $child ) {
 							$transaction_id = it_exchange_invoice_addon_get_invoice_transaction_id( $child->ID );
-					
+
 							// Set status if no transaction
 							if ( empty( $transaction_id ) ) {
 								$meta        = it_exchange_get_product_feature( $child->ID, 'invoices' );
 								$date_issued = empty( $meta['date_issued'] ) ? time() : $meta['date_issued'];
-					
+
 								if ( empty( $meta['terms'] ) ) {
 									// This is for drafts
 									$status = 'unpaid';
 								} else {
 									$terms = it_exchange_invoice_addon_get_available_terms();
 									$term_time = empty( $terms[$meta['terms']]['seconds'] ) ? 0 : $terms[$meta['terms']]['seconds'];
-					
+
 									$status = ( ( $date_issued + $term_time ) > time() ) ? 'unpaid' : 'late';
 									$status = ( 'none' == $meta['terms'] || 'receipt' == $meta['terms'] ) ? 'due-now' : $status;
 								}
 							} else {
 								$status = it_exchange_transaction_is_cleared_for_delivery( $transaction_id ) ? 'paid' : 'pending';
 							}
-					
+
 							$labels = array(
 								'unpaid'  => __( 'Unpaid', 'LION' ),
 								'paid'    => __( 'Paid', 'LION' ),
@@ -423,11 +423,11 @@ class IT_Exchange_Product_Feature_Invoices {
 								'late'    => __( 'Late', 'LION' ),
 								'due-now' => __( 'Due Now', 'LION' ),
 							);
-							
+
 							$child_invoice_data = it_exchange_get_product_feature( $child->ID, 'invoices' );
 							$child_invoice_data  = ITUtility::merge_defaults( $child_invoice_data, $defaults );
 							$payment_link = add_query_arg( 'client', $child_invoice_data['hash'], get_permalink( $child ) );
-					
+
 							$value   = empty( $labels[$status] ) ? false : $labels[$status];
 							if ( $value ) {
 								$payment_status = '<span class="it-exchange-invoice-addon-status">' . $value . '</span>';
@@ -436,12 +436,12 @@ class IT_Exchange_Product_Feature_Invoices {
 							}
 							?>
 							<p><a href="<?php echo get_edit_post_link( $child->ID ); ?>"><?php echo get_the_title( $child ); ?></a> | <?php echo date_i18n( get_option( 'date_format' ), strtotime( $child->post_date ) ); ?> | <?php echo $payment_status ?> | <a href="<?php echo $payment_link; ?>"><?php _e( 'Payment Link', 'LION' ); ?></a></p>
-						<?php 
+						<?php
 						}
 					} else {
 						?>
 						<p><?php _e( 'No Child Invoices Found.', 'LION' ); ?></p>
-						<?php 
+						<?php
 					}
 					?>
 					</p>
@@ -453,12 +453,12 @@ class IT_Exchange_Product_Feature_Invoices {
 					<label for="it-exchange-invoices-parent-invoice" class="invoice-field-label">
 						<?php _e( 'Parent Invoice', 'LION' ); ?>
 					</label>
-					<?php 
+					<?php
 					foreach( $ancestors as $ancestor_id ) { //should only be one
 						?>
 						<p><a href="<?php echo get_edit_post_link( $ancestor_id ); ?>"><?php echo get_the_title( $ancestor_id ); ?></a> | <?php echo date_i18n( get_option( 'date_format' ), strtotime( get_the_date( '', $ancestor_id ) ) ); ?></p>
 						<div class="it-exchange-invoice-field-container-parent-invoice-list">
-						<?php 
+						<?php
 						$ancestor_invoice_data = it_exchange_get_product_feature( $ancestor_id, 'invoices' );
 						if ( $ancestor_invoice_data['recurring_enabled'] ) {
 							?>
@@ -470,7 +470,7 @@ class IT_Exchange_Product_Feature_Invoices {
 						?>
 						</div>
 						<?php
-					} 
+					}
 					?>
 					</div>
 				</div>
@@ -669,7 +669,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		$data = ITUtility::merge_defaults( $new_value, $existing_data );
 
 		update_post_meta( $product_id, '_it-exchange-invoice-data', $data );
-		
+
 		// A second place to save the recurring data, but it'll make it easier and faster when doing auto-invoicing.
 		if ( !empty( $data['recurring_enabled'] ) && !empty( $data['recurring_interval_count'] ) && !empty( $data['recurring_interval'] ) ) {
 			$recurring_data['recurring_interval_count'] = $data['recurring_interval_count'];
@@ -679,7 +679,7 @@ class IT_Exchange_Product_Feature_Invoices {
 		} else {
 			delete_post_meta( $product_id, '_it-exchange-invoice-recurring-data' );
 		}
-		
+
 	}
 
 	/**
