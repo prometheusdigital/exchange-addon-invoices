@@ -39,11 +39,21 @@ function it_exchange_invoice_addon_settings_callback() {
 			'prefix'      => 'invoice-addon',
 			'form-fields' => array(
 				array(
+					'type'	=> 'heading',
+					'label' => __('License Key', 'LION' ),
+					'slug' => 'invoice-license-key-heading',
+				),
+				array(
+					'type' => 'text_box',
+					'label' => __('Enter License Key', 'LION'),
+					'slug' => 'invoice-license-key'
+				),
+				array(
 					'type'    => 'heading',
 					'label'   => __( 'Client Email Settings', 'LION' ),
 					'slug'    => 'client-email-settings',
 				),
-				array( 
+				array(
 					'type'    => 'text_box',
 					'label'   => __( 'Invoice Email Subject Line', 'LION' ),
 					'slug'    => 'client-subject-line',
@@ -51,7 +61,7 @@ function it_exchange_invoice_addon_settings_callback() {
 					'default' => $defaults['client-subject-line'],
 					'options' => array( 'class' => 'large-text', ),
 				),
-				array( 
+				array(
 					'type'    => 'text_area',
 					'label'   => __( 'Invoice Email Message', 'LION' ),
 					'slug'    => 'client-message',

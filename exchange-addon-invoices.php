@@ -103,3 +103,36 @@ register_deactivation_hook( __FILE__, 'it_exchange_invoice_addon_deactivation' )
 
 //Since we're supporting auto-invoicing, I want to make child invoices look proper...
 add_filter( 'ithemes_exchange_products_post_type_hierarchical', '__return_true' );
+
+/**
+ * Adds the Updater Class for ExchangeWP
+ *
+ * @since 1.9.3
+ */
+if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
+ 	require_once 'EDD_SL_Plugin_Updater.php';
+ }
+
+ function exchange_invoices_plugin_updater() {
+
+ 	// retrieve our license key from the DB
+ 	// this is going to have to be pulled from a seralized array to get the actual key.
+ 	// $license_key = trim( get_option( 'exchange_invoices_license_key' ) );
+ 	$exchangewp_invoices_options = get_option( 'it-storage-exchange_addon_invoices' );
+ 	$license_key = $exchangewp_invoices_options['invoices_license'];
+
+ 	// setup the updater
+ 	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
+ 			'version' 		=> '1.2.2', 				// current version number
+ 			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
+ 			'item_name' 	=> 'invoices', 	  // name of this plugin
+ 			'author' 	  	=> 'ExchangeWP',    // author of this plugin
+ 			'url'       	=> home_url(),
+ 			'wp_override' => true,
+ 			'beta'		  	=> false
+ 		)
+ 	);
+
+ }
+
+ add_action( 'admin_init', 'exchange_invoices_plugin_updater', 0 );
