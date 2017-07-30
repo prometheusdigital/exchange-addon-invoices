@@ -123,7 +123,7 @@ if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
 
  	// setup the updater
  	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
- 			'version' 		=> '1.2.2', 				// current version number
+ 			'version' 		=> '0.2.2', 				// current version number
  			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
  			'item_name' 	=> 'invoices', 	  // name of this plugin
  			'author' 	  	=> 'ExchangeWP',    // author of this plugin
