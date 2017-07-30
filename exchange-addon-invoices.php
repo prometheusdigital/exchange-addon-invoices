@@ -118,8 +118,8 @@ if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
  	// retrieve our license key from the DB
  	// this is going to have to be pulled from a seralized array to get the actual key.
  	// $license_key = trim( get_option( 'exchange_invoices_license_key' ) );
- 	$exchangewp_invoices_options = get_option( 'it-storage-exchange_addon_invoices' );
- 	$license_key = $exchangewp_invoices_options['invoices_license'];
+	$exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
+	$license = trim( $exchangewp_invoice_options['invoice-license-key'] );
 
  	// setup the updater
  	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(

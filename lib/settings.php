@@ -36,20 +36,22 @@ function it_exchange_invoice_addon_settings_callback() {
 
 		$defaults = it_exchange_invoice_addon_get_default_settings();
 
+		$exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
+		$license = trim( $exchangewp_invoice_options['invoice-license-key'] );
+		// var_dump($license);
+		$exstatus = trim( get_option( 'exchange_invoice_license_status' ) );
+		//  var_dump($exstatus);
 
-				 $exchangewp_invoice_options = get_option( 'it-storage-exchange_addon_invoice' );
-				 $license = $exchangewp_invoice_options['invoice-license-key'];
-				 // var_dump($license);
-				 $exstatus = trim( get_option( 'exchange_invoice_license_status' ) );
-				 // var_dump($exstatus);
+		$after_license = wp_nonce_field( 'exchange_invoice_nonce', 'exchange_invoice_nonce' );
 
-			if( $exstatus !== false && $exstatus == 'valid' ) {
-				$after_license = '<span style="color:green;">active</span>';
-				$after_license .= '<input type="submit" class="button-secondary" name="exchange_invoice_license_deactivate" value="Deactivate License"/>';
-			} else {
-				$after_license = '<input type="submit" class="button-secondary" name="exchange_invoice_license_deactivate" value="Activate License"/>';
-			}
-			
+		if( $exstatus !== false && $exstatus == 'valid' ) {
+
+			$after_license .= '<span style="color:green;">active</span>';
+			$after_license .= '<input type="submit" class="button-secondary" name="exchange_invoice_license_deactivate" value="Deactivate License"/>';
+		} else {
+			$after_license .= '<input type="submit" class="button-secondary" name="exchange_invoice_license_activate" value="Activate License"/>';
+		}
+
 		$options = array(
 			'prefix'      => 'invoice-addon',
 			'form-fields' => array(
@@ -104,9 +106,10 @@ function exchange_invoice_license_activate() {
 
 			// retrieve the license from the database
 			// $license = trim( get_option( 'exchange_invoice_license_key' ) );
-	   $exchangewp_invoice_options = get_option( 'it-storage-exchange_addon_invoice' );
+	   $exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
 	   $license = trim( $exchangewp_invoice_options['invoice-license-key'] );
 
+			// 	var_dump($license);
 			// data to send in our API request
 			$api_params = array(
 				'edd_action' => 'activate_license',
@@ -190,12 +193,13 @@ function exchange_invoice_license_activate() {
 
 			//$license_data->license will be either "valid" or "invalid"
 			update_option( 'exchange_invoice_license_status', $license_data->license );
-			// wp_redirect( admin_url( 'admin.php?page=' . 'invoice-license' ) );
+			wp_redirect( admin_url( 'admin.php?page=it-exchange-addons&add-on-settings=invoices-product-type' ) );
 			exit();
 		}
 
 }
-
+add_action('admin_init', 'exchange_invoice_license_deactivate');
+add_action('admin_init', 'exchange_invoice_license_activate');
 
 function exchange_invoice_license_deactivate() {
 
@@ -210,8 +214,9 @@ function exchange_invoice_license_deactivate() {
 			// retrieve the license from the database
 			// $license = trim( get_option( 'exchange_invoice_license_key' ) );
 
-	   $exchangewp_invoice_options = get_option( 'it-storage-exchange_addon_invoice' );
-	   $license = $exchangewp_invoice_options['invoice-license-key'];
+			$exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
+ 	    $license = trim( $exchangewp_invoice_options['invoice-license-key'] );
+
 
 
 			// data to send in our API request
@@ -236,7 +241,7 @@ function exchange_invoice_license_deactivate() {
 				// $base_url = admin_url( 'admin.php?page=' . 'invoice-license' );
 				// $redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
 
-				wp_redirect( 'admin.php?page=invoice-product-type' );
+				wp_redirect( 'admin.php?page=it-exchange-addons&add-on-settings=invoices-product-type' );
 				exit();
 			}
 
@@ -247,7 +252,7 @@ function exchange_invoice_license_deactivate() {
 				delete_option( 'exchange_invoice_license_status' );
 			}
 
-			// wp_redirect( admin_url( 'admin.php?page=' . 'invoice-license' ) );
+			wp_redirect( admin_url( 'admin.php?page=it-exchange-addons&add-on-settings=invoices-product-type' ) );
 			exit();
 
 		}
