@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: ExchangeWP - Invoices Add-on
- * Version: 1.9.2
+ * Version: 1.9.3
  * Description: Allows you to invoice clients for services.
  * Plugin URI: https://exchangewp.com/downloads/invoices/
  * Author: ExchangeWP
@@ -119,11 +119,11 @@ if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
  	// this is going to have to be pulled from a seralized array to get the actual key.
  	// $license_key = trim( get_option( 'exchange_invoices_license_key' ) );
 	$exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
-	$license = trim( $exchangewp_invoice_options['invoice-license-key'] );
+	$license_key = trim( $exchangewp_invoice_options['invoice-license-key'] );
 
  	// setup the updater
  	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
- 			'version' 		=> '0.2.2', 				// current version number
+ 			'version' 		=> '1.9.3', 				// current version number
  			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
  			'item_name' 	=> 'invoices', 	  // name of this plugin
  			'author' 	  	=> 'ExchangeWP',    // author of this plugin
