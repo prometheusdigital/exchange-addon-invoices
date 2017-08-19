@@ -1,7 +1,7 @@
 1.8.0 - 2015-11-30 - Lew Ayotte, Timothy Jacobs
 	Fix esc_url_raw() for payment link to fix issues with no-permalink settings
 	Change Sale Price label to Discount Price
-1.7.0 - 2015-11-04 - Lew Ayotte 
+1.7.0 - 2015-11-04 - Lew Ayotte
 	PHP7 Updates and Updating updater
 1.6.0 - 2015-07-27 - Lew Ayotte
 	Enable invoice cron if it doesn't exist, for upgrade situations
@@ -90,3 +90,6 @@
 	Tweak: New hooks in /content-invoice-product/elements/payment.php
 1.9.2 - 2016-06-02 - Timothy Jacobs
 	Fix: Discounted Price would not properly show the savings on published invoices
+1.9.3 - 2017-08-01 - AJ Morris
+	Enhancement: Rebrand to ExchangeWP
+	Enhancement: New license and software update system

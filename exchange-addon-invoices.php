@@ -1,18 +1,19 @@
 <?php
 /*
- * Plugin Name: iThemes Exchange - Invoices Add-on
- * Version: 1.9.2
+ * Plugin Name: ExchangeWP - Invoices Add-on
+ * Version: 1.9.3
  * Description: Allows you to invoice clients for services.
- * Plugin URI: http://ithemes.com/exchange/invoices/
- * Author: iThemes
- * Author URI: http://ithemes.com
- * iThemes Package: exchange-addon-invoices
+ * Plugin URI: https://exchangewp.com/downloads/invoices/
+ * Author: ExchangeWP
+ * Author URI: https://exchangewp.com/
+ * ExchangeWP Package: exchange-addon-invoices
 
  * Installation:
  * 1. Download and unzip the latest release zip file.
  * 2. If you use the WordPress plugin uploader to install this plugin skip to step 4.
  * 3. Upload the entire plugin directory to your `/wp-content/plugins/` directory.
  * 4. Activate the plugin through the 'Plugins' menu in WordPress Administration.
+ * 5. Add license key to settings page.
  *
 */
 
@@ -27,8 +28,8 @@ function it_exchange_register_invoices_addon() {
 	$options = array(
 		'name'              => __( 'Invoices', 'LION' ),
 		'description'       => __( 'Allows you to invoice clients for services.', 'LION' ),
-		'author'            => 'iThemes',
-		'author_url'        => 'http://ithemes.com/exchange/invoices/',
+		'author'            => 'ExchangeWP',
+		'author_url'        => 'https://exchangewp.com/downloads/invoices/',
 		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/invoices50.png' ),
 		'wizard-icon'       => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/wizard-invoices.png' ),
 		'file'              => dirname( __FILE__ ) . '/init.php',
@@ -40,7 +41,7 @@ function it_exchange_register_invoices_addon() {
 		),
 	);
 	it_exchange_register_addon( 'invoices-product-type', $options );
-	
+
 	//Reschedule the cron if it doesn't exist!
 	if ( ! wp_next_scheduled( 'it_exchange_invoice_addon_daily_schedule' ) ) {
 		wp_schedule_event( strtotime( get_gmt_from_date( date( 'Y-m-d H:i:s', strtotime( 'Tomorrow 6AM' ) ) ) ), 'daily', 'it_exchange_invoice_addon_daily_schedule' );
@@ -72,7 +73,7 @@ function ithemes_exchange_addon_invoices_updater_register( $updater ) {
 	    $updater->register( 'exchange-addon-invoices', __FILE__ );
 }
 add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_invoices_updater_register' );
-require( dirname( __FILE__ ) . '/lib/updater/load.php' );
+// require( dirname( __FILE__ ) . '/lib/updater/load.php' );
 
 /**
  * Sets options on activation if they're empty
@@ -102,3 +103,36 @@ register_deactivation_hook( __FILE__, 'it_exchange_invoice_addon_deactivation' )
 
 //Since we're supporting auto-invoicing, I want to make child invoices look proper...
 add_filter( 'ithemes_exchange_products_post_type_hierarchical', '__return_true' );
+
+/**
+ * Adds the Updater Class for ExchangeWP
+ *
+ * @since 1.9.3
+ */
+if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
+ 	require_once 'EDD_SL_Plugin_Updater.php';
+ }
+
+ function exchange_invoices_plugin_updater() {
+
+ 	// retrieve our license key from the DB
+ 	// this is going to have to be pulled from a seralized array to get the actual key.
+ 	// $license_key = trim( get_option( 'exchange_invoices_license_key' ) );
+	$exchangewp_invoice_options = get_option( 'it-storage-exchange_invoice-addon' );
+	$license_key = trim( $exchangewp_invoice_options['invoice-license-key'] );
+
+ 	// setup the updater
+ 	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
+ 			'version' 		=> '1.9.3', 				// current version number
+ 			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
+ 			'item_name' 	=> 'invoices', 	  // name of this plugin
+ 			'author' 	  	=> 'ExchangeWP',    // author of this plugin
+ 			'url'       	=> home_url(),
+ 			'wp_override' => true,
+ 			'beta'		  	=> false
+ 		)
+ 	);
+
+ }
+
+ add_action( 'admin_init', 'exchange_invoices_plugin_updater', 0 );

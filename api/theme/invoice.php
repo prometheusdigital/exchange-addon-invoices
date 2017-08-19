@@ -47,7 +47,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	);
 
 	/**
-	 * Current product in iThemes Exchange Global
+	 * Current product in ExchangeWP Global
 	 * @var object $product
 	 * @since 1.0.0
 	*/
@@ -79,7 +79,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the context. Also helps to confirm we are an iThemes Exchange theme API class
+	 * Returns the context. Also helps to confirm we are an ExchangeWP theme API class
 	 *
 	 * @since 1.0.0
 	 *
@@ -620,7 +620,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 	}
 
 	/**
-	 * Returns the due date 
+	 * Returns the due date
 	 *
 	 * @since 1.0.0
 	 *
@@ -739,7 +739,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 		$classes = empty( $options['class'] ) ? 'it-exchange-invoice-payment-amount-block' : 'it-exchange-invoice-payment-amount-block ' . $options['class'];
 		$label   = empty( $options['label'] ) ? '' : $options['label'];
-		
+
 		if ( 'publish' !== get_post_status( $this->product->ID ) ) {
 			//If it's not a published product, then we don't have proper cart, so we need to grab the base price
 			$value = it_exchange_get_product_feature( $this->product->ID, 'base-price' );
@@ -763,7 +763,7 @@ class IT_Theme_API_Invoice implements IT_Theme_API {
 
 				remove_filter( 'it_exchange_api_theme_product_base_price', 'it_exchange_add_sale_information_to_base_price_theme', 20 );
 				add_filter( 'it_exchange_api_theme_product_base_price', array( $this, '_add_sale_price_to_theme' ), 20, 2 );
-				
+
 				$this->total = $value;
 
 				$return  = '<div class="' . esc_attr( $classes ) . '">';
